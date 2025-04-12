@@ -3,7 +3,7 @@
     "private": true,
     "scripts": {
         "dev": "nodemon src/server/index.ts --host",
-        "start": "NODE_ENV=production npx tsx src/server/main.ts"
+        "start": "NODE_ENV=production npx tsx src/server/index.ts"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
