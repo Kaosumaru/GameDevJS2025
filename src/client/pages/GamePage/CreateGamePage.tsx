@@ -23,7 +23,7 @@ function CreateGamePage(): JSX.Element {
 
         if (cancelled) return;
 
-        const game = 'connect4';
+        const game = 'tao';
 
         const [id, password] = await client.createRoom(game, { players: 2 });
         await client.takeAvailableSeat();
