@@ -23,6 +23,7 @@ export interface Entity {
 }
 
 export interface Field {
+  tileId: number;
   blocking: string;
   entityUUID?: string;
 }

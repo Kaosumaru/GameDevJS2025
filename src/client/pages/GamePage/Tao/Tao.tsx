@@ -1,4 +1,7 @@
 import { Canvas, ThreeElements } from '@react-three/fiber';
+import { TaoClient } from './TaoClient';
+import { useClient } from 'pureboard/client/react';
+import { SpecificGameProps } from '../GamePage';
 
 function Tile(props: ThreeElements['mesh']) {
   return (
@@ -11,15 +14,11 @@ function Tile(props: ThreeElements['mesh']) {
 
 const TILE_OFFSET = 0.1;
 
-export const Tao = () => {
-  const board = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-  ];
-  const boardWidth = board[0].length;
+export const Tao = (props: SpecificGameProps) => {
+  const client = useClient(TaoClient, props.gameRoomClient);
+  const board = client.store(state => state.board);
+
+  const boardWidth = board[0]?.length ?? 0;
   const boardHeight = board.length;
 
   return (

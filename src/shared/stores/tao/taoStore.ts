@@ -49,7 +49,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
 
     case 'newGame':
       return {
-        board: create2DArray(10, 10, { blocking: 'none' }),
+        board: create2DArray(10, 10, { tileId: 0, blocking: 'none' }),
         gameOver: false,
         entities: [createEntity()],
       };
