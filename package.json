@@ -27,6 +27,7 @@
     "styled-components": "^6.1.17",
     "three": "^0.175.0",
     "typed-signals": "^3.0.0",
+    "uuid": "^11.1.0",
     "vite-express": "*",
     "zustand": "^5.0.2"
   },

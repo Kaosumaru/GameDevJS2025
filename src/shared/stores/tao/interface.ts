@@ -23,7 +23,9 @@ export interface Entity {
 }
 
 export interface Field {
+  uuid: string;
   tileId: number;
   blocking: string;
+  position: Position;
   entityUUID?: string;
 }
