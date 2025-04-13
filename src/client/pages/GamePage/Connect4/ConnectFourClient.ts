@@ -1,4 +1,4 @@
-import { Action, StoreData, createGameStateStore } from '@shared/stores/connectFourStore';
+import { Action, StoreData, createGameStateStore } from '@shared/stores/connect4/connectFourStore';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { seatOf } from 'pureboard/shared/gameRoomStore';
 import { BaseGameClient } from 'pureboard/client/baseGameClient';
