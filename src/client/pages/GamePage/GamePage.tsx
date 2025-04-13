@@ -1,4 +1,4 @@
-import ConnectFour from './Connect4/ConnectFour';
+import { Tao } from './Tao/Tao';
 
 import './GamePage.css';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
@@ -104,7 +104,7 @@ function GamePage(props: GameProps) {
     );
   }
 
-  return <GameWrapper {...props} gameElement={ConnectFour} userId={props.userId} />;
+  return <GameWrapper {...props} gameElement={Tao} userId={props.userId} />;
 }
 
 export default GamePage;
