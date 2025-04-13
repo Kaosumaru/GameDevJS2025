@@ -4,6 +4,8 @@ import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { useParams } from 'react-router-dom';
 import GamePage from './GamePage';
 import { useLoginContext } from '../LoginPage/LoginPage';
+import { Link, Stack } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 function JoinGamePage(): JSX.Element {
   const context = useLoginContext();
@@ -53,11 +55,25 @@ function JoinGamePage(): JSX.Element {
   }, [params.id, gameId]);
 
   if (error) {
-    return <>{error}</>;
+    return (
+      <Stack>
+        {error}
+        <Link component={RouterLink} to="/">
+          Create new Game
+        </Link>
+      </Stack>
+    );
   }
 
   if (!params.id) {
-    return <>Invalid game id</>;
+    return (
+      <Stack>
+        Invalid game id
+        <Link component={RouterLink} to="/">
+          Create new Game
+        </Link>
+      </Stack>
+    );
   }
 
   if (!gameClient) {
