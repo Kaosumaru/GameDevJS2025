@@ -25,3 +25,16 @@ export function getFieldNeightbors(state: StoreData, field: Field): Field[] {
   }
   return neighbors;
 }
+
+export function getFieldsInRange(state: StoreData, field: Field, range: number): Field[] {
+  const fieldsInRange: Field[] = [];
+  for (let y = field.position.y - range; y <= field.position.y + range; y++) {
+    for (let x = field.position.x - range; x <= field.position.x + range; x++) {
+      const targetField = findFieldByPosition(state, { x, y });
+      if (targetField && targetField !== field) {
+        fieldsInRange.push(targetField);
+      }
+    }
+  }
+  return fieldsInRange;
+}
