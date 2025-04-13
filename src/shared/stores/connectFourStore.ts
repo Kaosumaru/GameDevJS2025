@@ -1,6 +1,7 @@
 import { Context, CurrentPlayerValidation, StoreContainer } from 'pureboard/shared/interface';
 import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
+import { gameOptions } from './options';
 
 export enum FieldType {
   Empty,
@@ -44,13 +45,14 @@ function isMoveVictorious(data: StoreData, row: number, column: number): boolean
 
   for (const [dx, dy] of directions) {
     let count = 0;
-    for (let i = -3; i <= 3; ++i) {
+    const len = gameOptions.victoryLength - 1;
+    for (let i = -len; i <= len; ++i) {
       const x = column + i * dx;
       const y = row + i * dy;
       if (x < 0 || x >= board[0].length || y < 0 || y >= board.length) continue;
       if (board[y][x] === currentField) {
         count++;
-        if (count === 4) return true;
+        if (count === gameOptions.victoryLength) return true;
       } else {
         count = 0;
       }
@@ -111,7 +113,7 @@ function makeAction(
       return { ...store, victoriousPlayer: 1 - action.player };
     case 'newGame': {
       const newStore: StoreData = {
-        board: create2DArray<FieldType>(6, 7, FieldType.Empty),
+        board: create2DArray<FieldType>(gameOptions.height, gameOptions.width, FieldType.Empty),
         currentPlayer: ctx.random.int(2),
         lastMoveRow: -1,
         lastMoveColumn: -1,
