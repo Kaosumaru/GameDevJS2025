@@ -47,10 +47,16 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   if (!skill) {
     throw new Error(`Skill ${skillId} not found`);
   }
+  state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   return skill.reducer(state, user, targetId);
 }
 
 export function getPossibleTargets(state: StoreData, _entity: Entity, _skillId: SkillID): string[] {
   const allFields = state.board.flat().map(field => field.uuid);
   return allFields;
+}
+
+// deep copy 2D array
+export function deepCopy2DArray<T>(array: T[][]): T[][] {
+  return array.map(row => [...row]);
 }
