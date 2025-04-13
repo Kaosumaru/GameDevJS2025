@@ -1,4 +1,4 @@
-import { SkillID } from './skills';
+import { SkillInstance } from './skills';
 
 export interface Stat {
   current: number;
@@ -10,14 +10,10 @@ export interface Position {
   y: number;
 }
 
-export interface SkillData {
-  id: SkillID;
-}
-
 export interface Entity {
   uuid: string;
   name: string;
-  skills: SkillData[];
+  skills: SkillInstance[];
   hp: Stat;
   position: Position;
 }

@@ -1,13 +1,6 @@
-import { Entity, Field, Position } from './interface';
+import { findFieldByPosition } from './board';
+import { Entity, Position } from './interface';
 import { StoreData } from './taoStore';
-
-export function getField(state: StoreData, id: string): Field | undefined {
-  return state.board.flat().find(field => field.uuid === id);
-}
-
-export function findFieldByPosition(state: StoreData, position: Position): Field | undefined {
-  return state.board[position.y]?.[position.x];
-}
 
 export function getEntity(state: StoreData, id: string): Entity | undefined {
   return state.entities.find(entity => entity.uuid === id);
