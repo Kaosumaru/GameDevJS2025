@@ -3,7 +3,7 @@ import { TaoClient } from './TaoClient';
 import { useClient } from 'pureboard/client/react';
 import { SpecificGameProps } from '../GamePage';
 import { Pawn } from './Components/Pawn';
-import { OrbitControls, PresentationControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { Environment } from './Components/Environment';
 
 function Tile(props: ThreeElements['mesh']) {
