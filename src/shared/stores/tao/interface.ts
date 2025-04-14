@@ -10,12 +10,13 @@ export interface Position {
   y: number;
 }
 
+export type EntityName = 'goth-gf' | 'mushroom-bomb';
 export type EntityType = 'player' | 'enemy';
 
 export interface Entity {
   id: string;
   name: string;
-  avatar: string;
+  avatar: `/avatars/${EntityName}`;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
