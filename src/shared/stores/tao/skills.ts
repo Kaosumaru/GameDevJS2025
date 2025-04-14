@@ -1,6 +1,6 @@
-import { findFieldByPosition, getField, getFieldsInRange } from './board';
 import { Entity } from './interface';
-import { moveEntityTo } from './movement';
+import { attackSkill } from './skills/attack';
+import { moveSkill } from './skills/move';
 import { StoreData } from './taoStore';
 
 export type SkillID = 'move' | 'attack';
@@ -26,42 +26,8 @@ export interface SkillContext {
 
 type SkillsType = { [key in SkillID]: Skill };
 export const skills: SkillsType = {
-  move: {
-    id: 'move',
-    name: 'Move',
-    description: 'Move to a target position',
-    cost: 1,
-    reducer: (state, ctx) => {
-      if (!ctx.targetId) {
-        throw new Error('Target ID is required for move skill');
-      }
-      const field = getField(state, ctx.targetId);
-      if (!field) {
-        throw new Error(`Field with ID ${ctx.targetId} not found`);
-      }
-      return moveEntityTo(state, ctx.user.id, field.position);
-    },
-    getPossibleTargets: (state, ctx) => {
-      const field = findFieldByPosition(state, ctx.user.position);
-      if (!field) {
-        throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
-      }
-      return getFieldsInRange(state, field, 1).map(f => f.id);
-    },
-  },
-
-  attack: {
-    id: 'attack',
-    name: 'Attack',
-    description: 'Attack a target entity',
-    cost: 1,
-    reducer: state => {
-      return state;
-    },
-    getPossibleTargets: () => {
-      return [];
-    },
-  },
+  move: moveSkill,
+  attack: attackSkill,
 };
 
 export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {

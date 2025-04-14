@@ -1,21 +1,7 @@
 import { findFieldByPosition } from './board';
+import { modifyEntity } from './entity';
 import { Entity, EntityName, Position } from './interface';
 import { StoreData } from './taoStore';
-
-export function getEntity(state: StoreData, id: string): Entity | undefined {
-  return state.entities.find(entity => entity.id === id);
-}
-
-function modifyEntity(state: StoreData, entityID: string, modifier: (entity: Entity) => Entity): StoreData {
-  const entity = getEntity(state, entityID);
-  if (!entity) {
-    throw new Error(`Entity with ID ${entityID} not found`);
-  }
-  const newState = { ...state };
-  const modifiedEntity = modifier(entity);
-  newState.entities = newState.entities.map(e => (e.id === entityID ? modifiedEntity : e));
-  return newState;
-}
 
 function createEntity(store: StoreData, name: EntityName, ownerId?: number): Entity {
   return {

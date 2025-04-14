@@ -9,7 +9,7 @@ export function findFieldByPosition(state: StoreData, position: Position): Field
   return state.board[position.y]?.[position.x];
 }
 
-export function getFieldNeightbors(state: StoreData, field: Field): Field[] {
+export function getFieldNeighbors(state: StoreData, field: Field): Field[] {
   const neighbors: Field[] = [];
   const directions = [
     { x: 0, y: -1 }, // Up
@@ -24,6 +24,10 @@ export function getFieldNeightbors(state: StoreData, field: Field): Field[] {
     }
   }
   return neighbors;
+}
+
+export function fieldsWithEnemy(state: StoreData, fields: Field[]): Field[] {
+  return fields.filter(field => field.entityUUID !== undefined);
 }
 
 export function getFieldsInRange(state: StoreData, field: Field, range: number): Field[] {

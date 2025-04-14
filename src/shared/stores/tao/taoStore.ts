@@ -2,8 +2,9 @@ import { Context, StoreContainer } from 'pureboard/shared/interface';
 import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field } from './interface';
-import { getEntity, placeEntity } from './movement';
+import { placeEntity } from './movement';
 import { SkillID, useSkill } from './skills';
+import { getEntity } from './entity';
 
 export interface UseSkillAction {
   type: 'useSkill';
