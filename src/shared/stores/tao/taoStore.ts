@@ -73,7 +73,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         entities: [],
       };
 
-      state = placeEntity(state, 'goth-gf', { x: 0, y: 0 });
+      state = placeEntity(state, 'goth-gf', { x: 0, y: 0 }, 0);
       state = placeEntity(state, 'mushroom-bomb', { x: 1, y: 0 });
       return state;
     }
