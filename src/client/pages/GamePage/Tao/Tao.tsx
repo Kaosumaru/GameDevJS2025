@@ -95,6 +95,11 @@ export const Tao = (props: SpecificGameProps) => {
         onAttack={() => {
           setUiAction(['select-entity']);
         }}
+        onEndTurn={() => {
+          // client.endTurn();
+          setUiAction([]);
+          setSelectedEntity(null);
+        }}
       />
     </>
   );
