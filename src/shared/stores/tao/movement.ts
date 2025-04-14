@@ -1,16 +1,9 @@
 import { findFieldByPosition } from './board';
-import { createEntity, modifyEntity } from './entity';
-import { EntityName, Position } from './interface';
+import { modifyEntity } from './entity';
+import { Entity, Position } from './interface';
 import { StoreData } from './taoStore';
 
-export function placeEntity(
-  state: StoreData,
-  name: string,
-  avatar: EntityName,
-  position: Position,
-  ownerId?: number
-): StoreData {
-  const entity = createEntity(state, name, avatar, ownerId);
+export function placeEntity(state: StoreData, entity: Entity, position: Position): StoreData {
   const field = findFieldByPosition(state, position);
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);

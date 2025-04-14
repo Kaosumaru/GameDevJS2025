@@ -28,7 +28,7 @@ export interface Entity {
 export interface Field {
   id: string;
   tileId: number;
-  blocking: string;
+  blocking: boolean;
   position: Position;
   entityUUID?: string;
 }
