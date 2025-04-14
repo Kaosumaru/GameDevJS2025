@@ -41,9 +41,6 @@ export const Tao = (props: SpecificGameProps) => {
             row.map((field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-<<<<<<< Updated upstream
-              return <Tile key={`${colIdx}_${rowIdx}`} field={field} position={[x, -0.05, y]} />;
-=======
               const distanceToEntity = Math.sqrt(
                 (colIdx - (selectedEntity?.position.x ?? 0)) ** 2 + (rowIdx - (selectedEntity?.position.y ?? 0)) ** 2
               );
@@ -57,7 +54,6 @@ export const Tao = (props: SpecificGameProps) => {
                   highlightColor={isMoving ? moveColor : isAttacking ? attackColor : undefined}
                 />
               );
->>>>>>> Stashed changes
             })
           )}
           {entities.map(entity => {

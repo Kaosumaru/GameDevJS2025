@@ -1,23 +1,3 @@
-<<<<<<< Updated upstream
-import { ThreeElements, useLoader } from '@react-three/fiber';
-import { Field } from '@shared/stores/tao/interface';
-import { TextureLoader } from 'three';
-
-export interface TileProps {
-  field: Field;
-}
-
-export const Tile = (props: TileProps & ThreeElements['mesh']) => {
-  const [colorMap] = useLoader(TextureLoader, ['/wall.png']);
-  if (props.field.tileId === 1) {
-    return (
-      <mesh {...props} castShadow receiveShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color={'gray'} />
-      </mesh>
-    );
-  }
-=======
 import { shaderMaterial } from '@react-three/drei';
 import { extend, ThreeElements, useLoader } from '@react-three/fiber';
 import { useMemo } from 'react';
@@ -60,7 +40,6 @@ export const Tile = ({
   const neutralColor = useMemo(() => new Color(1, 1, 1), []);
   const greenColor = useMemo(() => new Color(0.2, 0.8, 0.2), []);
 
->>>>>>> Stashed changes
   return (
     <mesh {...rest} castShadow receiveShadow>
       <boxGeometry args={[1, 0.1, 1]} />
