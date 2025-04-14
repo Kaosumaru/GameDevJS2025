@@ -1,4 +1,5 @@
-import { Entity, EntityName } from './interface';
+import { EntityName } from './entities';
+import { Entity } from './interface';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity | undefined {

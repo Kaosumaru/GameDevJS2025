@@ -1,5 +1,4 @@
-import { entities } from './entities';
-import { EntityName } from './interface';
+import { entities, EntityName } from './entities';
 import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
 
