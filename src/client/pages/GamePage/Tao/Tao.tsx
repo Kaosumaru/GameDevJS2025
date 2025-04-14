@@ -5,6 +5,7 @@ import { SpecificGameProps } from '../GamePage';
 import { Pawn } from './Components/Pawn';
 import { OrbitControls } from '@react-three/drei';
 import { Environment } from './Components/Environment';
+import { TaoUi } from './TaoUi';
 
 function Tile(props: ThreeElements['mesh']) {
   return (
@@ -30,27 +31,31 @@ export const Tao = (props: SpecificGameProps) => {
   };
 
   return (
-    <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
-      <color attach="background" args={['skyblue']} />
-      <Environment />
-      <OrbitControls makeDefault />
-      <group>
-        {board.map((row, rowIdx) =>
-          row.map((_, colIdx) => {
-            const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
-            const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-            return <Tile key={`${colIdx}_${rowIdx}`} position={[x, -0.05, y]} />;
-          })
-        )}
-        <Pawn
-          position={[
-            pionekPosition.x - boardWidth / 2 + TILE_OFFSET * pionekPosition.x,
-            0,
-            pionekPosition.y - boardHeight / 2 + TILE_OFFSET * pionekPosition.y,
-          ]}
-          scale={[0.5, 0.5, 0.5]}
-        />
-      </group>
-    </Canvas>
+    <>
+      <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
+        <color attach="background" args={['skyblue']} />
+        <Environment />
+        <OrbitControls makeDefault />
+
+        <group>
+          {board.map((row, rowIdx) =>
+            row.map((_, colIdx) => {
+              const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
+              const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
+              return <Tile key={`${colIdx}_${rowIdx}`} position={[x, -0.05, y]} />;
+            })
+          )}
+          <Pawn
+            position={[
+              pionekPosition.x - boardWidth / 2 + TILE_OFFSET * pionekPosition.x,
+              0,
+              pionekPosition.y - boardHeight / 2 + TILE_OFFSET * pionekPosition.y,
+            ]}
+            scale={[0.5, 0.5, 0.5]}
+          />
+        </group>
+      </Canvas>
+      <TaoUi />
+    </>
   );
 };
