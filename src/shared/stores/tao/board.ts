@@ -2,7 +2,7 @@ import { Field, Position } from './interface';
 import { StoreData } from './taoStore';
 
 export function getField(state: StoreData, id: string): Field | undefined {
-  return state.board.flat().find(field => field.uuid === id);
+  return state.board.flat().find(field => field.id === id);
 }
 
 export function findFieldByPosition(state: StoreData, position: Position): Field | undefined {

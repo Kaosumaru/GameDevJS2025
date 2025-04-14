@@ -3,7 +3,7 @@ import { Entity, Position } from './interface';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity | undefined {
-  return state.entities.find(entity => entity.uuid === id);
+  return state.entities.find(entity => entity.id === id);
 }
 
 function modifyEntity(state: StoreData, entityID: string, modifier: (entity: Entity) => Entity): StoreData {
@@ -13,7 +13,7 @@ function modifyEntity(state: StoreData, entityID: string, modifier: (entity: Ent
   }
   const newState = { ...state };
   const modifiedEntity = modifier(entity);
-  newState.entities = newState.entities.map(e => (e.uuid === entityID ? modifiedEntity : e));
+  newState.entities = newState.entities.map(e => (e.id === entityID ? modifiedEntity : e));
   return newState;
 }
 
@@ -29,7 +29,7 @@ export function placeEntity(state: StoreData, entity: Entity, position: Position
   }
   const newState = { ...state };
   entity.position = position;
-  field.entityUUID = entity.uuid;
+  field.entityUUID = entity.id;
   newState.entities = [...newState.entities, entity];
   return newState;
 }
@@ -50,7 +50,7 @@ export function moveEntityTo(state: StoreData, entityID: string, position: Posit
     if (oldField) {
       oldField.entityUUID = undefined; // Clear the entity from the old field
     }
-    field.entityUUID = e.uuid;
+    field.entityUUID = e.id;
     return { ...e, position };
   });
 

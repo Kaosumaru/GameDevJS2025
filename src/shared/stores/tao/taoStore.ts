@@ -27,7 +27,7 @@ function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
 function convertNumbersToFieldType(numbers: number[][]): Field[][] {
   return numbers.map((row, rowIndex) =>
     row.map((value, columnIndex) => ({
-      uuid: `field-${columnIndex},${rowIndex}`,
+      id: `field-${columnIndex},${rowIndex}`,
       tileId: value,
       blocking: 'none',
       position: { x: columnIndex, y: rowIndex },
@@ -37,8 +37,10 @@ function convertNumbersToFieldType(numbers: number[][]): Field[][] {
 
 function createEntity(): Entity {
   return {
-    uuid: '73be0103-5c29-41d1-9e94-e7e3e927efc0',
+    id: '73be0103-5c29-41d1-9e94-e7e3e927efc0',
     name: 'Player',
+    type: 'player',
+    ownerId: 0,
     skills: [{ id: 'move' }, { id: 'attack' }],
     hp: { current: 100, max: 100 },
     position: { x: 0, y: 0 },
@@ -64,6 +66,13 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       if (!entity) {
         throw new Error(`Entity with ID ${entityId} not found`);
       }
+      if (entity.ownerId === undefined) {
+        throw new Error(`Entity with ID ${entityId} does not have an ownerId`);
+      }
+      if (!ctx.playerValidation.canMoveAsPlayer(entity.ownerId)) {
+        throw new Error(`Cannot move as entity ${entityId}`);
+      }
+
       return useSkill(store, entity, skillName, targetId);
     }
 

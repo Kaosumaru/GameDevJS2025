@@ -39,14 +39,14 @@ export const skills: SkillsType = {
       if (!field) {
         throw new Error(`Field with ID ${ctx.targetId} not found`);
       }
-      return moveEntityTo(state, ctx.user.uuid, field.position);
+      return moveEntityTo(state, ctx.user.id, field.position);
     },
     getPossibleTargets: (state, ctx) => {
       const field = findFieldByPosition(state, ctx.user.position);
       if (!field) {
         throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
       }
-      return getFieldsInRange(state, field, 1).map(f => f.uuid);
+      return getFieldsInRange(state, field, 1).map(f => f.id);
     },
   },
 
@@ -71,7 +71,7 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   }
   const skillInstance = user.skills.find(skill => skill.id === skillId);
   if (!skillInstance) {
-    throw new Error(`Skill instance ${skillId} not found for user ${user.uuid}`);
+    throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
   }
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   return skill.reducer(state, { user, skillInstance, targetId });

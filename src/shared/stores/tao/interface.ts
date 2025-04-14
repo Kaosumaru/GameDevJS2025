@@ -10,16 +10,20 @@ export interface Position {
   y: number;
 }
 
+export type EntityType = 'player' | 'enemy';
+
 export interface Entity {
-  uuid: string;
+  id: string;
   name: string;
+  type: EntityType;
+  ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
   hp: Stat;
   position: Position;
 }
 
 export interface Field {
-  uuid: string;
+  id: string;
   tileId: number;
   blocking: string;
   position: Position;
