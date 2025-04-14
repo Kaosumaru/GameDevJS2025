@@ -21,6 +21,7 @@ export interface Entity {
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
   hp: Stat;
+  actionPoints: Stat;
   position: Position;
 }
 

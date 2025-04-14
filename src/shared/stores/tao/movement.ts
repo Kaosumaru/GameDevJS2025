@@ -1,20 +1,7 @@
 import { findFieldByPosition } from './board';
-import { modifyEntity } from './entity';
-import { Entity, EntityName, Position } from './interface';
+import { createEntity, modifyEntity } from './entity';
+import { EntityName, Position } from './interface';
 import { StoreData } from './taoStore';
-
-function createEntity(store: StoreData, name: string, avatar: EntityName, ownerId?: number): Entity {
-  return {
-    id: `entity-${store.entities.length}`,
-    name,
-    type: 'player',
-    avatar: `/avatars/${avatar}`,
-    ownerId,
-    skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
-    position: { x: 0, y: 0 },
-  };
-}
 
 export function placeEntity(
   state: StoreData,
