@@ -52,6 +52,19 @@ export const Tao = (props: SpecificGameProps) => {
                   key={`${colIdx}_${rowIdx}`}
                   position={[x, -0.05, y]}
                   highlightColor={isMoving ? moveColor : isAttacking ? attackColor : undefined}
+                  onClick={() => {
+                    if (!selectedEntity) {
+                      console.warn('No entity selected');
+                      return;
+                    }
+                    if (isMoving) {
+                      client.useSkill(selectedEntity.id, 'move', field.id);
+                      setUiAction([]);
+                    } else if (isAttacking) {
+                      client.useSkill(selectedEntity?.id ?? '', 'attack', field.id);
+                      setUiAction([]);
+                    }
+                  }}
                 />
               );
             })

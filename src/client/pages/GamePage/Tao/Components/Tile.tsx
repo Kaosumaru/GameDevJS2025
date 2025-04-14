@@ -27,7 +27,6 @@ export const ColorTexMaterial = shaderMaterial(
     `
 );
 
-// declaratively
 extend({ ColorTexMaterial });
 
 export const Tile = ({
@@ -38,7 +37,6 @@ export const Tile = ({
 }) => {
   const [colorMap] = useLoader(TextureLoader, ['/wall.png']);
   const neutralColor = useMemo(() => new Color(1, 1, 1), []);
-  const greenColor = useMemo(() => new Color(0.2, 0.8, 0.2), []);
 
   return (
     <mesh {...rest} castShadow receiveShadow>
