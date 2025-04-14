@@ -2,9 +2,10 @@ import { Context, StoreContainer } from 'pureboard/shared/interface';
 import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field } from './interface';
-import { placeEntity } from './movement';
 import { SkillID, useSkill } from './skills';
 import { getEntity } from './entity';
+import { fillState } from './level';
+import { createLevel0 } from './levels/level0';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -30,7 +31,7 @@ function convertNumbersToFieldType(numbers: number[][]): Field[][] {
     row.map((value, columnIndex) => ({
       id: `field-${columnIndex},${rowIndex}`,
       tileId: value,
-      blocking: 'none',
+      blocking: false,
       position: { x: columnIndex, y: rowIndex },
     }))
   );
@@ -74,8 +75,9 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         entities: [],
       };
 
-      state = placeEntity(state, 'Goth Girl', 'goth-gf', { x: 0, y: 0 }, 0);
-      state = placeEntity(state, 'Mushroom B.', 'mushroom-bomb', { x: 1, y: 0 });
+      const level = createLevel0();
+      state = fillState(state, level);
+
       return state;
     }
   }

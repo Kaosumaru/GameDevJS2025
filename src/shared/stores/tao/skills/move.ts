@@ -6,7 +6,7 @@ export const moveSkill: Skill = {
   id: 'move',
   name: 'Move',
   description: 'Move to a target position',
-  cost: 1,
+  cost: 0,
   reducer: (state, ctx) => {
     if (!ctx.targetId) {
       throw new Error('Target ID is required for move skill');

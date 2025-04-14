@@ -21,13 +21,14 @@ export interface Entity {
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
   hp: Stat;
+  actionPoints: Stat;
   position: Position;
 }
 
 export interface Field {
   id: string;
   tileId: number;
-  blocking: string;
+  blocking: boolean;
   position: Position;
   entityUUID?: string;
 }

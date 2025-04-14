@@ -1,3 +1,4 @@
+import { useActionPointsEntity } from './entity';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
 import { moveSkill } from './skills/move';
@@ -35,10 +36,23 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   if (!skill) {
     throw new Error(`Skill ${skillId} not found`);
   }
+
   const skillInstance = user.skills.find(skill => skill.id === skillId);
   if (!skillInstance) {
     throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
   }
+
+  const possibleTargets = skill.getPossibleTargets(state, { user, skillInstance });
+  if (targetId && !possibleTargets.includes(targetId)) {
+    throw new Error(`Target ${targetId} is not valid for skill ${skillId}`);
+  }
+
+  if (user.actionPoints.current < skill.cost) {
+    throw new Error(`Not enough action points to use skill ${skillId}`);
+  }
+
+  state = useActionPointsEntity(state, user.id, skill.cost);
+
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   return skill.reducer(state, { user, skillInstance, targetId });
 }

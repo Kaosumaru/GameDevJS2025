@@ -1,4 +1,4 @@
-import { Canvas, ThreeElements } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { TaoClient } from './TaoClient';
 import { useClient } from 'pureboard/client/react';
 import { SpecificGameProps } from '../GamePage';
@@ -7,19 +7,15 @@ import { Environment } from './Components/Environment';
 import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
 import { FireVFX } from './VFX/FireVFX';
-
-function Tile(props: ThreeElements['mesh']) {
-  return (
-    <mesh {...props} castShadow receiveShadow>
-      <boxGeometry args={[1, 0.1, 1]} />
-      <meshStandardMaterial color={'gray'} />
-    </mesh>
-  );
-}
+import { useState } from 'react';
+import { Entity } from '@shared/stores/tao/interface';
+import { Tile } from './Components/Tile';
 
 const TILE_OFFSET = 0.1;
 
 export const Tao = (props: SpecificGameProps) => {
+  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+
   const client = useClient(TaoClient, props.gameRoomClient);
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
@@ -46,20 +42,30 @@ export const Tao = (props: SpecificGameProps) => {
         />
         <group>
           {board.map((row, rowIdx) =>
-            row.map((_, colIdx) => {
+            row.map((field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-              return <Tile key={`${colIdx}_${rowIdx}`} position={[x, -0.05, y]} />;
+              return <Tile key={`${colIdx}_${rowIdx}`} field={field} position={[x, -0.05, y]} />;
             })
           )}
           {entities.map(entity => {
             const x = entity.position.x - boardWidth / 2 + TILE_OFFSET * entity.position.x;
             const y = entity.position.y - boardHeight / 2 + TILE_OFFSET * entity.position.y;
-            return <Entity3D key={entity.id} position={[x, 0, y]} entity={entity} />;
+            return (
+              <Entity3D
+                key={entity.id}
+                position={[x, 0, y]}
+                entity={entity}
+                onClick={() => {
+                  setSelectedEntity(entity);
+                }}
+              />
+            );
           })}
         </group>
       </Canvas>
-      <TaoUi client={client} entity={entities[0]} />
+
+      <TaoUi client={client} entity={selectedEntity} />
     </>
   );
 };

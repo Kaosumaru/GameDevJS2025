@@ -1,4 +1,11 @@
-export const HorizontalContainer = (props: { children: React.ReactNode; style?: React.CSSProperties }) => {
+import { JSX } from 'react';
+
+export const HorizontalContainer = ({
+  children,
+  ...rest
+}: JSX.IntrinsicElements['div'] & {
+  children: React.ReactNode;
+}) => {
   return (
     <div
       style={{
@@ -8,10 +15,10 @@ export const HorizontalContainer = (props: { children: React.ReactNode; style?: 
         gap: '1rem',
         width: '100%',
         height: '100%',
-        ...props.style,
       }}
+      {...rest}
     >
-      {props.children}
+      {children}
     </div>
   );
 };
