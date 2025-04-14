@@ -23,6 +23,6 @@ export const attackSkill: Skill = {
     const userField = findFieldByPosition(state, ctx.user.position);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const neighbors = getFieldNeighbors(state, userField!);
-    return fieldsWithEnemy(state, neighbors).map(field => field.id);
+    return fieldsWithEnemy(state, neighbors, ctx.user).map(field => field.id);
   },
 };

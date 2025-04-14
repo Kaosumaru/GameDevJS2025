@@ -23,7 +23,9 @@ export const moveSkill: Skill = {
     if (!field) {
       throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
     }
-    const fields = getFieldsInDistance(state, field, 2);
-    return [...fields].map(f => f[0].id);
+    const fieldsMap = getFieldsInDistance(state, field, ctx.user, 2);
+    let fields = [...fieldsMap].map(f => f[0]);
+    fields = fields.filter(f => f.entityUUID === undefined);
+    return fields.map(f => f.id);
   },
 };

@@ -62,6 +62,24 @@ export function refreshAllActionPoints(state: StoreData): StoreData {
   return modifyEntities(state, refreshActionsReducer);
 }
 
+export function isPlayerOrEnemy(entity: Entity): boolean {
+  return entity.type === 'player' || entity.type === 'enemy';
+}
+
+export function isSameTeam(entityA: Entity, entityB: Entity): boolean {
+  if (!isPlayerOrEnemy(entityA) || !isPlayerOrEnemy(entityB)) {
+    return false;
+  }
+  return entityA.type === entityB.type;
+}
+
+export function isEnemy(entityA: Entity, entityB: Entity): boolean {
+  if (!isPlayerOrEnemy(entityA) || !isPlayerOrEnemy(entityB)) {
+    return false;
+  }
+  return entityA.type !== entityB.type;
+}
+
 export function createEntity(store: StoreData, name: string, avatar: EntityName, ownerId?: number): Entity {
   return {
     id: `entity-${store.entities.length}`,

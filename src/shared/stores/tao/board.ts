@@ -1,4 +1,5 @@
-import { Field, Position } from './interface';
+import { getEntity, isEnemy } from './entity';
+import { Entity, Field, Position } from './interface';
 import { StoreData } from './taoStore';
 
 export function getField(state: StoreData, id: string): Field | undefined {
@@ -26,8 +27,12 @@ export function getFieldNeighbors(state: StoreData, field: Field): Field[] {
   return neighbors;
 }
 
-export function fieldsWithEnemy(state: StoreData, fields: Field[]): Field[] {
-  return fields.filter(field => field.entityUUID !== undefined);
+export function fieldsWithEnemy(state: StoreData, fields: Field[], entity: Entity): Field[] {
+  return fields.filter(field => {
+    if (field.entityUUID === undefined) return false;
+    const fieldEntity = getEntity(state, field.entityUUID);
+    return fieldEntity && isEnemy(entity, fieldEntity); // Filter out the user's own entity
+  });
 }
 
 export function getFieldsInRange(state: StoreData, field: Field, range: number): Field[] {
