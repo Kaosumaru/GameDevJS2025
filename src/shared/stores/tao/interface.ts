@@ -15,7 +15,8 @@ export type EntityType = 'player' | 'enemy';
 
 export interface Entity {
   id: string;
-  name: EntityName;
+  name: string;
+  avatar: `/avatars/${EntityName}`;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
