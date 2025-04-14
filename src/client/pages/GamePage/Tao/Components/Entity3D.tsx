@@ -1,8 +1,7 @@
-import { Image, Outlines, Text } from '@react-three/drei';
-import { Pawn } from './Pawn';
+import { Image, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { JSX, useMemo, useRef } from 'react';
-import { Euler, Mesh } from 'three';
+import { JSX, useRef } from 'react';
+import { Mesh } from 'three';
 import { Entity } from '@shared/stores/tao/interface';
 
 export const Entity3D = ({
@@ -39,7 +38,7 @@ export const Entity3D = ({
         <meshStandardMaterial color="black" transparent opacity={0.8} />
       </mesh>
 
-      <Image ref={imageRef} url={`${entity.avatar}.png`} transparent opacity={0.9} position={[0, 0.5, 0]} zoom={0.4}>
+      <Image ref={imageRef} url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0]} zoom={0.4}>
         <planeGeometry args={[2, 2]} />
       </Image>
       <mesh onClick={onClick} position={[0, -0.0499, 0]}>
