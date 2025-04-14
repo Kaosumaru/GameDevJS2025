@@ -1,4 +1,4 @@
-import { Canvas, ThreeElements } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { TaoClient } from './TaoClient';
 import { useClient } from 'pureboard/client/react';
 import { SpecificGameProps } from '../GamePage';
@@ -7,16 +7,8 @@ import { Environment } from './Components/Environment';
 import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
-import { Entity } from '@shared/stores/tao/interface';
-
-function Tile(props: ThreeElements['mesh']) {
-  return (
-    <mesh {...props} castShadow receiveShadow>
-      <boxGeometry args={[1, 0.1, 1]} />
-      <meshStandardMaterial color={'gray'} />
-    </mesh>
-  );
-}
+import { Entity, Field } from '@shared/stores/tao/interface';
+import { Tile } from './Tile';
 
 const TILE_OFFSET = 0.1;
 
@@ -39,10 +31,10 @@ export const Tao = (props: SpecificGameProps) => {
 
         <group>
           {board.map((row, rowIdx) =>
-            row.map((_, colIdx) => {
+            row.map((field: Field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-              return <Tile key={`${colIdx}_${rowIdx}`} position={[x, -0.05, y]} />;
+              return <Tile key={`${colIdx}_${rowIdx}`} field={field} position={[x, -0.05, y]} />;
             })
           )}
           {entities.map(entity => {
