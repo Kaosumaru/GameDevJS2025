@@ -1,3 +1,4 @@
+import { findFieldByPosition } from './board';
 import { useActionPointsEntity } from './entity';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
@@ -54,7 +55,22 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   state = useActionPointsEntity(state, user.id, skill.cost);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
-  return skill.reducer(state, { user, skillInstance, targetId });
+  state = skill.reducer(state, { user, skillInstance, targetId });
+  state = filterDeadEntities(state);
+
+  return state;
+}
+
+function filterDeadEntities(state: StoreData): StoreData {
+  const deadEntities = state.entities.filter(entity => entity.hp.current <= 0);
+  if (deadEntities.length == 0) return state;
+  state = { ...state };
+  for (const entity of deadEntities) {
+    const field = findFieldByPosition(state, entity.position);
+    if (field) field.entityUUID = undefined;
+  }
+  state.entities = state.entities.filter(entity => entity.hp.current > 0);
+  return state;
 }
 
 export function getPossibleTargets(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {

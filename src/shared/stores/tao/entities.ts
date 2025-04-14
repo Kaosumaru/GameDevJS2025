@@ -9,7 +9,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/goth-gf',
     type: 'player',
     skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
+    hp: { current: 3, max: 3 },
     actionPoints: { current: 2, max: 2 },
     position,
     ownerId: 0, // Assuming ownerId is 0 for player entities
@@ -20,7 +20,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/sun-princess',
     type: 'player',
     skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
+    hp: { current: 3, max: 3 },
     actionPoints: { current: 2, max: 2 },
     position,
     ownerId: 1, // Assuming ownerId is 0 for player entities
@@ -31,7 +31,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/mushroom-bomb',
     type: 'enemy',
     skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
+    hp: { current: 1, max: 1 },
     actionPoints: { current: 2, max: 2 },
     position,
   }),

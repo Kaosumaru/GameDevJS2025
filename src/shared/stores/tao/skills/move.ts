@@ -1,4 +1,4 @@
-import { findFieldByPosition, getField, getFieldsInRange } from '../board';
+import { findFieldByPosition, getField } from '../board';
 import { moveEntityTo } from '../movement';
 import { getFieldsInDistance } from '../pathfinding';
 import { Skill } from '../skills';
@@ -7,7 +7,7 @@ export const moveSkill: Skill = {
   id: 'move',
   name: 'Move',
   description: 'Move to a target position',
-  cost: 0,
+  cost: 1,
   reducer: (state, ctx) => {
     if (!ctx.targetId) {
       throw new Error('Target ID is required for move skill');

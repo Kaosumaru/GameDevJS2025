@@ -103,7 +103,7 @@ export const Tao = (props: SpecificGameProps) => {
           setTargets(targets);
         }}
         onEndTurn={() => {
-          // client.endTurn();
+          void client.endRound();
           setUiAction([]);
           setSelectedEntityId(null);
         }}
