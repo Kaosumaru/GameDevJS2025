@@ -28,6 +28,7 @@ export const Entity3DBase = ({
 
 export const Entity3D = ({
   entity,
+  onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   entity: Entity;
@@ -60,6 +61,10 @@ export const Entity3D = ({
       <Image ref={imageRef} url={`${entity.avatar}.png`} transparent opacity={0.9} position={[0, 0.6, 0]} zoom={0.4}>
         <planeGeometry args={[2, 2]} />
       </Image>
+      <mesh onClick={onClick}>
+        <boxGeometry args={[1, 0.2, 1]} />
+        <meshStandardMaterial transparent opacity={0} />
+      </mesh>
     </group>
   );
 };

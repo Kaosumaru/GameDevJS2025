@@ -1,0 +1,12 @@
+.ui-container {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.switch-enter-done {
+  opacity: 1;
+}
+
+.switch-exit-done {
+  opacity: 0;
+}
