@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Mesh, Color } from 'three';
-import fireShaderMaterial from '../Shaders/FireShaderMaterial';
+import {} from '../Shaders/FireShaderMaterial';
 
 interface FireVFXProps {
   radiusTop?: number;
@@ -18,7 +18,7 @@ interface FireVFXProps {
   speed2?: number;
 }
 
-const FireVFX: React.FC<FireVFXProps> = ({
+export const FireVFX: React.FC<FireVFXProps> = ({
   radiusTop = 0.5,
   radiusBottom = 0.5,
   height = 2,
@@ -45,9 +45,7 @@ const FireVFX: React.FC<FireVFXProps> = ({
 
   return (
     <mesh ref={meshRef}>
-      <cylinderGeometry
-        args={[radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded]}
-      />
+      <cylinderGeometry args={[radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded]} />
       <fireShaderMaterial
         uColor={new Color(...color)}
         stripeCount={stripeCount}

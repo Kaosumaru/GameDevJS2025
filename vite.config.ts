@@ -13,6 +13,7 @@ export default defineConfig({
 
   plugins: [react()],
 
+  assetsInclude: ['**/*.glsl', '**/*.vert', '**/*.frag'],
   build: {
     sourcemap: true,
   },
