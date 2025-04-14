@@ -6,6 +6,8 @@ import { OrbitControls } from '@react-three/drei';
 import { Environment } from './Components/Environment';
 import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
+import { useState } from 'react';
+import { Entity } from '@shared/stores/tao/interface';
 
 function Tile(props: ThreeElements['mesh']) {
   return (
@@ -19,6 +21,8 @@ function Tile(props: ThreeElements['mesh']) {
 const TILE_OFFSET = 0.1;
 
 export const Tao = (props: SpecificGameProps) => {
+  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+
   const client = useClient(TaoClient, props.gameRoomClient);
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
@@ -44,11 +48,21 @@ export const Tao = (props: SpecificGameProps) => {
           {entities.map(entity => {
             const x = entity.position.x - boardWidth / 2 + TILE_OFFSET * entity.position.x;
             const y = entity.position.y - boardHeight / 2 + TILE_OFFSET * entity.position.y;
-            return <Entity3D key={entity.id} position={[x, 0, y]} entity={entity} />;
+            return (
+              <Entity3D
+                key={entity.id}
+                position={[x, 0, y]}
+                entity={entity}
+                onClick={() => {
+                  setSelectedEntity(entity);
+                }}
+              />
+            );
           })}
         </group>
       </Canvas>
-      <TaoUi client={client} entity={entities[0]} />
+
+      <TaoUi client={client} entity={selectedEntity} />
     </>
   );
 };
