@@ -7,20 +7,22 @@ import { Environment } from './Components/Environment';
 import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
-import { Entity } from '@shared/stores/tao/interface';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
+import { getPossibleTargets, SkillID } from '@shared/stores/tao/skills';
 
 const TILE_OFFSET = 0.1;
 
-type UiAction = 'select-field' | 'select-entity';
+type UiAction = 'select-target';
 
 const attackColor = new Color(0xff0000);
 const moveColor = new Color(0x00ff00);
 
 export const Tao = (props: SpecificGameProps) => {
-  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction[]>([]);
+  const [targets, setTargets] = useState<string[]>([]);
+  const [skillID, setSkillID] = useState<SkillID | undefined>();
 
   const client = useClient(TaoClient, props.gameRoomClient);
   const board = client.store(state => state.board);
@@ -29,6 +31,7 @@ export const Tao = (props: SpecificGameProps) => {
   const boardWidth = board[0]?.length ?? 0;
   const boardHeight = board.length;
 
+  const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
   return (
     <>
       <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
@@ -41,29 +44,29 @@ export const Tao = (props: SpecificGameProps) => {
             row.map((field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-              const distanceToEntity = Math.sqrt(
-                (colIdx - (selectedEntity?.position.x ?? 0)) ** 2 + (rowIdx - (selectedEntity?.position.y ?? 0)) ** 2
-              );
-              const isMoving = uiAction.includes('select-field') && distanceToEntity < 2;
-              const isAttacking = uiAction.includes('select-entity') && distanceToEntity < 1;
+
+              const isMoving = targets.includes(field.id);
 
               return (
                 <Tile
                   key={`${colIdx}_${rowIdx}`}
                   position={[x, -0.05, y]}
-                  highlightColor={isMoving ? moveColor : isAttacking ? attackColor : undefined}
+                  highlightColor={isMoving ? moveColor : undefined}
                   onClick={() => {
                     if (!selectedEntity) {
                       console.warn('No entity selected');
                       return;
                     }
-                    if (isMoving) {
-                      client.useSkill(selectedEntity.id, 'move', field.id);
-                      setUiAction([]);
-                    } else if (isAttacking) {
-                      client.useSkill(selectedEntity?.id ?? '', 'attack', field.id);
-                      setUiAction([]);
+
+                    if (!skillID) {
+                      console.warn('No skill selected');
+                      return;
                     }
+
+                    void client.useSkill(selectedEntity.id, skillID, field.id);
+                    setSkillID(undefined);
+                    setUiAction([]);
+                    setTargets([]);
                   }}
                 />
               );
@@ -78,7 +81,7 @@ export const Tao = (props: SpecificGameProps) => {
                 position={[x, 0, y]}
                 entity={entity}
                 onClick={() => {
-                  setSelectedEntity(entity);
+                  setSelectedEntityId(entity.id);
                 }}
               />
             );
@@ -89,16 +92,20 @@ export const Tao = (props: SpecificGameProps) => {
       <TaoUi
         client={client}
         entity={selectedEntity}
-        onMove={() => {
-          setUiAction(['select-field']);
-        }}
-        onAttack={() => {
-          setUiAction(['select-entity']);
+        onSkill={skill => {
+          if (selectedEntity == undefined) {
+            console.warn('No entity selected');
+            return;
+          }
+          setSkillID(skill.id);
+          setUiAction(['select-target']);
+          const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
+          setTargets(targets);
         }}
         onEndTurn={() => {
           // client.endTurn();
           setUiAction([]);
-          setSelectedEntity(null);
+          setSelectedEntityId(null);
         }}
       />
     </>

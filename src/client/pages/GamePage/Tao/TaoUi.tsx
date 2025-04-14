@@ -7,19 +7,22 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import './styles.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { SkillInstance, skills } from '@shared/stores/tao/skills';
+
+function skillNameFromInstance(skillInstance: SkillInstance): string {
+  return skills[skillInstance.id].name;
+}
 
 const TaoUiComponent = ({
   client,
   entity,
-  onMove,
-  onAttack,
+  onSkill,
   onEndTurn,
   ...rest
 }: JSX.IntrinsicElements['div'] & {
   client: TaoClient;
-  entity: Entity | null;
-  onMove: () => void;
-  onAttack: () => void;
+  entity: Entity | undefined;
+  onSkill: (skillInstance: SkillInstance) => void;
   onEndTurn: () => void;
 }) => {
   const uiRef = useRef<HTMLDivElement>(null);
@@ -28,7 +31,7 @@ const TaoUiComponent = ({
       <HorizontalContainer>
         <SwitchTransition mode="out-in">
           <CSSTransition
-            key={entity !== null ? entity.id : null}
+            key={entity !== null ? entity?.id : null}
             in={entity !== null}
             timeout={100}
             nodeRef={uiRef}
@@ -36,12 +39,11 @@ const TaoUiComponent = ({
             unmountOnExit
           >
             <HorizontalContainer ref={uiRef} className="ui-container">
-              <Button variant="outlined" onClick={onMove}>
-                Move
-              </Button>
-              <Button variant="outlined" onClick={onAttack}>
-                Attack
-              </Button>
+              {entity?.skills.map(skill => (
+                <Button key={skill.id} variant="outlined" onClick={() => onSkill(skill)}>
+                  {skillNameFromInstance(skill)}
+                </Button>
+              ))}
             </HorizontalContainer>
           </CSSTransition>
         </SwitchTransition>
