@@ -35,7 +35,7 @@ export const Tao = (props: SpecificGameProps) => {
   return (
     <>
       <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
-        <color attach="background" args={['skyblue']} />
+        <color attach="background" args={['black']} />
         <Environment />
         <OrbitControls makeDefault />
 
