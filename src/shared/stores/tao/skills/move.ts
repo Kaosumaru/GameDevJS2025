@@ -1,5 +1,6 @@
 import { findFieldByPosition, getField, getFieldsInRange } from '../board';
 import { moveEntityTo } from '../movement';
+import { getFieldsInDistance } from '../pathfinding';
 import { Skill } from '../skills';
 
 export const moveSkill: Skill = {
@@ -22,6 +23,7 @@ export const moveSkill: Skill = {
     if (!field) {
       throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
     }
-    return getFieldsInRange(state, field, 1).map(f => f.id);
+    const fields = getFieldsInDistance(state, field, 2);
+    return [...fields].map(f => f[0].id);
   },
 };
