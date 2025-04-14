@@ -4,6 +4,6 @@ import { extend, Object3DNode, MaterialNode } from '@react-three/fiber';
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    colorTexMaterial: MaterialNode<MeshLineMaterial, typeof MeshLineMaterial>;
+    colorTexMaterial: MaterialNode<ColorTexMaterial, typeof ColorTexMaterial>;
   }
 }
