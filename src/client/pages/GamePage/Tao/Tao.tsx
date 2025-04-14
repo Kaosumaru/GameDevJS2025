@@ -8,15 +8,7 @@ import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
 import { Entity } from '@shared/stores/tao/interface';
-
-function Tile(props: ThreeElements['mesh']) {
-  return (
-    <mesh {...props} castShadow receiveShadow>
-      <boxGeometry args={[1, 0.1, 1]} />
-      <meshStandardMaterial color={'gray'} />
-    </mesh>
-  );
-}
+import { Tile } from './Components/Tile';
 
 const TILE_OFFSET = 0.1;
 
