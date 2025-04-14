@@ -5,27 +5,6 @@ import { JSX, useMemo, useRef } from 'react';
 import { Euler, Mesh } from 'three';
 import { Entity } from '@shared/stores/tao/interface';
 
-export const Entity3DBase = ({
-  hpLabel,
-  dmgLabel,
-  ...rest
-}: JSX.IntrinsicElements['group'] & {
-  hpLabel?: string;
-  dmgLabel?: string;
-}) => {
-  return (
-    <group {...rest} dispose={null}>
-      <Pawn scale={[0.5, 0.5, 0.5]}></Pawn>
-      <Text color="green" anchorX="center" anchorY="middle" position={[-0.22, 0.25, 0.4]} fontSize={0.1}>
-        {hpLabel}
-      </Text>
-      <Text color="red" anchorX="center" anchorY="middle" position={[0.22, 0.25, 0.4]} fontSize={0.1}>
-        {dmgLabel}
-      </Text>
-    </group>
-  );
-};
-
 export const Entity3D = ({
   entity,
   onClick,
@@ -36,33 +15,35 @@ export const Entity3D = ({
   const { camera } = useThree();
   const imageRef = useRef<Mesh>(null);
   const textRef = useRef<Mesh>(null);
-  const pawnRef = useRef<Mesh>(null);
-
-  const eulerRef = useMemo(() => new Euler(0, 0, 0), []);
 
   useFrame(() => {
-    if (imageRef.current && pawnRef.current && textRef.current) {
+    if (imageRef.current && textRef.current) {
       imageRef.current.lookAt(camera.position);
       textRef.current.lookAt(camera.position);
-      // only rotate y axis
-      const vector = pawnRef.current.position.clone().sub(camera.position).normalize();
-      const angle = Math.atan2(vector.x, vector.z);
-      eulerRef.set(0, angle + 135, 0);
-      pawnRef.current.setRotationFromEuler(eulerRef);
     }
   });
 
   return (
     <group {...rest} dispose={null}>
-      <Text ref={textRef} color="black" anchorX="center" anchorY="middle" position={[0, 1.4, 0]} fontSize={0.2}>
-        {entity.name}
-      </Text>
-      <Entity3DBase ref={pawnRef} hpLabel={`${entity.hp.current}/${entity.hp.max}`} dmgLabel="3" />
-      <Image ref={imageRef} url={`${entity.avatar}.png`} transparent opacity={0.9} position={[0, 0.6, 0]} zoom={0.4}>
+      <group position={[0, 1.2, 0]} ref={textRef}>
+        <Text color="black" anchorX="center" anchorY="middle" fontSize={0.2}>
+          {entity.name}
+        </Text>
+        <Text color="green" anchorX="center" anchorY="middle" position={[0, -0.2, 0]} fontSize={0.1}>
+          {entity.hp.current}/{entity.hp.max}
+        </Text>
+      </group>
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <circleGeometry args={[0.3, 32]} />
+        <meshStandardMaterial color="black" transparent opacity={0.8} />
+      </mesh>
+
+      <Image ref={imageRef} url={`${entity.avatar}.png`} transparent opacity={0.9} position={[0, 0.5, 0]} zoom={0.4}>
         <planeGeometry args={[2, 2]} />
       </Image>
-      <mesh onClick={onClick}>
-        <boxGeometry args={[1, 0.2, 1]} />
+      <mesh onClick={onClick} position={[0, -0.0499, 0]}>
+        <boxGeometry args={[0.99, 0.1, 0.99]} />
         <meshStandardMaterial transparent opacity={0} />
       </mesh>
     </group>
