@@ -44,8 +44,8 @@ export const Tao = (props: SpecificGameProps) => {
               const distanceToEntity = Math.sqrt(
                 (colIdx - (selectedEntity?.position.x ?? 0)) ** 2 + (rowIdx - (selectedEntity?.position.y ?? 0)) ** 2
               );
-              const isMoving = uiAction.includes('select-field') && distanceToEntity < 3;
-              const isAttacking = uiAction.includes('select-entity') && distanceToEntity < 2;
+              const isMoving = uiAction.includes('select-field') && distanceToEntity < 2;
+              const isAttacking = uiAction.includes('select-entity') && distanceToEntity < 1;
 
               return (
                 <Tile
