@@ -14,7 +14,11 @@ export interface UseSkillAction {
   targetId?: string;
 }
 
-export type Action = UseSkillAction;
+export interface EndRoundAction {
+  type: 'endRound';
+}
+
+export type Action = UseSkillAction | EndRoundAction;
 
 export interface StoreData {
   gameOver: boolean;
@@ -50,6 +54,9 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 
 function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
   switch (action.type) {
+    case 'endRound': {
+      return store;
+    }
     case 'useSkill': {
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
