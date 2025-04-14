@@ -7,8 +7,8 @@ import { Environment } from './Components/Environment';
 import { TaoUi } from './TaoUi';
 import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
-import { Entity, Field } from '@shared/stores/tao/interface';
-import { Tile } from './Tile';
+import { Entity } from '@shared/stores/tao/interface';
+import { Tile } from './Components/Tile';
 
 const TILE_OFFSET = 0.1;
 
@@ -31,7 +31,7 @@ export const Tao = (props: SpecificGameProps) => {
 
         <group>
           {board.map((row, rowIdx) =>
-            row.map((field: Field, colIdx) => {
+            row.map((field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
               return <Tile key={`${colIdx}_${rowIdx}`} field={field} position={[x, -0.05, y]} />;
