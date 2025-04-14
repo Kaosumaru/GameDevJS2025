@@ -17,11 +17,12 @@ function modifyEntity(state: StoreData, entityID: string, modifier: (entity: Ent
   return newState;
 }
 
-function createEntity(store: StoreData, name: EntityName, ownerId?: number): Entity {
+function createEntity(store: StoreData, name: string, avatar: EntityName, ownerId?: number): Entity {
   return {
     id: `entity-${store.entities.length}`,
     name,
     type: 'player',
+    avatar: `/avatars/${avatar}`,
     ownerId,
     skills: [{ id: 'move' }, { id: 'attack' }],
     hp: { current: 100, max: 100 },
@@ -29,8 +30,14 @@ function createEntity(store: StoreData, name: EntityName, ownerId?: number): Ent
   };
 }
 
-export function placeEntity(state: StoreData, name: EntityName, position: Position, ownerId?: number): StoreData {
-  const entity = createEntity(state, name, ownerId);
+export function placeEntity(
+  state: StoreData,
+  name: string,
+  avatar: EntityName,
+  position: Position,
+  ownerId?: number
+): StoreData {
+  const entity = createEntity(state, name, avatar, ownerId);
   const field = findFieldByPosition(state, position);
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);
