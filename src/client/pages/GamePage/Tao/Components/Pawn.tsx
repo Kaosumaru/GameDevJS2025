@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { useGLTF, Image } from '@react-three/drei';
-import { JSX, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
+import { JSX } from 'react';
 
 type GLTFResult = {
   nodes: {
@@ -15,21 +14,10 @@ type GLTFResult = {
 };
 
 export const Pawn = (props: JSX.IntrinsicElements['group']) => {
-  const { camera } = useThree();
   const { nodes, materials } = useGLTF('/pawn.glb') as unknown as GLTFResult;
-  const imageRef = useRef<THREE.Mesh>(null);
-
-  useFrame(() => {
-    if (imageRef.current) {
-      imageRef.current.lookAt(camera.position);
-    }
-  });
 
   return (
     <group {...props} dispose={null}>
-      <Image ref={imageRef} url="/avatars/mage.png" transparent opacity={0.9} position={[0, 1.3, 0]} zoom={0.8}>
-        <planeGeometry args={[2, 2]} />
-      </Image>
       <mesh castShadow receiveShadow geometry={nodes.Circle.geometry} material={materials['Material.001']} />
       <mesh
         castShadow
