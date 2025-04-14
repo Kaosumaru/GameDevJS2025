@@ -57,7 +57,14 @@ export const Entity3D = ({
         {entity.name}
       </Text>
       <Entity3DBase ref={pawnRef} hpLabel={`${entity.hp.current}/${entity.hp.max}`} dmgLabel="3" />
-      <Image ref={imageRef} url="/avatars/mage.png" transparent opacity={0.9} position={[0, 0.6, 0]} zoom={0.4}>
+      <Image
+        ref={imageRef}
+        url="/avatars/chibi_goth_lack_of_color_png.png"
+        transparent
+        opacity={0.9}
+        position={[0, 0.6, 0]}
+        zoom={0.4}
+      >
         <planeGeometry args={[2, 2]} />
       </Image>
     </group>
