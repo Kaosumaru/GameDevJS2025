@@ -1,5 +1,5 @@
 import { findFieldByPosition } from './board';
-import { Entity, Position } from './interface';
+import { Entity, EntityName, Position } from './interface';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity | undefined {
@@ -17,7 +17,20 @@ function modifyEntity(state: StoreData, entityID: string, modifier: (entity: Ent
   return newState;
 }
 
-export function placeEntity(state: StoreData, entity: Entity, position: Position): StoreData {
+function createEntity(store: StoreData, name: EntityName, ownerId?: number): Entity {
+  return {
+    id: `entity-${store.entities.length}`,
+    name,
+    type: 'player',
+    ownerId,
+    skills: [{ id: 'move' }, { id: 'attack' }],
+    hp: { current: 100, max: 100 },
+    position: { x: 0, y: 0 },
+  };
+}
+
+export function placeEntity(state: StoreData, name: EntityName, position: Position, ownerId?: number): StoreData {
+  const entity = createEntity(state, name, ownerId);
   const field = findFieldByPosition(state, position);
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);

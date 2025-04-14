@@ -35,18 +35,6 @@ function convertNumbersToFieldType(numbers: number[][]): Field[][] {
   );
 }
 
-function createEntity(): Entity {
-  return {
-    id: '73be0103-5c29-41d1-9e94-e7e3e927efc0',
-    name: 'Player',
-    type: 'player',
-    ownerId: 0,
-    skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
-    position: { x: 0, y: 0 },
-  };
-}
-
 export function createGameStateStore(): StoreContainer<StoreData, Action> {
   return createComponentStore(
     {
@@ -85,8 +73,8 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         entities: [],
       };
 
-      const entity = createEntity();
-      state = placeEntity(state, entity, { x: 0, y: 0 });
+      state = placeEntity(state, 'goth-gf', { x: 0, y: 0 });
+      state = placeEntity(state, 'mushroom-bomb', { x: 1, y: 0 });
       return state;
     }
   }
