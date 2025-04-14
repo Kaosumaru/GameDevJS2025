@@ -10,8 +10,15 @@ import './styles.css';
 const TaoUiComponent = ({
   client,
   entity,
+  onMove,
+  onAttack,
   ...rest
-}: JSX.IntrinsicElements['div'] & { client: TaoClient; entity: Entity | null }) => {
+}: JSX.IntrinsicElements['div'] & {
+  client: TaoClient;
+  entity: Entity | null;
+  onMove: () => void;
+  onAttack: () => void;
+}) => {
   const uiRef = useRef<HTMLDivElement>(null);
   return (
     <Dock {...rest}>
@@ -25,22 +32,8 @@ const TaoUiComponent = ({
           unmountOnExit
         >
           <HorizontalContainer ref={uiRef} className="ui-container">
-            <Button
-              onClick={() => {
-                if (!entity) return;
-                client.useSkill(entity.id, 'move');
-              }}
-            >
-              Move
-            </Button>
-            <Button
-              onClick={() => {
-                if (!entity) return;
-                client.useSkill(entity.id, 'attack');
-              }}
-            >
-              Attack
-            </Button>
+            <Button onClick={onMove}>Move</Button>
+            <Button onClick={onAttack}>Attack</Button>
           </HorizontalContainer>
         </CSSTransition>
       </SwitchTransition>

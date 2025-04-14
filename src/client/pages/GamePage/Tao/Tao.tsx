@@ -9,11 +9,18 @@ import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
 import { Entity } from '@shared/stores/tao/interface';
 import { Tile } from './Components/Tile';
+import { Color } from 'three';
 
 const TILE_OFFSET = 0.1;
 
+type UiAction = 'select-field' | 'select-entity';
+
+const attackColor = new Color(0xff0000);
+const moveColor = new Color(0x00ff00);
+
 export const Tao = (props: SpecificGameProps) => {
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+  const [uiAction, setUiAction] = useState<UiAction[]>([]);
 
   const client = useClient(TaoClient, props.gameRoomClient);
   const board = client.store(state => state.board);
@@ -34,7 +41,23 @@ export const Tao = (props: SpecificGameProps) => {
             row.map((field, colIdx) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
+<<<<<<< Updated upstream
               return <Tile key={`${colIdx}_${rowIdx}`} field={field} position={[x, -0.05, y]} />;
+=======
+              const distanceToEntity = Math.sqrt(
+                (colIdx - (selectedEntity?.position.x ?? 0)) ** 2 + (rowIdx - (selectedEntity?.position.y ?? 0)) ** 2
+              );
+              const isMoving = uiAction.includes('select-field') && distanceToEntity < 3;
+              const isAttacking = uiAction.includes('select-entity') && distanceToEntity < 2;
+
+              return (
+                <Tile
+                  key={`${colIdx}_${rowIdx}`}
+                  position={[x, -0.05, y]}
+                  highlightColor={isMoving ? moveColor : isAttacking ? attackColor : undefined}
+                />
+              );
+>>>>>>> Stashed changes
             })
           )}
           {entities.map(entity => {
@@ -54,7 +77,16 @@ export const Tao = (props: SpecificGameProps) => {
         </group>
       </Canvas>
 
-      <TaoUi client={client} entity={selectedEntity} />
+      <TaoUi
+        client={client}
+        entity={selectedEntity}
+        onMove={() => {
+          setUiAction(['select-field']);
+        }}
+        onAttack={() => {
+          setUiAction(['select-entity']);
+        }}
+      />
     </>
   );
 };
