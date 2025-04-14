@@ -44,7 +44,7 @@ export const Tao = (props: SpecificGameProps) => {
           {entities.map(entity => {
             const x = entity.position.x - boardWidth / 2 + TILE_OFFSET * entity.position.x;
             const y = entity.position.y - boardHeight / 2 + TILE_OFFSET * entity.position.y;
-            return <Entity3D position={[x, 0, y]} entity={entity} />;
+            return <Entity3D key={entity.id} position={[x, 0, y]} entity={entity} />;
           })}
         </group>
       </Canvas>

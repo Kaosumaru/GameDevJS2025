@@ -10,14 +10,14 @@ export const TaoUi = ({ client, entity }: { client: TaoClient; entity: Entity })
       <HorizontalContainer>
         <Button
           onClick={() => {
-            client.useSkill(entity.uuid, 'move');
+            client.useSkill(entity.id, 'move');
           }}
         >
           Move
         </Button>
         <Button
           onClick={() => {
-            client.useSkill(entity.uuid, 'attack');
+            client.useSkill(entity.id, 'attack');
           }}
         >
           Attack
