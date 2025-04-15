@@ -7,10 +7,10 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import './styles.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { SkillInstance, skills } from '@shared/stores/tao/skills';
+import { skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
 
 function skillNameFromInstance(skillInstance: SkillInstance): string {
-  return skills[skillInstance.id].name;
+  return skillFromInstance(skillInstance).name;
 }
 
 const TaoUiComponent = ({
