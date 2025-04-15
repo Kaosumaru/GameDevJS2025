@@ -13,6 +13,7 @@ import { getPossibleTargets, skillFromID, SkillID } from '@shared/stores/tao/ski
 import './Materials/ColorTexMaterial';
 import { useTemporalEntities } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
+import { Seat } from './UiComponents/Seat';
 
 type UiAction = 'select-target';
 
@@ -34,6 +35,7 @@ function colorForSkill(skillID: SkillID | undefined): Color {
 }
 
 export const Tao = (props: SpecificGameProps) => {
+  const gameRoomClient = props.gameRoomClient;
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction[]>([]);
   const [targets, setTargets] = useState<string[]>([]);
@@ -106,6 +108,7 @@ export const Tao = (props: SpecificGameProps) => {
         </group>
       </Canvas>
 
+      <Seat gameRoomClient={gameRoomClient} entities={entities} />
       <TaoUi
         client={client}
         entity={selectedEntity}

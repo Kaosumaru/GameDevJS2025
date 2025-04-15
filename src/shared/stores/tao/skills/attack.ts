@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { fieldsWithEnemy, findFieldByPosition, getField, getFieldNeighbors } from '../board';
+import { fieldsWithEnemy, findFieldByPosition, getEntityIdInFieldId, getFieldNeighbors } from '../board';
 import { damageEntity } from '../entity';
 import { Skill } from '../skills';
 import { getID } from '../utils';
@@ -14,13 +14,8 @@ export const attackSkill: Skill = {
     if (ctx.targetId === undefined) {
       throw new Error('Target ID is required for attack skill');
     }
-    const targetField = getField(state, ctx.targetId);
-    const entityId = targetField?.entityUUID;
-    if (entityId === undefined) {
-      throw new Error(`Target field with ID ${ctx.targetId} does not contain an entity`);
-    }
 
-    return damageEntity(state, ctx.user.id, entityId, 1);
+    return damageEntity(state, ctx.user.id, getEntityIdInFieldId(state, ctx.targetId), 1);
   },
   getPossibleTargets: (state, ctx) => {
     const userField = findFieldByPosition(state, ctx.user.position);

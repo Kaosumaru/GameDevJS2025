@@ -1,13 +1,14 @@
 import { findFieldByPosition } from './board';
-import { useActionPointsEntity } from './entity';
+import { hasStatus, useActionPointsEntity } from './entity';
 import { addEvent } from './events';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
 import { moveSkill } from './skills/move';
+import { stunSkill } from './skills/stun';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
 
-export type SkillID = 'move' | 'attack';
+export type SkillID = 'move' | 'attack' | 'stun';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
@@ -34,6 +35,7 @@ type SkillsMap = { [key in SkillID]: Skill };
 const skills: SkillsMap = {
   move: moveSkill,
   attack: attackSkill,
+  stun: stunSkill,
 };
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {
@@ -92,6 +94,15 @@ export function getPossibleTargets(state: StoreData, user: Entity, skillInstance
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
+  if (hasStatus(user, 'stunned')) {
+    return false;
+  }
+  if (hasStatus(user, 'disarmed')) {
+    const skill = skillFromInstance(skillInstance);
+    if (skill.type === 'attack') {
+      return false;
+    }
+  }
   return user.actionPoints.current >= skillFromInstance(skillInstance).cost;
 }
 

@@ -1,6 +1,6 @@
 import { EntityName } from './entities';
 import { addEvent } from './events';
-import { Entity } from './interface';
+import { Entity, StatusEffect } from './interface';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity | undefined {
@@ -26,7 +26,7 @@ export function modifyEntities(state: StoreData, modifier: EntityReducer): Store
   return newState;
 }
 
-function damageReducer(damage: number): EntityReducer {
+export function damageReducer(damage: number): EntityReducer {
   return (entity: Entity) => ({
     ...entity,
     hp: { ...entity.hp, current: Math.max(0, entity.hp.current - damage) },
@@ -40,6 +40,13 @@ function useActionReducer(points: number): EntityReducer {
   });
 }
 
+function applyStatusReducer(status: StatusEffect, amount: number): EntityReducer {
+  return (entity: Entity) => ({
+    ...entity,
+    statuses: { ...entity.statuses, [status]: (entity.statuses[status] ?? 0) + amount },
+  });
+}
+
 function refreshActionsReducer(entity: Entity): Entity {
   return {
     ...entity,
@@ -47,10 +54,36 @@ function refreshActionsReducer(entity: Entity): Entity {
   };
 }
 
+function clearOriginalPositionReducer(entity: Entity): Entity {
+  return {
+    ...entity,
+    originalPosition: entity.position,
+  };
+}
+
 export function damageEntity(state: StoreData, attackerId: string, targetId: string, damage: number): StoreData {
   state = modifyEntity(state, targetId, damageReducer(damage));
   addEvent(state, { type: 'attack', attackerId, targetId, damage });
   return state;
+}
+
+export function applyStatusForEntity(
+  state: StoreData,
+  entityId: string,
+  status: StatusEffect,
+  amount: number
+): StoreData {
+  state = modifyEntity(state, entityId, applyStatusReducer(status, amount));
+  addEvent(state, { type: 'applyStatus', entityId, status, amount });
+  return state;
+}
+
+export function getStatusAmount(entity: Entity, status: StatusEffect): number {
+  return entity.statuses[status] ?? 0;
+}
+
+export function hasStatus(entity: Entity, status: StatusEffect): boolean {
+  return getStatusAmount(entity, status) > 0;
 }
 
 export function useActionPointsEntity(state: StoreData, entityID: string, points: number): StoreData {
@@ -63,6 +96,10 @@ export function refreshActionPointsEntity(state: StoreData, entityID: string): S
 
 export function refreshAllActionPoints(state: StoreData): StoreData {
   return modifyEntities(state, refreshActionsReducer);
+}
+
+export function clearOriginalPositions(state: StoreData): StoreData {
+  return modifyEntities(state, clearOriginalPositionReducer);
 }
 
 export function isPlayerOrEnemy(entity: Entity): boolean {
@@ -94,5 +131,6 @@ export function createEntity(store: StoreData, name: string, avatar: EntityName,
     hp: { current: 100, max: 100 },
     actionPoints: { current: 2, max: 2 },
     position: { x: 0, y: 0 },
+    statuses: {},
   };
 }
