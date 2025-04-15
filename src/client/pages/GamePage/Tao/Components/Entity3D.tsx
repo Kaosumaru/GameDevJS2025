@@ -1,8 +1,10 @@
 import { Image, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { JSX, useRef } from 'react';
+import { JSX, useEffect, useRef } from 'react';
 import { Mesh } from 'three';
 import { Entity } from '@shared/stores/tao/interface';
+import { useAnimation } from '../Hooks/useAnimation';
+import { easeBounceOut } from 'd3-ease';
 
 export const Entity3D = ({
   entity,
@@ -14,6 +16,7 @@ export const Entity3D = ({
   const { camera } = useThree();
   const imageRef = useRef<Mesh>(null);
   const textRef = useRef<Mesh>(null);
+  const rootRef = useRef<Mesh>(null);
 
   useFrame(() => {
     if (imageRef.current && textRef.current) {
@@ -22,8 +25,25 @@ export const Entity3D = ({
     }
   });
 
+  useEffect(() => {
+    if (!rootRef.current) return;
+    rootRef.current.scale.set(0, 0, 0);
+  }, []);
+
+  useAnimation(
+    easeBounceOut,
+    {
+      delay: 0.8,
+    },
+    t => {
+      if (!rootRef.current) return;
+      rootRef.current.scale.set(t, t, t);
+      rootRef.current.position.y = (t - 1) * -4;
+    }
+  );
+
   return (
-    <group {...rest} dispose={null}>
+    <group ref={rootRef} {...rest} dispose={null}>
       <group position={[0, 1.2, 0]} ref={textRef}>
         <Text color="black" anchorX="center" anchorY="middle" fontSize={0.2}>
           {entity.name}
