@@ -1,6 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { RefObject, useEffect, useRef } from 'react';
-import { Mesh } from 'three';
+import { useRef } from 'react';
 
 export const useAnimation = (
   ease: (t: number) => number,
