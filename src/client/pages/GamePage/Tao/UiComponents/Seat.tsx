@@ -1,9 +1,9 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, useMediaQuery } from '@mui/material';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Entity } from '@shared/stores/tao/interface';
-import e from 'express';
 
 export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomClient; entities: Entity[] }) => {
+  const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
   const seats = gameRoomClient.store(state => state.seats);
   return (
     <Box
@@ -24,8 +24,8 @@ export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomCli
               alt={seat === null ? 'Unknown' : seat.name + ' (' + index + ')'}
               src={avatarSrc}
               sx={{
-                width: 64,
-                height: 64,
+                width: matches ? '3rem' : '1.5rem',
+                height: matches ? '3rem' : '1.5rem',
                 backgroundColor: 'white',
               }}
             />
@@ -33,24 +33,26 @@ export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomCli
               <Button
                 key={'seat-' + index}
                 variant="contained"
-                sx={{ minWidth: 200 }}
+                sx={{ minWidth: matches ? 200 : 100 }}
+                size={matches ? 'large' : 'small'}
                 onClick={() => {
                   gameRoomClient.takeSeat(index);
                 }}
               >
-                {'<Nobody>(Take a Seat)'}
+                {matches ? '<Nobody>(Take a Seat)' : '<Nobody>'}
               </Button>
             ) : (
               <Button
                 key={'seat-' + index}
                 variant="contained"
+                size={matches ? 'large' : 'small'}
                 color={'success'}
-                sx={{ minWidth: 200 }}
+                sx={{ minWidth: matches ? 200 : 100 }}
                 onClick={() => {
                   gameRoomClient.leaveSeat(index);
                 }}
               >
-                {seat.name} {'(Leave)'}
+                {matches ? seat.name + ' (Leave)' : seat.name}
               </Button>
             )}
           </Box>
