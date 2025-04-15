@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { fieldsWithEnemy, findFieldByPosition, getField, getFieldNeighbors } from '../board';
 import { damageEntity } from '../entity';
 import { Skill } from '../skills';
+import { getID } from '../utils';
 
 export const attackSkill: Skill = {
   id: 'attack',
@@ -22,8 +24,7 @@ export const attackSkill: Skill = {
   },
   getPossibleTargets: (state, ctx) => {
     const userField = findFieldByPosition(state, ctx.user.position);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const neighbors = getFieldNeighbors(state, userField!);
-    return fieldsWithEnemy(state, neighbors, ctx.user).map(field => field.id);
+    return fieldsWithEnemy(state, neighbors, ctx.user).map(getID);
   },
 };

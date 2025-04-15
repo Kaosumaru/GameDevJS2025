@@ -4,6 +4,7 @@ import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
 import { moveSkill } from './skills/move';
 import { StoreData } from './taoStore';
+import { deepCopy2DArray } from './utils';
 
 export type SkillID = 'move' | 'attack';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
@@ -84,7 +85,19 @@ export function getPossibleTargets(state: StoreData, user: Entity, skillInstance
   return skill.getPossibleTargets(state, { user, skillInstance });
 }
 
-// deep copy 2D array
-export function deepCopy2DArray<T>(array: T[][]): T[][] {
-  return array.map(row => [...row]);
+export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
+  const skill = skills[skillInstance.id];
+  if (!skill) {
+    throw new Error(`Skill ${skillInstance.id} not found`);
+  }
+
+  return user.actionPoints.current >= skill.cost;
+}
+
+export function haveResourcesAndTargetsForSkill(state: StoreData, user: Entity, skillInstance: SkillInstance): boolean {
+  if (!haveResourcesForSkill(user, skillInstance)) {
+    return false;
+  }
+  const targets = getPossibleTargets(state, user, skillInstance);
+  return targets.length > 0;
 }

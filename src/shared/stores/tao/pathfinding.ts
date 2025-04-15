@@ -50,3 +50,7 @@ export function getFieldsInDistance(
 
   return distanceToField;
 }
+
+export function getEmptyFields(map: Map<Field, number>): Field[] {
+  return [...map].filter(([field]) => field.entityUUID === undefined).map(([field]) => field);
+}
