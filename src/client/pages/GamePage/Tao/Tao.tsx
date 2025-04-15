@@ -11,6 +11,7 @@ import { Tile } from './Components/Tile';
 import { Color } from 'three';
 import { getPossibleTargets, skillFromID, SkillID } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
+import { Seat } from './UiComponents/Seat';
 
 const TILE_OFFSET = 0.1;
 
@@ -34,6 +35,7 @@ function colorForSkill(skillID: SkillID | undefined): Color {
 }
 
 export const Tao = (props: SpecificGameProps) => {
+  const gameRoomClient = props.gameRoomClient;
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction[]>([]);
   const [targets, setTargets] = useState<string[]>([]);
@@ -111,6 +113,7 @@ export const Tao = (props: SpecificGameProps) => {
         </group>
       </Canvas>
 
+      <Seat gameRoomClient={gameRoomClient} entities={entities} />
       <TaoUi
         client={client}
         entity={selectedEntity}
