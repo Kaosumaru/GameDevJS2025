@@ -1,5 +1,6 @@
 import { findFieldByPosition } from './board';
 import { useActionPointsEntity } from './entity';
+import { addEvent } from './events';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
 import { moveSkill } from './skills/move';
@@ -80,6 +81,7 @@ function filterDeadEntities(state: StoreData): StoreData {
   for (const entity of deadEntities) {
     const field = findFieldByPosition(state, entity.position);
     if (field) field.entityUUID = undefined;
+    addEvent(state, { type: 'death', entityId: entity.id });
   }
   state.entities = state.entities.filter(entity => entity.hp.current > 0);
   return state;

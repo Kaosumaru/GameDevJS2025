@@ -1,4 +1,5 @@
 import { Position } from './interface';
+import { StoreData } from './taoStore';
 
 export interface MoveEvent {
   type: 'move';
@@ -20,3 +21,7 @@ export interface DeathEvent {
 }
 
 export type EventType = MoveEvent | AttackEvent | DeathEvent;
+
+export function addEvent(store: StoreData, event: EventType) {
+  store.events.push(event);
+}

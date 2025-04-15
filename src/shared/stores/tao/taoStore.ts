@@ -59,6 +59,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
   switch (action.type) {
     case 'endRound': {
+      store = { ...store, events: [] };
       store = monstersAi(store);
       store = refreshAllActionPoints(store);
       return store;
@@ -76,6 +77,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         throw new Error(`Cannot move as entity ${entityId}`);
       }
 
+      store = { ...store, events: [] };
       return useSkill(store, entity, skillName, targetId);
     }
 

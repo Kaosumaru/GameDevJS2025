@@ -1,4 +1,5 @@
 import { EntityName } from './entities';
+import { addEvent } from './events';
 import { Entity } from './interface';
 import { StoreData } from './taoStore';
 
@@ -46,8 +47,10 @@ function refreshActionsReducer(entity: Entity): Entity {
   };
 }
 
-export function damageEntity(state: StoreData, entityID: string, damage: number): StoreData {
-  return modifyEntity(state, entityID, damageReducer(damage));
+export function damageEntity(state: StoreData, attackerId: string, targetId: string, damage: number): StoreData {
+  state = modifyEntity(state, targetId, damageReducer(damage));
+  addEvent(state, { type: 'attack', attackerId, targetId, damage });
+  return state;
 }
 
 export function useActionPointsEntity(state: StoreData, entityID: string, points: number): StoreData {

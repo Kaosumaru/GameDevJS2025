@@ -20,7 +20,7 @@ export const attackSkill: Skill = {
       throw new Error(`Target field with ID ${ctx.targetId} does not contain an entity`);
     }
 
-    return damageEntity(state, entityId, 1);
+    return damageEntity(state, ctx.user.id, entityId, 1);
   },
   getPossibleTargets: (state, ctx) => {
     const userField = findFieldByPosition(state, ctx.user.position);

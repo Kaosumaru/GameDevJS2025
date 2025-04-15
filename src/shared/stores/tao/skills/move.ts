@@ -1,4 +1,5 @@
 import { findFieldByPosition, getField } from '../board';
+import { addEvent } from '../events';
 import { moveEntityTo } from '../movement';
 import { getEmptyFields, getFieldsInDistance } from '../pathfinding';
 import { Skill } from '../skills';
@@ -18,7 +19,9 @@ export const moveSkill: Skill = {
     if (!field) {
       throw new Error(`Field with ID ${ctx.targetId} not found`);
     }
-    return moveEntityTo(state, ctx.user.id, field.position);
+    state = moveEntityTo(state, ctx.user.id, field.position);
+    addEvent(state, { type: 'move', entityId: ctx.user.id, from: ctx.user.position, to: field.position });
+    return state;
   },
   getPossibleTargets: (state, ctx) => {
     const field = findFieldByPosition(state, ctx.user.position);
