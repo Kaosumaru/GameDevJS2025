@@ -91,7 +91,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
 
       const level = createLevel0();
       state = fillState(state, level);
-
+      state = clearOriginalPositions(state);
       return state;
     }
   }
