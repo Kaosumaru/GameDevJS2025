@@ -2,16 +2,38 @@ import { getEntity, isEnemy } from './entity';
 import { Entity, Field, Position } from './interface';
 import { StoreData } from './taoStore';
 
-export function getField(state: StoreData, id: string): Field | undefined {
-  return state.board.flat().find(field => field.id === id);
+export function getField(state: StoreData, id: string): Field {
+  const field = state.board.flat().find(field => field.id === id);
+  if (!field) {
+    throw new Error(`Field with ID ${id} not found`);
+  }
+  return field;
+}
+
+export function getEntityField(state: StoreData, entity: Entity) {
+  const result = findFieldByPosition(state, entity.position);
+  if (!result) {
+    throw new Error(`Field with position ${entity.position.x},${entity.position.y} not for entity ${entity.id} found`);
+  }
+  return result;
 }
 
 export function getEntityIdInFieldId(state: StoreData, id: string): string {
   const field = getField(state, id);
-  if (!field) {
-    throw new Error(`Field with ID ${id} not found`);
+  if (field.entityUUID === undefined) {
+    throw new Error(`Field ${field.id} has no entityUUID`);
   }
+  return field.entityUUID;
+}
 
+export function getEntityInField(state: StoreData, field: Field): Entity {
+  if (field.entityUUID === undefined) {
+    throw new Error(`Field ${field.id} has no entityUUID`);
+  }
+  return getEntity(state, field.entityUUID);
+}
+
+export function getEntityIdInField(state: StoreData, field: Field): string {
   if (field.entityUUID === undefined) {
     throw new Error(`Field ${field.id} has no entityUUID`);
   }

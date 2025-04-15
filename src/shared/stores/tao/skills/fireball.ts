@@ -1,28 +1,27 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { damageReducer, modifyEntities } from '../entity';
-import { getFieldsWithEnemies } from '../pathfinding';
-import { Skill } from '../skills';
+import { getFieldNeighbors } from '../board';
+import { damageReducer, modifyEntitiesInFields } from '../entity';
+import { getFieldsNearEntity, getFieldsWithEnemies } from '../pathfinding';
+import { getTargetField, Skill } from '../skills';
 import { getID } from '../utils';
 
 export const fireballSkill: Skill = {
   id: 'fireball',
   name: 'Fireball',
-  description: 'Stun a target entity',
+  description: 'Cast a fireball',
   type: 'attack',
   cost: 1,
   reducer: (state, ctx) => {
-    if (ctx.targetId === undefined) {
-      throw new Error('Target ID is required for attack skill');
-    }
-
-    //state = applyStatusForEntity(state, getEntityIdInFieldId(state, ctx.targetId), 'stunned', 1);
-
+    const fields = getFieldsWithEnemies(state, ctx.user, 1, getTargetField(state, ctx));
     const damage = 2;
-    state = modifyEntities(state, [], damageReducer(damage));
+    state = modifyEntitiesInFields(state, fields, damageReducer(damage));
 
     return state;
   },
   getPossibleTargets: (state, ctx) => {
-    return getFieldsWithEnemies(state, ctx.user, 3).map(getID);
+    return getFieldsNearEntity(state, ctx.user, 3).map(getID);
+  },
+  getAffectedFields(state, ctx) {
+    const field = getTargetField(state, ctx);
+    return getFieldNeighbors(state, field).map(f => f.id);
   },
 };

@@ -1,7 +1,7 @@
-import { findFieldByPosition } from './board';
+import { findFieldByPosition, getEntityIdInFieldId, getField } from './board';
 import { hasStatus, useActionPointsEntity } from './entity';
 import { addEvent } from './events';
-import { Entity } from './interface';
+import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
 import { fireballSkill } from './skills/fireball';
 import { moveSkill } from './skills/move';
@@ -115,4 +115,22 @@ export function haveResourcesAndTargetsForSkill(state: StoreData, user: Entity, 
   }
   const targets = getPossibleTargets(state, user, skillInstance);
   return targets.length > 0;
+}
+
+export function getTargetField(state: StoreData, ctx: SkillContext): Field {
+  if (!ctx.targetId) {
+    throw new Error('Target ID is required for skill');
+  }
+  const field = getField(state, ctx.targetId);
+  if (!field) {
+    throw new Error(`Field with ID ${ctx.targetId} not found`);
+  }
+  return field;
+}
+
+export function getTargetEntityIdInField(state: StoreData, ctx: SkillContext): string {
+  if (!ctx.targetId) {
+    throw new Error('Target ID is required for skill');
+  }
+  return getEntityIdInFieldId(state, ctx.targetId);
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { findFieldByPosition, getFieldNeighbors } from './board';
+import { findFieldByPosition, getEntityInField, getFieldNeighbors } from './board';
 import { getEntity, isEnemy } from './entity';
 import { Entity, EntityType, Field } from './interface';
 import { StoreData } from './taoStore';
@@ -72,8 +72,13 @@ export function getDistancesToPlayers(state: StoreData): Map<Field, number> {
   return getDistancesToEntityType(state, 'player');
 }
 
-export function getFieldsWithEnemies(state: StoreData, entity: Entity, maxDistance?: number): Field[] {
-  const startingField = findFieldByPosition(state, entity.position);
+export function getFieldsWithEnemies(
+  state: StoreData,
+  entity: Entity,
+  maxDistance?: number,
+  fromField?: Field
+): Field[] {
+  const startingField = fromField ?? findFieldByPosition(state, entity.position);
   if (!startingField) {
     return [];
   }
@@ -81,9 +86,17 @@ export function getFieldsWithEnemies(state: StoreData, entity: Entity, maxDistan
   const fieldsWithEnemies = [...distances.keys()]
     .filter(field => field.entityUUID !== undefined)
     .filter(field => {
-      const fieldEntity = getEntity(state, field.entityUUID!);
-      return isEnemy(entity, fieldEntity!);
+      return isEnemy(entity, getEntityInField(state, field));
     });
 
   return fieldsWithEnemies;
+}
+
+export function getFieldsNearEntity(state: StoreData, entity: Entity, maxDistance: number): Field[] {
+  const startingField = findFieldByPosition(state, entity.position);
+  if (!startingField) {
+    return [];
+  }
+  const distances = getFieldsInDistance(state, [startingField], entity, maxDistance, false);
+  return [...distances.keys()];
 }

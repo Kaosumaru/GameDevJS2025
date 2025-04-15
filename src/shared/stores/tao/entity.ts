@@ -1,23 +1,30 @@
+import { getEntityIdInField } from './board';
 import { EntityName } from './entities';
 import { addEvent } from './events';
-import { Entity, StatusEffect } from './interface';
+import { Entity, Field, StatusEffect } from './interface';
 import { StoreData } from './taoStore';
 
-export function getEntity(state: StoreData, id: string): Entity | undefined {
-  return state.entities.find(entity => entity.id === id);
+export function getEntity(state: StoreData, id: string): Entity {
+  const entity = state.entities.find(entity => entity.id === id);
+  if (!entity) {
+    throw new Error(`Entity with ID ${id} not found`);
+  }
+  return entity;
 }
 
 type EntityReducer = (entity: Entity) => Entity;
 
 export function modifyEntity(state: StoreData, entityID: string, modifier: EntityReducer): StoreData {
   const entity = getEntity(state, entityID);
-  if (!entity) {
-    throw new Error(`Entity with ID ${entityID} not found`);
-  }
   const newState = { ...state };
   const modifiedEntity = modifier(entity);
   newState.entities = newState.entities.map(e => (e.id === entityID ? modifiedEntity : e));
   return newState;
+}
+
+export function modifyEntitiesInFields(state: StoreData, fields: Field[], modifier: EntityReducer): StoreData {
+  const entityIds = fields.map(field => getEntityIdInField(state, field));
+  return modifyEntities(state, entityIds, modifier);
 }
 
 export function modifyEntities(state: StoreData, entityIds: string[], modifier: EntityReducer): StoreData {

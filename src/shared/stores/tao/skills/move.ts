@@ -1,8 +1,8 @@
-import { findFieldByPosition, getField } from '../board';
+import { getEntityField } from '../board';
 import { addEvent } from '../events';
 import { moveEntityTo } from '../movement';
 import { getEmptyFields, getFieldsInDistance } from '../pathfinding';
-import { Skill } from '../skills';
+import { getTargetField, Skill } from '../skills';
 import { getID } from '../utils';
 
 export const moveSkill: Skill = {
@@ -12,19 +12,13 @@ export const moveSkill: Skill = {
   type: 'movement',
   cost: 1,
   reducer: (state, ctx) => {
-    if (!ctx.targetId) {
-      throw new Error('Target ID is required for move skill');
-    }
-    const field = getField(state, ctx.targetId);
-    if (!field) {
-      throw new Error(`Field with ID ${ctx.targetId} not found`);
-    }
+    const field = getTargetField(state, ctx);
     state = moveEntityTo(state, ctx.user.id, field.position);
     addEvent(state, { type: 'move', entityId: ctx.user.id, from: ctx.user.position, to: field.position });
     return state;
   },
   getPossibleTargets: (state, ctx) => {
-    const field = findFieldByPosition(state, ctx.user.position);
+    const field = getEntityField(state, ctx.user);
     if (!field) {
       throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
     }
