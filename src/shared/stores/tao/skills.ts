@@ -30,17 +30,21 @@ export interface SkillContext {
 }
 
 type SkillsMap = { [key in SkillID]: Skill };
-export const skills: SkillsMap = {
+const skills: SkillsMap = {
   move: moveSkill,
   attack: attackSkill,
 };
 
-export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {
-  const skill = skills[skillId];
-  if (!skill) {
-    throw new Error(`Skill ${skillId} not found`);
-  }
+export function skillFromInstance(skillInstance: SkillInstance): Skill {
+  return skills[skillInstance.id];
+}
 
+export function skillFromID(id: SkillID): Skill {
+  return skills[id];
+}
+
+export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {
+  const skill = skillFromID(skillId);
   const skillInstance = user.skills.find(skill => skill.id === skillId);
   if (!skillInstance) {
     throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
@@ -77,21 +81,11 @@ function filterDeadEntities(state: StoreData): StoreData {
 }
 
 export function getPossibleTargets(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {
-  const skill = skills[skillInstance.id];
-  if (!skill) {
-    throw new Error(`Skill ${skillInstance.id} not found`);
-  }
-
-  return skill.getPossibleTargets(state, { user, skillInstance });
+  return skillFromInstance(skillInstance).getPossibleTargets(state, { user, skillInstance });
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
-  const skill = skills[skillInstance.id];
-  if (!skill) {
-    throw new Error(`Skill ${skillInstance.id} not found`);
-  }
-
-  return user.actionPoints.current >= skill.cost;
+  return user.actionPoints.current >= skillFromInstance(skillInstance).cost;
 }
 
 export function haveResourcesAndTargetsForSkill(state: StoreData, user: Entity, skillInstance: SkillInstance): boolean {
