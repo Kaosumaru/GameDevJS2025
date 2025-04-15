@@ -4,7 +4,7 @@ import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { useParams } from 'react-router-dom';
 import GamePage from './GamePage';
 import { useLoginContext } from '../LoginPage/LoginPage';
-import { Link, Stack } from '@mui/material';
+import { Box, Card, Link, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 function JoinGamePage(): JSX.Element {
@@ -56,28 +56,75 @@ function JoinGamePage(): JSX.Element {
 
   if (error) {
     return (
-      <Stack>
-        {error}
-        <Link component={RouterLink} to="/">
-          Create new Game
-        </Link>
-      </Stack>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          backgroundColor: 'background.default',
+          color: 'text.primary',
+          padding: 2,
+          textAlign: 'center',
+        }}
+      >
+        <Card sx={{ minWidth: 275 }}>
+          <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {error}
+            <Link component={RouterLink} to="/">
+              Create new Game
+            </Link>
+          </Box>
+        </Card>
+      </Box>
     );
   }
 
   if (!params.id) {
     return (
-      <Stack>
-        Invalid game id
-        <Link component={RouterLink} to="/">
-          Create new Game
-        </Link>
-      </Stack>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          backgroundColor: 'background.default',
+          color: 'text.primary',
+          padding: 2,
+          textAlign: 'center',
+        }}
+      >
+        <Card sx={{ minWidth: 275 }}>
+          <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            Invalid game id
+            <Link component={RouterLink} to="/">
+              Create new Game
+            </Link>
+          </Box>
+        </Card>
+      </Box>
     );
   }
 
   if (!gameClient) {
-    return <>Connecting...</>;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          backgroundColor: 'background.default',
+          color: 'text.primary',
+          padding: 2,
+          textAlign: 'center',
+        }}
+      >
+        <Card sx={{ minWidth: 275 }}>
+          <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>Connecting...</Box>
+        </Card>
+      </Box>
+    );
   }
 
   return <GamePage client={gameClient} userId={context.userId} />;
