@@ -62,7 +62,9 @@ export const Tao = (props: SpecificGameProps) => {
             row.map((field, colIdx) => {
               const isTarget = targets.includes(field.id);
               const { x, y } = boardPositionToUiPosition(field.position.y, field.position.x);
-              const color = colorForSkill(skill);
+
+              const isCurrentPlayerInControlOfSelectedEntity = client.haveSeat(selectedEntity?.ownerId ?? -1);
+              const color = isCurrentPlayerInControlOfSelectedEntity ? colorForSkill(skill) : 0x999999;
               return (
                 !field.blocking && (
                   <Tile
@@ -81,6 +83,11 @@ export const Tao = (props: SpecificGameProps) => {
 
                       if (!skillID) {
                         console.warn('No skill selected');
+                        return;
+                      }
+
+                      if (isCurrentPlayerInControlOfSelectedEntity === false) {
+                        console.warn('You do not have this seat');
                         return;
                       }
 
