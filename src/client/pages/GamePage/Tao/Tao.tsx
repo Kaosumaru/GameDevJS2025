@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
 import { getPossibleTargets, skillFromInstance, SkillID } from '@shared/stores/tao/skills';
-import { useAnimation } from './Hooks/useAnimation';
+import './Materials/ColorTexMaterial';
 
 const TILE_OFFSET = 0.1;
 
