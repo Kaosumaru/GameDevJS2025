@@ -1,5 +1,5 @@
 import { monstersAi } from './ai';
-import { clearOriginalPositions, damageReducer, hasStatus, modifyEntities, refreshAllActionPoints } from './entity';
+import { clearOriginalPositions, damageReducer, hasStatus, modifyAllEntities, refreshAllActionPoints } from './entity';
 import { addEvent, PoisonEvent } from './events';
 import { Entity, StatusEffect, Statuses } from './interface';
 import { StoreData } from './taoStore';
@@ -10,7 +10,7 @@ export function endOfRound(state: StoreData): StoreData {
   state = monstersAi(state);
   state = refreshAllActionPoints(state);
   state = applyPoison(state);
-  state = modifyEntities(state, decrementAllStatusesReducer);
+  state = modifyAllEntities(state, decrementAllStatusesReducer);
   return state;
 }
 
@@ -41,7 +41,7 @@ function applyPoison(state: StoreData): StoreData {
   if (poisonEvent.entityIds.length === 0) {
     return state;
   }
-  state = modifyEntities(state, entity => {
+  state = modifyAllEntities(state, entity => {
     if (hasStatus(entity, 'poisoned')) {
       return damageReducer(1)(entity); // Apply poison damage
     }

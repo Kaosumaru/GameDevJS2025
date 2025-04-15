@@ -3,12 +3,13 @@ import { hasStatus, useActionPointsEntity } from './entity';
 import { addEvent } from './events';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
+import { fireballSkill } from './skills/fireball';
 import { moveSkill } from './skills/move';
 import { stunSkill } from './skills/stun';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
 
-export type SkillID = 'move' | 'attack' | 'stun';
+export type SkillID = 'move' | 'attack' | 'stun' | 'fireball';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
@@ -19,6 +20,7 @@ export interface Skill {
   cost: number;
   reducer: (state: StoreData, ctx: SkillContext) => StoreData;
   getPossibleTargets: (state: StoreData, ctx: SkillContext) => string[];
+  getAffectedFields?: (state: StoreData, ctx: SkillContext) => string[];
 }
 
 export interface SkillInstance {
@@ -36,6 +38,7 @@ const skills: SkillsMap = {
   move: moveSkill,
   attack: attackSkill,
   stun: stunSkill,
+  fireball: fireballSkill,
 };
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {
