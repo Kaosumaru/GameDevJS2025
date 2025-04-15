@@ -9,7 +9,7 @@ import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
-import { getPossibleTargets, skillFromInstance, SkillID } from '@shared/stores/tao/skills';
+import { getPossibleTargets, skillFromID, SkillID } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
 
 const TILE_OFFSET = 0.1;
@@ -22,7 +22,7 @@ const defaultColor = new Color(0xffffff);
 
 function colorForSkill(skillID: SkillID | undefined): Color {
   if (skillID === undefined) return moveColor;
-  const skill = skillFromInstance(skillID);
+  const skill = skillFromID(skillID);
   switch (skill.type) {
     case 'attack':
       return attackColor;
@@ -68,6 +68,7 @@ export const Tao = (props: SpecificGameProps) => {
                   key={`${colIdx}_${rowIdx}`}
                   col={colIdx}
                   row={rowIdx}
+                  field={field}
                   position={[x, -0.05, y]}
                   highlightColor={isTarget ? color : undefined}
                   onClick={() => {

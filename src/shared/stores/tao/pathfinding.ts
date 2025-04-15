@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getFieldNeighbors } from './board';
+import { findFieldByPosition, getFieldNeighbors } from './board';
 import { getEntity, isEnemy } from './entity';
-import { Entity, Field } from './interface';
+import { Entity, EntityType, Field } from './interface';
 import { StoreData } from './taoStore';
 
 function isBlocked(state: StoreData, field: Field, entity?: Entity) {
@@ -16,13 +16,16 @@ function isBlocked(state: StoreData, field: Field, entity?: Entity) {
 
 export function getFieldsInDistance(
   state: StoreData,
-  field: Field,
+  startingFields: Field[],
   entity?: Entity,
   maxDistance?: number
 ): Map<Field, number> {
-  const fieldsToVisit: Field[] = [field];
+  const fieldsToVisit: Field[] = startingFields;
   const distanceToField = new Map<Field, number>();
-  distanceToField.set(field, 0);
+
+  for (const field of startingFields) {
+    distanceToField.set(field, 0);
+  }
 
   while (fieldsToVisit.length > 0) {
     const currentField = fieldsToVisit.pop()!;
@@ -53,4 +56,17 @@ export function getFieldsInDistance(
 
 export function getEmptyFields(map: Map<Field, number>): Field[] {
   return [...map].filter(([field]) => field.entityUUID === undefined).map(([field]) => field);
+}
+
+export function getDistancesToEntityType(state: StoreData, entityType: EntityType): Map<Field, number> {
+  const fieldsWithEntityType = state.entities
+    .filter(e => entityType === e.type)
+    .map(e => findFieldByPosition(state, e.position))
+    .filter(f => f !== undefined);
+
+  return getFieldsInDistance(state, fieldsWithEntityType);
+}
+
+export function getDistancesToPlayers(state: StoreData): Map<Field, number> {
+  return getDistancesToEntityType(state, 'player');
 }

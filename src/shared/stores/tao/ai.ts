@@ -1,5 +1,7 @@
+import { findFieldByPosition, getField } from './board';
 import { getEntity } from './entity';
-import { Entity } from './interface';
+import { Entity, Field } from './interface';
+import { getDistancesToPlayers } from './pathfinding';
 import {
   getPossibleTargets,
   getSkillInstance,
@@ -26,14 +28,36 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
     if (!entity) {
       break;
     }
-    const skills = getUseableAttackSkills(state, entity);
-    if (skills.length == 0) {
-      break;
+    const attackSkills = getUseableAttackSkills(state, entity);
+    if (attackSkills.length != 0) {
+      const skillId = attackSkills[0];
+      state = useSkillOnFirstTarget(state, entity, skillId);
+      continue;
     }
-    const skillId = skills[0];
-    state = useSkillOnFirstTarget(state, entity, skillId);
+
+    const movementSkills = getUseableMovementSkills(state, entity);
+    if (movementSkills.length != 0) {
+      const skillId = movementSkills[0];
+      const bestTarget = bestTargetsForMovement(state, entity, skillId);
+      if (bestTarget) {
+        state = useSkill(state, entity, skillId, bestTarget.id);
+        continue;
+      }
+    }
+    break;
   }
   return state;
+}
+
+function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: SkillID): Field | undefined {
+  const skillInstance = getSkillInstance(entity, skillId);
+  const possibleTargets = getPossibleTargets(state, entity, skillInstance);
+  const fieldsInRange = possibleTargets
+    .map(targetId => getField(state, targetId))
+    .filter((field): field is Field => field !== undefined);
+  const distances = getDistancesToPlayers(state);
+  const closestField = getClosestFieldToPlayers(state, fieldsInRange, entity, distances);
+  return closestField;
 }
 
 function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID): StoreData {
@@ -50,10 +74,41 @@ function getUseableAttackSkills(state: StoreData, entity: Entity): SkillID[] {
   return getUseableSkills(state, entity, 'attack');
 }
 
+function getUseableMovementSkills(state: StoreData, entity: Entity): SkillID[] {
+  return getUseableSkills(state, entity, 'movement');
+}
+
 function getUseableSkills(state: StoreData, entity: Entity, type: SkillType): SkillID[] {
   const useableSkills = entity.skills.filter(skillInstance => {
     const skill = skillFromInstance(skillInstance);
     return skill && skill.type === type && haveResourcesAndTargetsForSkill(state, entity, skillInstance);
   });
   return useableSkills.map(skill => skill.id);
+}
+
+function getClosestFieldToPlayers(
+  state: StoreData,
+  fields: Field[],
+  entity: Entity,
+  distances: Map<Field, number>
+): Field | undefined {
+  let closestField: Field | undefined;
+  let minDistance = Infinity;
+
+  const entityField = findFieldByPosition(state, entity.position);
+  if (entityField) {
+    const distance = distances.get(entityField);
+    if (distance !== undefined) {
+      minDistance = distance;
+    }
+  }
+
+  for (const field of fields) {
+    const distance = distances.get(field);
+    if (distance !== undefined && distance < minDistance) {
+      minDistance = distance;
+      closestField = field;
+    }
+  }
+  return closestField;
 }
