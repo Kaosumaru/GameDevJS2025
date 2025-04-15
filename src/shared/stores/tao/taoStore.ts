@@ -7,6 +7,7 @@ import { getEntity, refreshAllActionPoints } from './entity';
 import { fillState } from './level';
 import { createLevel0 } from './levels/level0';
 import { monstersAi } from './ai';
+import { EventType } from './events';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -25,6 +26,7 @@ export interface StoreData {
   gameOver: boolean;
   board: Field[][];
   entities: Entity[];
+  events: EventType[];
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
@@ -48,6 +50,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       board: [],
       gameOver: false,
       entities: [],
+      events: [],
     },
     makeAction
   );
@@ -83,6 +86,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         board: fieldData,
         gameOver: false,
         entities: [],
+        events: [],
       };
 
       const level = createLevel0();
