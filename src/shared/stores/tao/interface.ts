@@ -27,6 +27,7 @@ export interface Entity {
   hp: Stat;
   actionPoints: Stat;
   position: Position;
+  originalPosition?: Position;
   statuses: Statuses;
 }
 
