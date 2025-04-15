@@ -6,6 +6,7 @@ export const useAnimation = (
   ease: (t: number) => number,
   options: {
     delay: number;
+    continuous?: boolean;
   },
   sink: (t: number) => void
 ) => {
@@ -23,8 +24,10 @@ export const useAnimation = (
     }
     timeRef.current += dt;
     if (timeRef.current > 1) {
-      timeRef.current = 1;
-      doneRef.current = true;
+      if (!options.continuous) {
+        timeRef.current = 1;
+        doneRef.current = true;
+      }
     }
     const t = ease(timeRef.current);
     sink(t);

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
 import { getPossibleTargets, skillFromInstance, SkillID } from '@shared/stores/tao/skills';
+import { useAnimation } from './Hooks/useAnimation';
 
 const TILE_OFFSET = 0.1;
 
@@ -46,6 +47,7 @@ export const Tao = (props: SpecificGameProps) => {
   const boardHeight = board.length;
 
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
+
   return (
     <>
       <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
@@ -96,6 +98,7 @@ export const Tao = (props: SpecificGameProps) => {
                 key={entity.id}
                 position={[x, 0, y]}
                 entity={entity}
+                isSelected={selectedEntityId === entity.id}
                 onClick={() => {
                   setSelectedEntityId(entity.id);
                 }}

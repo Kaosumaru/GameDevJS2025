@@ -8,9 +8,11 @@ import { easeBounceOut } from 'd3-ease';
 
 export const Entity3D = ({
   entity,
+  isSelected,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
+  isSelected: boolean;
   entity: Entity;
 }) => {
   const { camera } = useThree();
@@ -41,6 +43,22 @@ export const Entity3D = ({
       rootRef.current.scale.set(t, t, t);
       shadowRef.current!.scale.set(t, t, t);
       rootRef.current.position.y = (t - 1) * -4;
+    }
+  );
+
+  useAnimation(
+    t => (Math.sin(t * 8) + 1) / 2,
+    { delay: 0, continuous: true },
+    d => {
+      if (isSelected) {
+        const displacement = d / 20;
+        rootRef.current!.position.y = displacement;
+        const scale = 1 - d * 0.2;
+        shadowRef.current!.scale.set(scale, scale, scale);
+      } else {
+        rootRef.current!.position.y = 0;
+        shadowRef.current!.scale.set(1, 1, 1);
+      }
     }
   );
 
