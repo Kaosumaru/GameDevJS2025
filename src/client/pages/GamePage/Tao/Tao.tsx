@@ -50,6 +50,8 @@ export const Tao = (props: SpecificGameProps) => {
               return (
                 <Tile
                   key={`${colIdx}_${rowIdx}`}
+                  col={colIdx}
+                  row={rowIdx}
                   position={[x, -0.05, y]}
                   highlightColor={isMoving ? moveColor : undefined}
                   onClick={() => {
