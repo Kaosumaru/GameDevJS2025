@@ -45,10 +45,7 @@ export function skillFromID(id: SkillID): Skill {
 
 export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {
   const skill = skillFromID(skillId);
-  const skillInstance = user.skills.find(skill => skill.id === skillId);
-  if (!skillInstance) {
-    throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
-  }
+  const skillInstance = getSkillInstance(user, skillId);
 
   const possibleTargets = skill.getPossibleTargets(state, { user, skillInstance });
   if (targetId && !possibleTargets.includes(targetId)) {
@@ -66,6 +63,14 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   state = filterDeadEntities(state);
 
   return state;
+}
+
+export function getSkillInstance(user: Entity, skillId: SkillID): SkillInstance {
+  const skillInstance = user.skills.find(skill => skill.id === skillId);
+  if (!skillInstance) {
+    throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
+  }
+  return skillInstance;
 }
 
 function filterDeadEntities(state: StoreData): StoreData {
