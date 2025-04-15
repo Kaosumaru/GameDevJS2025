@@ -3,7 +3,7 @@ import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field } from './interface';
 import { SkillID, useSkill } from './skills';
-import { getEntity } from './entity';
+import { clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
 import { createLevel0 } from './levels/level0';
 import { EventType } from './events';
@@ -75,6 +75,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       }
 
       store = { ...store, events: [] };
+      store = clearOriginalPositions(store);
       return useSkill(store, entity, skillName, targetId);
     }
 

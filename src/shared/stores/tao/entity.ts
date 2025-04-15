@@ -54,6 +54,13 @@ function refreshActionsReducer(entity: Entity): Entity {
   };
 }
 
+function clearOriginalPositionReducer(entity: Entity): Entity {
+  return {
+    ...entity,
+    originalPosition: entity.position,
+  };
+}
+
 export function damageEntity(state: StoreData, attackerId: string, targetId: string, damage: number): StoreData {
   state = modifyEntity(state, targetId, damageReducer(damage));
   addEvent(state, { type: 'attack', attackerId, targetId, damage });
@@ -89,6 +96,10 @@ export function refreshActionPointsEntity(state: StoreData, entityID: string): S
 
 export function refreshAllActionPoints(state: StoreData): StoreData {
   return modifyEntities(state, refreshActionsReducer);
+}
+
+export function clearOriginalPositions(state: StoreData): StoreData {
+  return modifyEntities(state, clearOriginalPositionReducer);
 }
 
 export function isPlayerOrEnemy(entity: Entity): boolean {

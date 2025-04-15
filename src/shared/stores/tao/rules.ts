@@ -1,11 +1,12 @@
 import { monstersAi } from './ai';
-import { damageReducer, hasStatus, modifyEntities, refreshAllActionPoints } from './entity';
+import { clearOriginalPositions, damageReducer, hasStatus, modifyEntities, refreshAllActionPoints } from './entity';
 import { addEvent, PoisonEvent } from './events';
 import { Entity, StatusEffect, Statuses } from './interface';
 import { StoreData } from './taoStore';
 
 export function endOfRound(state: StoreData): StoreData {
   state = { ...state, events: [] };
+  state = clearOriginalPositions(state);
   state = monstersAi(state);
   state = refreshAllActionPoints(state);
   state = applyPoison(state);
