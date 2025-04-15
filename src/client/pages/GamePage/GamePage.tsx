@@ -2,7 +2,7 @@ import { Tao } from './Tao/Tao';
 
 import './GamePage.css';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
-import { JSX, useEffect, useState } from 'react';
+import { JSX, Suspense, useEffect, useState } from 'react';
 import { Main } from '@client/utils/Main';
 import { Button } from '@mui/material';
 

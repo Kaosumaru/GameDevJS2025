@@ -1,4 +1,4 @@
-import { Image, Text } from '@react-three/drei';
+import { Image } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { JSX, memo, RefObject, useEffect, useMemo, useRef } from 'react';
 import { Group, Mesh, Vector2 } from 'three';
@@ -7,8 +7,10 @@ import { Animation } from './Animation';
 import { TemporalEntity, TemporalEvents } from '../TaoTypes';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 
-const activeColor = 0x14ff14;
-const inactiveColor = 0x808080;
+const activeColor = 0x66bb6a;
+const manaColor = 0x90caf9;
+const damageColor = 0xff0000;
+const inactiveColor = 0x909090;
 
 export const TemporalEventComponent = ({
   event,
@@ -142,26 +144,23 @@ const Entity3DComponent = ({
       <group ref={rootRef} frustumCulled={false}>
         {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
           return (
-            <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.3, 1.2, 0.02]} frustumCulled={false}>
-              <sphereGeometry args={[0.05, 32]} />
-              <meshStandardMaterial color={i < entity.actionPoints.current ? activeColor : inactiveColor} />
+            entity.type === 'player' && (
+              <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.2, 1, 0.02]} frustumCulled={false}>
+                <sphereGeometry args={[0.05, 32]} />
+                <meshStandardMaterial color={i < entity.actionPoints.current ? manaColor : inactiveColor} />
+              </mesh>
+            )
+          );
+        })}
+        {Array.from({ length: entity.hp.max }).map((_, i) => {
+          const color = i < entity.hp.current ? activeColor : damageColor;
+          return (
+            <mesh key={`hp-${i}`} frustumCulled={false} position={[0 + i * 0.12, 1, 0.02]}>
+              <boxGeometry args={[0.1, 0.05, 0.1]} />
+              <meshStandardMaterial color={color} />
             </mesh>
           );
         })}
-        <mesh position={[0, 1.2, 0.02]} frustumCulled={false}>
-          <planeGeometry args={[1, 0.2, 1]} />
-          <meshStandardMaterial color={'white'} transparent opacity={0.3} />
-        </mesh>
-        <Text
-          position={[0, 1.2, 0.03]}
-          color={activeColor}
-          anchorX="center"
-          anchorY="middle"
-          fontSize={0.2}
-          frustumCulled={false}
-        >
-          {entity.hp.current}/{entity.hp.max}
-        </Text>
         <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0.01]} zoom={0.4} frustumCulled={false}>
           <planeGeometry args={[2, 2]} />
         </Image>
