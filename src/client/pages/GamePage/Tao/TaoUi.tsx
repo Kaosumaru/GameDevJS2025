@@ -8,6 +8,7 @@ import './styles.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
+import { useMediaQuery } from '@mui/material';
 
 function skillNameFromInstance(skillInstance: SkillInstance): string {
   return skillFromInstance(skillInstance).name;
@@ -25,6 +26,7 @@ const TaoUiComponent = ({
   onSkill: (skillInstance: SkillInstance) => void;
   onEndTurn: () => void;
 }) => {
+  const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
   const uiRef = useRef<HTMLDivElement>(null);
   return (
     <Dock {...rest}>
@@ -38,16 +40,23 @@ const TaoUiComponent = ({
             classNames="switch"
             unmountOnExit
           >
-            <HorizontalContainer ref={uiRef} className="ui-container">
+            <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
               {entity?.skills.map(skill => (
-                <Button key={skill.id} variant="outlined" onClick={() => onSkill(skill)}>
+                <Button
+                  key={skill.id}
+                  variant="outlined"
+                  sx={{
+                    padding: matches ? 1 : 0.1,
+                  }}
+                  onClick={() => onSkill(skill)}
+                >
                   {skillNameFromInstance(skill)}
                 </Button>
               ))}
-            </HorizontalContainer>
+            </Box>
           </CSSTransition>
         </SwitchTransition>
-        <Box component="div" sx={{ p: 2 }}>
+        <Box component="div" sx={{ p: 0.5 }}>
           <Button variant="contained" color="success" onClick={onEndTurn}>
             End&nbsp;Turn
           </Button>
