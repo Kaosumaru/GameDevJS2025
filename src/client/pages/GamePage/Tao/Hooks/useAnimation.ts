@@ -11,8 +11,12 @@ export const useAnimation = (
 ) => {
   const delayRef = useRef<number>(options.delay);
   const timeRef = useRef<number>(0);
+  const doneRef = useRef<boolean>(false);
 
   useFrame((_state, dt) => {
+    if (doneRef.current) {
+      return;
+    }
     delayRef.current -= dt;
     if (delayRef.current > 0) {
       return;
@@ -20,6 +24,7 @@ export const useAnimation = (
     timeRef.current += dt;
     if (timeRef.current > 1) {
       timeRef.current = 1;
+      doneRef.current = true;
     }
     const t = ease(timeRef.current);
     sink(t);
