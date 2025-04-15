@@ -88,13 +88,20 @@ export const Entity3D = ({
         <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0.01]} zoom={0.4} frustumCulled={false}>
           <planeGeometry args={[2, 2]} />
         </Image>
-        <mesh onClick={onClick} position={[0, -0.0499, 0]} frustumCulled={false}>
-          <boxGeometry args={[0.99, 0.1, 0.99]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
       </group>
 
-      <mesh ref={shadowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.07, -0.001]} scale={[0, 0, 0]}>
+      <mesh onClick={onClick} position={[0, -0.1, 0]} frustumCulled={false}>
+        <boxGeometry args={[0.99, 0.1, 0.99]} />
+        <meshStandardMaterial transparent opacity={0} />
+      </mesh>
+
+      <mesh
+        ref={shadowRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.08, -0.001]}
+        scale={[0, 0, 0]}
+        frustumCulled={false}
+      >
         <circleGeometry args={[0.3, 32]} />
         <meshStandardMaterial color="black" transparent opacity={0.8} />
       </mesh>
