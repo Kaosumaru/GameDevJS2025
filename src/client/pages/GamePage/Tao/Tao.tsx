@@ -9,7 +9,7 @@ import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
-import { getPossibleTargets, skillFromID, SkillID } from '@shared/stores/tao/skills';
+import { getPossibleTargets, Skill, skillFromID, SkillID } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
 import { useTemporalEntities } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
@@ -21,9 +21,9 @@ const attackColor = new Color(0xff0000);
 const moveColor = new Color(0x00ff00);
 const defaultColor = new Color(0xffffff);
 
-function colorForSkill(skillID: SkillID | undefined): Color {
-  if (skillID === undefined) return moveColor;
-  const skill = skillFromID(skillID);
+function colorForSkill(skill: Skill | undefined): Color {
+  if (skill === undefined) return moveColor;
+
   switch (skill.type) {
     case 'attack':
       return attackColor;
@@ -49,7 +49,7 @@ export const Tao = (props: SpecificGameProps) => {
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
 
   const temporalEntities = useTemporalEntities(entities, events);
-
+  const skill = skillID !== undefined ? skillFromID(skillID) : undefined;
   return (
     <>
       <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
@@ -61,8 +61,8 @@ export const Tao = (props: SpecificGameProps) => {
           {board.map((row, rowIdx) =>
             row.map((field, colIdx) => {
               const isTarget = targets.includes(field.id);
-              const color = colorForSkill(skillID);
               const { x, y } = boardPositionToUiPosition(field.position.y, field.position.x);
+              const color = colorForSkill(skill);
               return (
                 !field.blocking && (
                   <Tile
@@ -72,6 +72,7 @@ export const Tao = (props: SpecificGameProps) => {
                     field={field}
                     position={[x, -0.05, y]}
                     highlightColor={isTarget ? color : undefined}
+                    onPointerEnter={() => {}}
                     onClick={() => {
                       if (!selectedEntity) {
                         console.warn('No entity selected');

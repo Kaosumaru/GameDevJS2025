@@ -20,7 +20,18 @@ export function modifyEntity(state: StoreData, entityID: string, modifier: Entit
   return newState;
 }
 
-export function modifyEntities(state: StoreData, modifier: EntityReducer): StoreData {
+export function modifyEntities(state: StoreData, entityIds: string[], modifier: EntityReducer): StoreData {
+  const newState = { ...state };
+  newState.entities = newState.entities.map(entity => {
+    if (entityIds.includes(entity.id)) {
+      return modifier(entity);
+    }
+    return entity;
+  });
+  return newState;
+}
+
+export function modifyAllEntities(state: StoreData, modifier: EntityReducer): StoreData {
   const newState = { ...state };
   newState.entities = newState.entities.map(modifier);
   return newState;
@@ -95,11 +106,11 @@ export function refreshActionPointsEntity(state: StoreData, entityID: string): S
 }
 
 export function refreshAllActionPoints(state: StoreData): StoreData {
-  return modifyEntities(state, refreshActionsReducer);
+  return modifyAllEntities(state, refreshActionsReducer);
 }
 
 export function clearOriginalPositions(state: StoreData): StoreData {
-  return modifyEntities(state, clearOriginalPositionReducer);
+  return modifyAllEntities(state, clearOriginalPositionReducer);
 }
 
 export function isPlayerOrEnemy(entity: Entity): boolean {

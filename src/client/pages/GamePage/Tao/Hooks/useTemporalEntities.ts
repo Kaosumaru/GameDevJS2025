@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { TemporalEntity, TemporalSpawnEvent } from '../TaoTypes';
 import { EventType } from '@shared/stores/tao/events';
 
+const MOVE_DURATION_MS = 300;
+const ATTACK_DURATION_MS = 300;
+
 export const useTemporalEntities = (entities: Entity[], events: EventType[]) => {
   const [temporalEntities, setTemporalEntities] = useState<Record<string, TemporalEntity>>({});
 
@@ -16,8 +19,8 @@ export const useTemporalEntities = (entities: Entity[], events: EventType[]) => 
             type: 'sync-position',
             durationMs: 0,
             position: {
-              x: entity.originalPosition?.x ?? entity.position.x,
-              y: entity.originalPosition?.y ?? entity.position.y,
+              x: entity.originalPosition?.x ?? -1,
+              y: entity.originalPosition?.y ?? -1,
             },
           },
         ],
@@ -30,13 +33,17 @@ export const useTemporalEntities = (entities: Entity[], events: EventType[]) => 
           if (entity.id === event.entityId) {
             entity.events.push({
               ...event,
-              durationMs: 1000,
+              durationMs: 300,
             });
           } else {
-            entity.events.push({
-              type: 'wait',
-              durationMs: 1000,
-            });
+            if (entity.events[entity.events.length - 1].type === 'wait') {
+              entity.events[entity.events.length - 1].durationMs += MOVE_DURATION_MS;
+            } else {
+              entity.events.push({
+                type: 'wait',
+                durationMs: MOVE_DURATION_MS,
+              });
+            }
           }
         });
       } else if (event.type === 'attack') {
@@ -44,18 +51,22 @@ export const useTemporalEntities = (entities: Entity[], events: EventType[]) => 
           if (entity.id === event.attackerId) {
             entity.events.push({
               ...event,
-              durationMs: 1000,
+              durationMs: ATTACK_DURATION_MS,
             });
           } else if (entity.id === event.targetId) {
             entity.events.push({
               type: 'receive-damage',
-              durationMs: 1000,
+              durationMs: ATTACK_DURATION_MS,
             });
           } else {
-            entity.events.push({
-              type: 'wait',
-              durationMs: 1000,
-            });
+            if (entity.events[entity.events.length - 1].type === 'wait') {
+              entity.events[entity.events.length - 1].durationMs += ATTACK_DURATION_MS;
+            } else {
+              entity.events.push({
+                type: 'wait',
+                durationMs: ATTACK_DURATION_MS,
+              });
+            }
           }
         });
       }

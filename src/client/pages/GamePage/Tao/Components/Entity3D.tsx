@@ -1,16 +1,16 @@
 import { Image, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { JSX, RefObject, useEffect, useRef } from 'react';
+import { JSX, memo, RefObject, useEffect, useMemo, useRef } from 'react';
 import { Group, Mesh, Vector2 } from 'three';
 import { easeBounceOut } from 'd3-ease';
 import { Animation } from './Animation';
-import { TemporalEntity } from '../TaoTypes';
+import { TemporalEntity, TemporalEvents } from '../TaoTypes';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 
 const activeColor = 0x14ff14;
 const inactiveColor = 0x808080;
 
-export const TemporalEvent = ({
+export const TemporalEventComponent = ({
   event,
   startTime,
   targetMesh,
@@ -22,14 +22,17 @@ export const TemporalEvent = ({
   const fromVectorRef = useRef(new Vector2());
   const toVectorRef = useRef(new Vector2());
 
-  useFrame(() => {
+  useEffect(() => {
     if (!targetMesh.current) return;
 
     if (event.type === 'sync-position') {
       const pos = boardPositionToUiPosition(event.position.y, event.position.x);
       targetMesh.current.position.set(pos.x, 0, pos.y);
-      return;
     }
+  }, [event, targetMesh]);
+
+  useFrame(() => {
+    if (!targetMesh.current) return;
 
     const elapsed = Date.now() - startTime;
     if (elapsed < 0) return;
@@ -55,7 +58,9 @@ export const TemporalEvent = ({
   return null;
 };
 
-export const Entity3D = ({
+const TemporalEvent = memo(TemporalEventComponent);
+
+const Entity3DComponent = ({
   entity,
   isSelected,
   onClick,
@@ -80,28 +85,33 @@ export const Entity3D = ({
     shadowRef.current?.scale.set(0, 0, 0);
   }, [rootRef, shadowRef]);
 
-  const events = entity.events.reduce<{
-    events: JSX.Element[];
-    startTime: number;
-  }>(
-    (acc, event, index) => {
-      acc.events.push(
-        <TemporalEvent
-          key={`temporal-event-${index}`}
-          event={event}
-          startTime={acc.startTime}
-          targetMesh={containerRef}
-        />
-      );
-      acc.startTime += event.durationMs;
-      return acc;
-    },
-    { events: [], startTime: Date.now() }
-  ).events;
+  const events = useMemo(
+    () =>
+      entity.events.reduce<{
+        events: {
+          event: TemporalEvents;
+          startTime: number;
+        }[];
+        startTime: number;
+      }>(
+        (acc, event, index) => {
+          acc.events.push({
+            event: event,
+            startTime: acc.startTime,
+          });
+          acc.startTime += event.durationMs;
+          return acc;
+        },
+        { events: [], startTime: Date.now() }
+      ).events,
+    [entity.events]
+  );
 
   return (
     <group ref={containerRef} {...rest} dispose={null}>
-      {events}
+      {events.map((event, index) => {
+        return <TemporalEvent key={index} event={event.event} startTime={event.startTime} targetMesh={containerRef} />;
+      })}
       <Animation
         delay={0.8}
         ease={easeBounceOut}
@@ -175,3 +185,6 @@ export const Entity3D = ({
     </group>
   );
 };
+
+export const Entity3D = memo(Entity3DComponent);
+Entity3D;
