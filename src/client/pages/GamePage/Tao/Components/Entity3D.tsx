@@ -65,7 +65,7 @@ export const Entity3D = ({
       <group ref={rootRef} frustumCulled={false}>
         {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
           return (
-            <mesh position={[0 - i * 0.1 - 0.3, 1.2, 0.02]} frustumCulled={false}>
+            <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.3, 1.2, 0.02]} frustumCulled={false}>
               <sphereGeometry args={[0.05, 32]} />
               <meshStandardMaterial color={i < entity.actionPoints.current ? activeColor : inactiveColor} />
             </mesh>

@@ -64,30 +64,32 @@ export const Tao = (props: SpecificGameProps) => {
               const isTarget = targets.includes(field.id);
               const color = colorForSkill(skillID);
               return (
-                <Tile
-                  key={`${colIdx}_${rowIdx}`}
-                  col={colIdx}
-                  row={rowIdx}
-                  field={field}
-                  position={[x, -0.05, y]}
-                  highlightColor={isTarget ? color : undefined}
-                  onClick={() => {
-                    if (!selectedEntity) {
-                      console.warn('No entity selected');
-                      return;
-                    }
+                !field.blocking && (
+                  <Tile
+                    key={`${colIdx}_${rowIdx}`}
+                    col={colIdx}
+                    row={rowIdx}
+                    field={field}
+                    position={[x, -0.05, y]}
+                    highlightColor={isTarget ? color : undefined}
+                    onClick={() => {
+                      if (!selectedEntity) {
+                        console.warn('No entity selected');
+                        return;
+                      }
 
-                    if (!skillID) {
-                      console.warn('No skill selected');
-                      return;
-                    }
+                      if (!skillID) {
+                        console.warn('No skill selected');
+                        return;
+                      }
 
-                    void client.useSkill(selectedEntity.id, skillID, field.id);
-                    setSkillID(undefined);
-                    setUiAction([]);
-                    setTargets([]);
-                  }}
-                />
+                      void client.useSkill(selectedEntity.id, skillID, field.id);
+                      setSkillID(undefined);
+                      setUiAction([]);
+                      setTargets([]);
+                    }}
+                  />
+                )
               );
             })
           )}
