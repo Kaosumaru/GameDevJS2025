@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, TextureLoader } from 'three';
 import { easeElasticOut } from 'd3-ease';
 import { useAnimation } from '../Hooks/useAnimation';
+import { Field } from '@shared/stores/tao/interface';
 
 export const ColorTexMaterial = shaderMaterial(
   { color: new Color(0.2, 0.0, 0.1), uTexture: null },
@@ -37,10 +38,12 @@ export const Tile = ({
   highlightColor,
   col,
   row,
+  field,
   ...rest
 }: ThreeElements['mesh'] & {
   col: number;
   row: number;
+  field: Field;
   highlightColor?: Color;
 }) => {
   const [colorMap] = useLoader(TextureLoader, ['/wall.png']);
@@ -63,6 +66,10 @@ export const Tile = ({
       meshRef.current.position.y = (t - 1) * 2;
     }
   );
+
+  if (field.tileId === 1) {
+    return null;
+  }
 
   return (
     <mesh ref={meshRef} {...rest} castShadow receiveShadow>
