@@ -1,6 +1,5 @@
-import { memo, RefObject } from 'react';
+import { memo } from 'react';
 import { useAnimation } from '../Hooks/useAnimation';
-import { Mesh } from 'three';
 
 const AnimationComponent = ({
   delay,

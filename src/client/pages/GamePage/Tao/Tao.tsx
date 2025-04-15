@@ -11,8 +11,8 @@ import { Tile } from './Components/Tile';
 import { Color } from 'three';
 import { getPossibleTargets, skillFromID, SkillID } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
-
-const TILE_OFFSET = 0.1;
+import { useTemporalEntities } from './Hooks/useTemporalEntities';
+import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
 
 type UiAction = 'select-target';
 
@@ -42,11 +42,11 @@ export const Tao = (props: SpecificGameProps) => {
   const client = useClient(TaoClient, props.gameRoomClient);
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
-
-  const boardWidth = board[0]?.length ?? 0;
-  const boardHeight = board.length;
+  const events = client.store(state => state.events);
 
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
+
+  const temporalEntities = useTemporalEntities(entities, events);
 
   return (
     <>
@@ -58,11 +58,9 @@ export const Tao = (props: SpecificGameProps) => {
         <group>
           {board.map((row, rowIdx) =>
             row.map((field, colIdx) => {
-              const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
-              const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
-
               const isTarget = targets.includes(field.id);
               const color = colorForSkill(skillID);
+              const { x, y } = boardPositionToUiPosition(field.position.y, field.position.x);
               return (
                 !field.blocking && (
                   <Tile
@@ -93,13 +91,10 @@ export const Tao = (props: SpecificGameProps) => {
               );
             })
           )}
-          {entities.map(entity => {
-            const x = entity.position.x - boardWidth / 2 + TILE_OFFSET * entity.position.x;
-            const y = entity.position.y - boardHeight / 2 + TILE_OFFSET * entity.position.y;
+          {Object.values(temporalEntities).map(entity => {
             return (
               <Entity3D
                 key={entity.id}
-                position={[x, 0, y]}
                 entity={entity}
                 isSelected={selectedEntityId === entity.id}
                 onClick={() => {
