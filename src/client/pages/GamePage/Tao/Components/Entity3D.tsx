@@ -1,24 +1,76 @@
 import { Image, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { JSX, useEffect, useRef } from 'react';
-import { Mesh } from 'three';
-import { Entity } from '@shared/stores/tao/interface';
+import { JSX, memo, RefObject, useEffect, useMemo, useRef } from 'react';
+import { Group, Mesh, Vector2 } from 'three';
 import { easeBounceOut } from 'd3-ease';
 import { Animation } from './Animation';
+import { TemporalEntity, TemporalEvents } from '../TaoTypes';
+import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 
 const activeColor = 0x14ff14;
 const inactiveColor = 0x808080;
 
-export const Entity3D = ({
+export const TemporalEventComponent = ({
+  event,
+  startTime,
+  targetMesh,
+}: {
+  event: TemporalEntity['events'][number];
+  startTime: number;
+  targetMesh: RefObject<Group | null>;
+}) => {
+  const fromVectorRef = useRef(new Vector2());
+  const toVectorRef = useRef(new Vector2());
+
+  useEffect(() => {
+    if (!targetMesh.current) return;
+
+    if (event.type === 'sync-position') {
+      const pos = boardPositionToUiPosition(event.position.y, event.position.x);
+      targetMesh.current.position.set(pos.x, 0, pos.y);
+    }
+  }, [event, targetMesh]);
+
+  useFrame(() => {
+    if (!targetMesh.current) return;
+
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 0) return;
+    if (elapsed > event.durationMs) return;
+
+    const progress = Math.min(elapsed / event.durationMs, 1);
+
+    if (event.type === 'move') {
+      const from = boardPositionToUiPosition(event.from.y, event.from.x);
+      const to = boardPositionToUiPosition(event.to.y, event.to.x);
+
+      fromVectorRef.current.set(from.x, from.y);
+      toVectorRef.current.set(to.x, to.y);
+
+      const position = fromVectorRef.current.lerp(toVectorRef.current, progress);
+      targetMesh.current.position.set(position.x, 0, position.y);
+    } else if (event.type === 'attack') {
+      // do nothing yet
+    } else if (event.type === 'death') {
+      // do nothing yet
+    }
+  });
+  return null;
+};
+
+const TemporalEvent = memo(TemporalEventComponent);
+
+const Entity3DComponent = ({
   entity,
   isSelected,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
-  entity: Entity;
+  entity: TemporalEntity;
 }) => {
   const { camera } = useThree();
+  const containerRef = useRef<Group>(null);
   const rootRef = useRef<Mesh>(null);
   const shadowRef = useRef<Mesh>(null);
 
@@ -33,8 +85,33 @@ export const Entity3D = ({
     shadowRef.current?.scale.set(0, 0, 0);
   }, [rootRef, shadowRef]);
 
+  const events = useMemo(
+    () =>
+      entity.events.reduce<{
+        events: {
+          event: TemporalEvents;
+          startTime: number;
+        }[];
+        startTime: number;
+      }>(
+        (acc, event, index) => {
+          acc.events.push({
+            event: event,
+            startTime: acc.startTime,
+          });
+          acc.startTime += event.durationMs;
+          return acc;
+        },
+        { events: [], startTime: Date.now() }
+      ).events,
+    [entity.events]
+  );
+
   return (
-    <group {...rest} dispose={null}>
+    <group ref={containerRef} {...rest} dispose={null}>
+      {events.map((event, index) => {
+        return <TemporalEvent key={index} event={event.event} startTime={event.startTime} targetMesh={containerRef} />;
+      })}
       <Animation
         delay={0.8}
         ease={easeBounceOut}
@@ -45,7 +122,7 @@ export const Entity3D = ({
           rootRef.current.position.y = (t - 1) * -4;
         }}
       />
-      <Animation
+      {/*<Animation
         delay={0.8}
         ease={t => (Math.sin(t * 8) + 1) / 2}
         continuous={true}
@@ -60,7 +137,7 @@ export const Entity3D = ({
             shadowRef.current!.scale.set(1, 1, 1);
           }
         }}
-      />
+      />*/}
 
       <group ref={rootRef} frustumCulled={false}>
         {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
@@ -108,3 +185,6 @@ export const Entity3D = ({
     </group>
   );
 };
+
+export const Entity3D = memo(Entity3DComponent);
+Entity3D;
