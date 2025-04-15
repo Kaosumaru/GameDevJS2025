@@ -25,7 +25,7 @@ function CreateGamePage(): JSX.Element {
 
         const game = 'tao';
 
-        const [id, password] = await client.createRoom(game, { players: 2 });
+        const [id, password] = await client.createRoom(game, { players: 3 });
         await client.takeAvailableSeat();
         const url = password ? `/joinGame/${id}/${password}` : `/game/${id}`;
         window.history.replaceState(null, 'Game', url);

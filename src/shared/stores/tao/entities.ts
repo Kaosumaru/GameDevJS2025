@@ -1,6 +1,6 @@
 import { Entity, Position } from './interface';
 
-export type EntityName = 'goth-gf' | 'sun-princess' | 'mushroom-bomb';
+export type EntityName = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb';
 type EntitiesType = { [key in EntityName]: (id: string, position: Position) => Entity };
 export const entities: EntitiesType = {
   'goth-gf': (id, position) => ({
@@ -26,6 +26,18 @@ export const entities: EntitiesType = {
     position,
     statuses: {},
     ownerId: 1, // Assuming ownerId is 0 for player entities
+  }),
+  knight: (id, position) => ({
+    id,
+    name: 'Knight',
+    avatar: '/avatars/knight',
+    type: 'player',
+    skills: [{ id: 'move' }, { id: 'attack' }, { id: 'stun' }, { id: 'fireball' }],
+    hp: { current: 3, max: 3 },
+    actionPoints: { current: 2, max: 2 },
+    position,
+    statuses: {},
+    ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
   'mushroom-bomb': (id, position) => ({
     id,
