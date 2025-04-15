@@ -7,6 +7,7 @@ export const moveSkill: Skill = {
   id: 'move',
   name: 'Move',
   description: 'Move to a target position',
+  type: 'movement',
   cost: 1,
   reducer: (state, ctx) => {
     if (!ctx.targetId) {

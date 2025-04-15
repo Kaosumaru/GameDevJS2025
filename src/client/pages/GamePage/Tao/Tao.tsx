@@ -9,7 +9,7 @@ import { Entity3D } from './Components/Entity3D';
 import { useState } from 'react';
 import { Tile } from './Components/Tile';
 import { Color } from 'three';
-import { getPossibleTargets, SkillID } from '@shared/stores/tao/skills';
+import { getPossibleTargets, SkillID, skills } from '@shared/stores/tao/skills';
 
 const TILE_OFFSET = 0.1;
 
@@ -17,6 +17,20 @@ type UiAction = 'select-target';
 
 const attackColor = new Color(0xff0000);
 const moveColor = new Color(0x00ff00);
+const defaultColor = new Color(0xffffff);
+
+function colorForSkill(skillID: SkillID | undefined): Color {
+  if (skillID === undefined) return moveColor;
+  const skill = skills[skillID];
+  switch (skill.type) {
+    case 'attack':
+      return attackColor;
+    case 'movement':
+      return moveColor;
+    default:
+      return defaultColor;
+  }
+}
 
 export const Tao = (props: SpecificGameProps) => {
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
@@ -45,13 +59,13 @@ export const Tao = (props: SpecificGameProps) => {
               const x = colIdx - boardWidth / 2 + TILE_OFFSET * colIdx;
               const y = rowIdx - boardHeight / 2 + TILE_OFFSET * rowIdx;
 
-              const isMoving = targets.includes(field.id);
-
+              const isTarget = targets.includes(field.id);
+              const color = colorForSkill(skillID);
               return (
                 <Tile
                   key={`${colIdx}_${rowIdx}`}
                   position={[x, -0.05, y]}
-                  highlightColor={isMoving ? moveColor : undefined}
+                  highlightColor={isTarget ? color : undefined}
                   onClick={() => {
                     if (!selectedEntity) {
                       console.warn('No entity selected');

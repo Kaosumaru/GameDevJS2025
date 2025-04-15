@@ -6,6 +6,7 @@ export const attackSkill: Skill = {
   id: 'attack',
   name: 'Attack',
   description: 'Attack a target entity',
+  type: 'attack',
   cost: 1,
   reducer: (state, ctx) => {
     if (ctx.targetId === undefined) {

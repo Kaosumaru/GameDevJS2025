@@ -6,9 +6,11 @@ import { moveSkill } from './skills/move';
 import { StoreData } from './taoStore';
 
 export type SkillID = 'move' | 'attack';
+export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
   id: SkillID;
+  type: SkillType;
   name: string;
   description: string;
   cost: number;
@@ -26,8 +28,8 @@ export interface SkillContext {
   targetId?: string;
 }
 
-type SkillsType = { [key in SkillID]: Skill };
-export const skills: SkillsType = {
+type SkillsMap = { [key in SkillID]: Skill };
+export const skills: SkillsMap = {
   move: moveSkill,
   attack: attackSkill,
 };
