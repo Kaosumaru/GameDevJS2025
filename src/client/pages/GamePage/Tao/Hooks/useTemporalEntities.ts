@@ -16,8 +16,8 @@ export const useTemporalEntities = (entities: Entity[], events: EventType[]) => 
             type: 'sync-position',
             durationMs: 0,
             position: {
-              x: entity.position.x,
-              y: entity.position.y,
+              x: entity.originalPosition?.x ?? entity.position.x,
+              y: entity.originalPosition?.y ?? entity.position.y,
             },
           },
         ],
