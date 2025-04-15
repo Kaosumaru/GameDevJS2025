@@ -3,11 +3,11 @@ import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field } from './interface';
 import { SkillID, useSkill } from './skills';
-import { getEntity, refreshAllActionPoints } from './entity';
+import { getEntity } from './entity';
 import { fillState } from './level';
 import { createLevel0 } from './levels/level0';
-import { monstersAi } from './ai';
 import { EventType } from './events';
+import { endOfRound } from './rules';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -59,10 +59,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
   switch (action.type) {
     case 'endRound': {
-      store = { ...store, events: [] };
-      store = monstersAi(store);
-      store = refreshAllActionPoints(store);
-      return store;
+      return endOfRound(store);
     }
     case 'useSkill': {
       const { entityId, skillName, targetId } = action;

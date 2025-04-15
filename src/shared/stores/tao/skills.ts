@@ -1,5 +1,5 @@
 import { findFieldByPosition } from './board';
-import { useActionPointsEntity } from './entity';
+import { hasStatus, useActionPointsEntity } from './entity';
 import { addEvent } from './events';
 import { Entity } from './interface';
 import { attackSkill } from './skills/attack';
@@ -92,6 +92,15 @@ export function getPossibleTargets(state: StoreData, user: Entity, skillInstance
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
+  if (hasStatus(user, 'stunned')) {
+    return false;
+  }
+  if (hasStatus(user, 'disarmed')) {
+    const skill = skillFromInstance(skillInstance);
+    if (skill.type === 'attack') {
+      return false;
+    }
+  }
   return user.actionPoints.current >= skillFromInstance(skillInstance).cost;
 }
 

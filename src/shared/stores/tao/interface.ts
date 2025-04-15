@@ -13,6 +13,10 @@ export interface Position {
 
 export type EntityType = 'player' | 'enemy';
 
+export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned';
+
+export type Statuses = { [key in StatusEffect]?: number };
+
 export interface Entity {
   id: string;
   name: string;
@@ -23,6 +27,7 @@ export interface Entity {
   hp: Stat;
   actionPoints: Stat;
   position: Position;
+  statuses: Statuses;
 }
 
 export interface Field {
