@@ -32,7 +32,7 @@ export interface PoisonEvent {
   entityIds: string[];
 }
 
-export type EventType = MoveEvent | AttackEvent | DeathEvent | ApplyStatusEvent;
+export type EventType = MoveEvent | AttackEvent | DeathEvent | ApplyStatusEvent | PoisonEvent;
 
 export function addEvent(store: StoreData, event: EventType) {
   store.events.push(event);

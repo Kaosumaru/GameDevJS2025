@@ -33,7 +33,6 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     row.forEach((tile, x) => {
       const entityName = level.tileToEntity[tile];
       if (!entityName) return;
-      console.log('entityName', entityName);
 
       const entityCreator = entities[entityName];
       const entity = entityCreator(`entity-${entityId++}`, { x, y });

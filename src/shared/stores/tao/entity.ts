@@ -26,7 +26,7 @@ export function modifyEntities(state: StoreData, modifier: EntityReducer): Store
   return newState;
 }
 
-function damageReducer(damage: number): EntityReducer {
+export function damageReducer(damage: number): EntityReducer {
   return (entity: Entity) => ({
     ...entity,
     hp: { ...entity.hp, current: Math.max(0, entity.hp.current - damage) },

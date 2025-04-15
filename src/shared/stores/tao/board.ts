@@ -6,6 +6,18 @@ export function getField(state: StoreData, id: string): Field | undefined {
   return state.board.flat().find(field => field.id === id);
 }
 
+export function getEntityIdInFieldId(state: StoreData, id: string): string {
+  const field = getField(state, id);
+  if (!field) {
+    throw new Error(`Field with ID ${id} not found`);
+  }
+
+  if (field.entityUUID === undefined) {
+    throw new Error(`Field ${field.id} has no entityUUID`);
+  }
+  return field.entityUUID;
+}
+
 export function findFieldByPosition(state: StoreData, position: Position): Field | undefined {
   return state.board[position.y]?.[position.x];
 }

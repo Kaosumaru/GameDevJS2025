@@ -18,7 +18,8 @@ export function getFieldsInDistance(
   state: StoreData,
   startingFields: Field[],
   entity?: Entity,
-  maxDistance?: number
+  maxDistance?: number,
+  checkIfBlocked = true
 ): Map<Field, number> {
   const fieldsToVisit: Field[] = startingFields;
   const distanceToField = new Map<Field, number>();
@@ -33,7 +34,7 @@ export function getFieldsInDistance(
 
     const neighbors = getFieldNeighbors(state, currentField);
     for (const neighbor of neighbors) {
-      if (isBlocked(state, neighbor, entity)) {
+      if (checkIfBlocked && isBlocked(state, neighbor, entity)) {
         continue;
       }
       const distance = currentDistance + 1;
@@ -69,4 +70,20 @@ export function getDistancesToEntityType(state: StoreData, entityType: EntityTyp
 
 export function getDistancesToPlayers(state: StoreData): Map<Field, number> {
   return getDistancesToEntityType(state, 'player');
+}
+
+export function getFieldsWithEnemies(state: StoreData, entity: Entity, maxDistance?: number): Field[] {
+  const startingField = findFieldByPosition(state, entity.position);
+  if (!startingField) {
+    return [];
+  }
+  const distances = getFieldsInDistance(state, [startingField], entity, maxDistance, false);
+  const fieldsWithEnemies = [...distances.keys()]
+    .filter(field => field.entityUUID !== undefined)
+    .filter(field => {
+      const fieldEntity = getEntity(state, field.entityUUID!);
+      return isEnemy(entity, fieldEntity!);
+    });
+
+  return fieldsWithEnemies;
 }
