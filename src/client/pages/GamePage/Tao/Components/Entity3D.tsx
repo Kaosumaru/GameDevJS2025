@@ -17,6 +17,7 @@ export const Entity3D = ({
   const imageRef = useRef<Mesh>(null);
   const textRef = useRef<Mesh>(null);
   const rootRef = useRef<Mesh>(null);
+  const shadowRef = useRef<Mesh>(null);
 
   useFrame(() => {
     if (imageRef.current && textRef.current) {
@@ -26,8 +27,8 @@ export const Entity3D = ({
   });
 
   useEffect(() => {
-    if (!rootRef.current) return;
-    rootRef.current.scale.set(0, 0, 0);
+    rootRef.current?.scale.set(0, 0, 0);
+    shadowRef.current?.scale.set(0, 0, 0);
   }, []);
 
   useAnimation(
@@ -38,32 +39,34 @@ export const Entity3D = ({
     t => {
       if (!rootRef.current) return;
       rootRef.current.scale.set(t, t, t);
+      shadowRef.current!.scale.set(t, t, t);
       rootRef.current.position.y = (t - 1) * -4;
     }
   );
 
   return (
-    <group ref={rootRef} {...rest} dispose={null}>
-      <group position={[0, 1.2, 0]} ref={textRef}>
-        <Text color="black" anchorX="center" anchorY="middle" fontSize={0.2}>
-          {entity.name}
-        </Text>
-        <Text color="green" anchorX="center" anchorY="middle" position={[0, -0.2, 0]} fontSize={0.1}>
-          {entity.hp.current}/{entity.hp.max}
-        </Text>
+    <group {...rest} dispose={null}>
+      <group ref={rootRef}>
+        <group position={[0, 1.2, 0]} ref={textRef}>
+          <Text color="black" anchorX="center" anchorY="middle" fontSize={0.2}>
+            {entity.name}
+          </Text>
+          <Text color="green" anchorX="center" anchorY="middle" position={[0, -0.2, 0]} fontSize={0.1}>
+            {entity.hp.current}/{entity.hp.max}
+          </Text>
+        </group>
+        <Image ref={imageRef} url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0]} zoom={0.4}>
+          <planeGeometry args={[2, 2]} />
+        </Image>
+        <mesh onClick={onClick} position={[0, -0.0499, 0]}>
+          <boxGeometry args={[0.99, 0.1, 0.99]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
       </group>
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+      <mesh ref={shadowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.07, 0]}>
         <circleGeometry args={[0.3, 32]} />
         <meshStandardMaterial color="black" transparent opacity={0.8} />
-      </mesh>
-
-      <Image ref={imageRef} url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0]} zoom={0.4}>
-        <planeGeometry args={[2, 2]} />
-      </Image>
-      <mesh onClick={onClick} position={[0, -0.0499, 0]}>
-        <boxGeometry args={[0.99, 0.1, 0.99]} />
-        <meshStandardMaterial transparent opacity={0} />
       </mesh>
     </group>
   );
