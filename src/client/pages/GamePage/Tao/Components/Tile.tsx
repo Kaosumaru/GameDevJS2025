@@ -1,7 +1,9 @@
 import { shaderMaterial } from '@react-three/drei';
-import { extend, ThreeElements, useLoader } from '@react-three/fiber';
-import { useMemo } from 'react';
-import { Color, TextureLoader } from 'three';
+import { extend, ThreeElements, useFrame, useLoader } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
+import { Color, Mesh, TextureLoader } from 'three';
+import { easeElasticOut } from 'd3-ease';
+import { useAnimation } from '../Hooks/useAnimation';
 
 export const ColorTexMaterial = shaderMaterial(
   { color: new Color(0.2, 0.0, 0.1), uTexture: null },
@@ -29,17 +31,41 @@ export const ColorTexMaterial = shaderMaterial(
 
 extend({ ColorTexMaterial });
 
+const ease = easeElasticOut.amplitude(1).period(0.3);
+
 export const Tile = ({
   highlightColor,
+  col,
+  row,
   ...rest
 }: ThreeElements['mesh'] & {
+  col: number;
+  row: number;
   highlightColor?: Color;
 }) => {
   const [colorMap] = useLoader(TextureLoader, ['/wall.png']);
   const neutralColor = useMemo(() => new Color(1, 1, 1), []);
+  const meshRef = useRef<Mesh>(null);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    meshRef.current.scale.set(0, 0, 0);
+  }, []);
+
+  useAnimation(
+    ease,
+    {
+      delay: (col + row) / (7 * 7) + 0.4,
+    },
+    t => {
+      if (!meshRef.current) return;
+      meshRef.current.scale.set(t, t, t);
+      meshRef.current.position.y = (t - 1) * 2;
+    }
+  );
 
   return (
-    <mesh {...rest} castShadow receiveShadow>
+    <mesh ref={meshRef} {...rest} castShadow receiveShadow>
       <boxGeometry args={[1, 0.1, 1]} />
       <colorTexMaterial color={highlightColor ?? neutralColor} map={colorMap} uTexture={colorMap} />
     </mesh>
