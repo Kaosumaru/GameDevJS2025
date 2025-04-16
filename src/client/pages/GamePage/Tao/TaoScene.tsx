@@ -97,10 +97,11 @@ export const TaoScene = ({
             );
           })
         )}
-        {Object.values(temporalEntities).map(entity => {
+        {Object.values(temporalEntities).map((entity, index) => {
           return (
             <Entity3D
               key={entity.id}
+              isSelected={entity.id === selectedEntityId}
               entity={entity}
               onClick={() => {
                 setSelectedEntityId(entity.id);

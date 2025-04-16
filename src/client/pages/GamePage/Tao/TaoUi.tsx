@@ -32,7 +32,7 @@ const TaoUiComponent = ({
           <CSSTransition
             key={entity !== null ? entity?.id : null}
             in={entity !== null}
-            timeout={100}
+            timeout={50}
             nodeRef={uiRef}
             classNames="switch"
             unmountOnExit

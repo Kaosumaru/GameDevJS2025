@@ -64,9 +64,11 @@ const TemporalEvent = memo(TemporalEventComponent);
 
 const Entity3DComponent = ({
   entity,
+  isSelected,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
+  isSelected: boolean;
   entity: TemporalEntity;
 }) => {
   const { camera } = useThree();
@@ -122,28 +124,12 @@ const Entity3DComponent = ({
           rootRef.current.position.y = (t - 1) * -4;
         }}
       />
-      {/*<Animation
-        delay={0.8}
-        ease={t => (Math.sin(t * 8) + 1) / 2}
-        continuous={true}
-        sink={d => {
-          if (isSelected) {
-            const displacement = d / 20;
-            rootRef.current!.position.y = displacement;
-            const scale = 1 - d * 0.2;
-            shadowRef.current!.scale.set(scale, scale, scale);
-          } else {
-            rootRef.current!.position.y = 0;
-            shadowRef.current!.scale.set(1, 1, 1);
-          }
-        }}
-      />*/}
 
-      <group ref={rootRef} frustumCulled={false}>
+      <group ref={rootRef}>
         {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
           return (
             entity.type === 'player' && (
-              <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.2, 1, 0.02]} frustumCulled={false}>
+              <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.2, 1, 0.02]}>
                 <sphereGeometry args={[0.05, 32]} />
                 <meshStandardMaterial color={i < entity.actionPoints.current ? manaColor : inactiveColor} />
               </mesh>
@@ -153,31 +139,25 @@ const Entity3DComponent = ({
         {Array.from({ length: entity.hp.max }).map((_, i) => {
           const color = i < entity.hp.current ? activeColor : damageColor;
           return (
-            <mesh key={`hp-${i}`} frustumCulled={false} position={[0 + i * 0.12, 1, 0.02]}>
+            <mesh key={`hp-${i}`} position={[0 + i * 0.12, 1, 0.02]}>
               <boxGeometry args={[0.1, 0.05, 0.1]} />
               <meshStandardMaterial color={color} />
             </mesh>
           );
         })}
-        <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 0.01]} zoom={0.4} frustumCulled={false}>
+        <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 1]} zoom={0.4} renderOrder={5}>
           <planeGeometry args={[2, 2]} />
         </Image>
       </group>
 
-      <mesh onClick={onClick} position={[0, -0.1, 0]} frustumCulled={false}>
+      <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>
         <boxGeometry args={[0.99, 0.1, 0.99]} />
         <meshStandardMaterial transparent opacity={0} />
       </mesh>
 
-      <mesh
-        ref={shadowRef}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.08, -0.001]}
-        scale={[0, 0, 0]}
-        frustumCulled={false}
-      >
+      <mesh ref={shadowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]} renderOrder={3}>
         <circleGeometry args={[0.3, 32]} />
-        <meshStandardMaterial color="black" transparent opacity={0.8} />
+        <meshStandardMaterial color={isSelected ? 0x00ff00 : 0x000000} transparent opacity={0.8} />
       </mesh>
     </group>
   );
