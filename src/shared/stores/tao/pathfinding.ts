@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { findFieldByPosition, getEntityInField, getFieldNeighbors } from './board';
 import { getEntity, isEnemy } from './entity';
 import { Entity, EntityType, Field } from './interface';

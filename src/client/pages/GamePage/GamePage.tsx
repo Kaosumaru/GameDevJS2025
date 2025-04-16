@@ -2,7 +2,7 @@ import { Tao } from './Tao/Tao';
 
 import './GamePage.css';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
-import { JSX, Suspense, useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { Main } from '@client/utils/Main';
 import { Button } from '@mui/material';
 
@@ -62,6 +62,7 @@ function GameWrapper(props: GameWrapperProps): JSX.Element {
       });
     }, getReconnectDelay(triesToConnect));
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disconnected, triesToConnect]);
 
   if (autoreconnecting) {

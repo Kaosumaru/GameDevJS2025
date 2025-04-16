@@ -31,6 +31,7 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
     const attackSkills = getUseableAttackSkills(state, entity);
     if (attackSkills.length != 0) {
       const skillId = attackSkills[0];
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       state = useSkillOnFirstTarget(state, entity, skillId);
       continue;
     }
@@ -40,6 +41,7 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
       const skillId = movementSkills[0];
       const bestTarget = bestTargetsForMovement(state, entity, skillId);
       if (bestTarget) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         state = useSkill(state, entity, skillId, bestTarget.id);
         continue;
       }
@@ -67,6 +69,7 @@ function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillI
     return state;
   }
   const targetId = targets[0];
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSkill(state, entity, skillId, targetId);
 }
 

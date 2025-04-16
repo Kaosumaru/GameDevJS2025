@@ -76,6 +76,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
 
       store = { ...store, events: [] };
       store = clearOriginalPositions(store);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       return useSkill(store, entity, skillName, targetId);
     }
 

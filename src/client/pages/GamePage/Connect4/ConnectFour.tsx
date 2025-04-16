@@ -8,7 +8,8 @@ import { UserInfo } from 'pureboard/shared/gameRoomStore';
 import { motion } from 'motion/react';
 import ConnectFourOptions from './ConnectFourOptions';
 import { useClient } from 'pureboard/client/react';
-import GameTabs, { ETabs } from '../Components/GameTabs';
+import GameTabs from '../Components/GameTabs';
+import { ETabs } from '../Components/ETabs';
 import { SpecificGameProps } from '../GamePage';
 
 function createPlayer(seat: UserInfo | null, index: number, gameRoomClient: GameRoomClient) {

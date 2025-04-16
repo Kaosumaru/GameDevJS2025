@@ -1,7 +1,7 @@
 import { Button, Stack } from '@mui/material';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { ConnectFourClient } from './ConnectFourClient';
-import { useLoginContext } from '@client/pages/LoginPage/LoginPage';
+import { useLoginContext } from '@client/pages/LoginPage/useLoginContext';
 
 export interface ConnectFourOptionsProps {
   gameRoomClient: GameRoomClient;

@@ -1,6 +1,6 @@
 import { Entity } from '@shared/stores/tao/interface';
 import { useEffect, useState } from 'react';
-import { TemporalEntity, TemporalSpawnEvent } from '../TaoTypes';
+import { TemporalEntity } from '../TaoTypes';
 import { EventType } from '@shared/stores/tao/events';
 
 const MOVE_DURATION_MS = 300;

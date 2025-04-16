@@ -7,7 +7,7 @@ function LogoutPage() {
 
   useEffect(() => {
     removeCookie();
-  }, []);
+  }, [removeCookie]);
 
   return (
     <Stack>
