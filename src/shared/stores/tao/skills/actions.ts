@@ -1,6 +1,8 @@
 import { getField } from '../board';
 import { damageReducer, EntityReducer, modifyEntitiesInFields } from '../entity';
+import { addEvent } from '../events';
 import { StatusEffect } from '../interface';
+import { moveEntityTo } from '../movement';
 import { SkillContext } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
@@ -13,6 +15,15 @@ export function damage(amount: number) {
 export function status(status: StatusEffect, amount: number) {
   // addEvent(state, { type: 'attack', attackerId, targetId, damage });
   return modifyEntities(applyStatusReducer(status, amount));
+}
+
+export function move(ctx: TargetContext) {
+  if (ctx.fields.length === 0) {
+    return;
+  }
+  const field = ctx.fields[0];
+  ctx.state = moveEntityTo(ctx.state, ctx.entity.id, field.position);
+  addEvent(ctx.state, { type: 'move', entityId: ctx.entity.id, from: ctx.entity.position, to: field.position });
 }
 
 function modifyEntities(modifier: EntityReducer) {
