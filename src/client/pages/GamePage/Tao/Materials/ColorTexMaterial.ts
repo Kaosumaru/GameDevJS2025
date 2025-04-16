@@ -1,6 +1,6 @@
-import { shaderMaterial } from "@react-three/drei";
-import { extend } from "@react-three/fiber";
-import { Color } from "three";
+import { shaderMaterial } from '@react-three/drei';
+import { extend } from '@react-three/fiber';
+import { Color } from 'three';
 
 export const ColorTexMaterial = shaderMaterial(
   { color: new Color(0.2, 0.0, 0.1), uTexture: null },

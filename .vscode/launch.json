@@ -4,26 +4,21 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-   {
-    "name": "Debug Example Server",
-    "request": "launch",
-    "runtimeArgs": [
-        "run-script",
-        "dev"
-    ],
-    "runtimeExecutable": "npm",
-    "skipFiles": [
-        "<node_internals>/**"
-    ],
-    "type": "node"
-   },
-   {
-    "type": "chrome",
-    "request": "launch",
-    "name": "Debug Game in Chrome",
-    "url": "http://localhost:3000/",
-    "urlFilter": "http://localhost:3000/*",
-    "webRoot": "${workspaceFolder}/src/",
+    {
+      "name": "Debug Example Server",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
     },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug Game in Chrome",
+      "url": "http://localhost:3000/",
+      "urlFilter": "http://localhost:3000/*",
+      "webRoot": "${workspaceFolder}/src/"
+    }
   ]
 }
