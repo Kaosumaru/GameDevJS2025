@@ -1,7 +1,7 @@
 import { Entity3D } from './Components/Entity3D';
 import { JSX, useState } from 'react';
 import { Tile } from './Components/Tile';
-import { getPossibleTargets, Skill, skillFromID, SkillID } from '@shared/stores/tao/skills';
+import { getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
 import { useTemporalEntities } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
@@ -12,7 +12,7 @@ import { Seat } from './UiComponents/Seat';
 import { TaoUi } from './TaoUi';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 
-type UiAction = 'select-target';
+type UiAction = { action: 'select-target'; targets: string[]; skill: SkillInstance };
 
 const attackColor = new Color(0xff0000);
 const moveColor = new Color(0x00ff00);
@@ -44,14 +44,12 @@ export const TaoScene = ({
   const entities = client.store(state => state.entities);
   const events = client.store(state => state.events);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
-  const [, setUiAction] = useState<UiAction[]>([]);
-  const [targets, setTargets] = useState<string[]>([]);
-  const [skillID, setSkillID] = useState<SkillID | undefined>();
+  const [uiAction, setUiAction] = useState<UiAction[]>([]);
 
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
-
   const temporalEntities = useTemporalEntities(entities, events);
-  const skill = skillID !== undefined ? skillFromID(skillID) : undefined;
+  const skill = uiAction.length >= 1 ? skillFromID(uiAction[0].skill.id) : undefined;
+  const targets = uiAction.length >= 1 ? uiAction[0].targets : [];
   return (
     <group>
       <group>
@@ -76,8 +74,9 @@ export const TaoScene = ({
                       console.warn('No entity selected');
                       return;
                     }
+                    const [action] = uiAction;
 
-                    if (!skillID) {
+                    if (!action) {
                       console.warn('No skill selected');
                       return;
                     }
@@ -87,10 +86,8 @@ export const TaoScene = ({
                       return;
                     }
 
-                    void client.useSkill(selectedEntity.id, skillID, field.id);
-                    setSkillID(undefined);
+                    void client.useSkill(selectedEntity.id, action.skill.id, field.id);
                     setUiAction([]);
-                    setTargets([]);
                   }}
                 />
               )
@@ -114,15 +111,15 @@ export const TaoScene = ({
         <Seat gameRoomClient={gameRoomClient} entities={entities} />
         <TaoUi
           entity={selectedEntity}
+          selectedSkillId={skill?.id ?? null}
           onSkill={skill => {
             if (selectedEntity == undefined) {
               console.warn('No entity selected');
               return;
             }
-            setSkillID(skill.id);
-            setUiAction(['select-target']);
+
             const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
-            setTargets(targets);
+            setUiAction([{ action: 'select-target' as const, targets, skill }]);
           }}
           onEndTurn={() => {
             void client.endRound();

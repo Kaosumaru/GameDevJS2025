@@ -15,11 +15,13 @@ function skillNameFromInstance(skillInstance: SkillInstance): string {
 
 const TaoUiComponent = ({
   entity,
+  selectedSkillId,
   onSkill,
   onEndTurn,
   ...rest
 }: JSX.IntrinsicElements['div'] & {
   entity: Entity | undefined;
+  selectedSkillId: string | null;
   onSkill: (skillInstance: SkillInstance) => void;
   onEndTurn: () => void;
 }) => {
@@ -41,7 +43,7 @@ const TaoUiComponent = ({
               {entity?.skills.map(skill => (
                 <Button
                   key={skill.id}
-                  variant="outlined"
+                  variant={skill.id === selectedSkillId ? 'contained' : 'outlined'}
                   sx={{
                     padding: matches ? 1 : 0.1,
                   }}
