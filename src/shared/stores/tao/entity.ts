@@ -12,7 +12,7 @@ export function getEntity(state: StoreData, id: string): Entity {
   return entity;
 }
 
-type EntityReducer = (entity: Entity) => Entity;
+export type EntityReducer = (entity: Entity) => Entity;
 
 export function modifyEntity(state: StoreData, entityID: string, modifier: EntityReducer): StoreData {
   const entity = getEntity(state, entityID);

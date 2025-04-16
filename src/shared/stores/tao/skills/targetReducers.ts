@@ -1,4 +1,4 @@
-import { fieldsWithEnemy, getEntityField, getFieldNeighbors } from '../board';
+import { fieldsWithEnemy, getEntityField, getField, getFieldNeighbors } from '../board';
 import { Entity, Field } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
 import { SkillContext } from '../skills';
@@ -10,16 +10,13 @@ export interface TargetContext {
   fields: Field[];
 }
 
-export type TargetReducer = (ctx: TargetContext) => TargetContext;
+export type TargetReducer = (ctx: TargetContext) => void;
 
-export function reduceTargets(ctx: TargetContext, reducers: TargetReducer[]): Field[] {
+export function reduceTargets(ctx: TargetContext, reducers: TargetReducer[]): TargetContext {
   for (const reducer of reducers) {
-    ctx = reducer(ctx);
-    if (ctx.fields.length === 0) {
-      return [];
-    }
+    reducer(ctx);
   }
-  return ctx.fields;
+  return ctx;
 }
 
 export function targets(reducers: TargetReducer[]) {
@@ -30,7 +27,20 @@ export function targets(reducers: TargetReducer[]) {
       fields: [getEntityField(state, ctx.user)],
     };
 
-    const fields = reduceTargets(context, reducers);
+    const fields = reduceTargets(context, reducers).fields;
+    return fields.map(field => field.id);
+  };
+}
+
+export function affected(reducers: TargetReducer[]) {
+  return (state: StoreData, ctx: SkillContext): string[] => {
+    const context: TargetContext = {
+      state,
+      entity: ctx.user,
+      fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
+    };
+
+    const fields = reduceTargets(context, reducers).fields;
     return fields.map(field => field.id);
   };
 }
@@ -46,26 +56,22 @@ export function neighborsExcluding(ctx: TargetContext): TargetContext {
 }
 
 export function inMoveDistance(range: number) {
-  return (ctx: TargetContext): TargetContext => {
+  return (ctx: TargetContext) => {
     ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range).keys()];
-    return ctx;
   };
 }
 
-export function withEnemy(ctx: TargetContext): TargetContext {
+export function withEnemy(ctx: TargetContext) {
   ctx.fields = fieldsWithEnemy(ctx.state, ctx.fields, ctx.entity);
-  return ctx;
 }
 
-export function empty(ctx: TargetContext): TargetContext {
+export function empty(ctx: TargetContext) {
   ctx.fields = ctx.fields.filter(field => field.entityUUID === undefined);
-  return ctx;
 }
 
 export function area(range: number) {
-  return (ctx: TargetContext): TargetContext => {
+  return (ctx: TargetContext) => {
     const distances = getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range, false);
     ctx.fields = [...distances.keys()];
-    return ctx;
   };
 }

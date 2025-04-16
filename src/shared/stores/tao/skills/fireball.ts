@@ -2,7 +2,8 @@ import { getFieldNeighbors } from '../board';
 import { damageReducer, modifyEntitiesInFields } from '../entity';
 import { getFieldsWithEnemies } from '../pathfinding';
 import { getTargetField, Skill } from '../skills';
-import { area, targets } from './targetReducers';
+import { actions, damage } from './actions';
+import { affected, area, targets } from './targetReducers';
 
 export const fireballSkill: Skill = {
   id: 'fireball',
@@ -10,16 +11,7 @@ export const fireballSkill: Skill = {
   description: 'Cast a fireball',
   type: 'attack',
   cost: 1,
-  reducer: (state, ctx) => {
-    const fields = getFieldsWithEnemies(state, ctx.user, 1, getTargetField(state, ctx));
-    const damage = 2;
-    state = modifyEntitiesInFields(state, fields, damageReducer(damage));
-
-    return state;
-  },
+  reducer: actions([area(1), damage(2)]),
   getPossibleTargets: targets([area(3)]),
-  getAffectedFields(state, ctx) {
-    const field = getTargetField(state, ctx);
-    return getFieldNeighbors(state, field).map(f => f.id);
-  },
+  getAffectedFields: affected([area(1)]),
 };
