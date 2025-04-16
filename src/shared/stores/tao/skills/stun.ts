@@ -1,7 +1,6 @@
 import { applyStatusForEntity } from '../entity';
-import { getFieldsWithEnemies } from '../pathfinding';
 import { getTargetEntityIdInField, Skill } from '../skills';
-import { getID } from '../utils';
+import { area, targets, withEnemy } from './targetReducers';
 
 export const stunSkill: Skill = {
   id: 'stun',
@@ -12,7 +11,5 @@ export const stunSkill: Skill = {
   reducer: (state, ctx) => {
     return applyStatusForEntity(state, getTargetEntityIdInField(state, ctx), 'stunned', 1);
   },
-  getPossibleTargets: (state, ctx) => {
-    return getFieldsWithEnemies(state, ctx.user, 3).map(getID);
-  },
+  getPossibleTargets: targets([area(3), withEnemy]),
 };

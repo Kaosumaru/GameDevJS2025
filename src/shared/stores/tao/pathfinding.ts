@@ -71,7 +71,7 @@ export function getDistancesToPlayers(state: StoreData): Map<Field, number> {
   return getDistancesToEntityType(state, 'player');
 }
 
-export function getFieldsWithEnemies(
+function getFieldsWithEntities(
   state: StoreData,
   entity: Entity,
   maxDistance?: number,
@@ -82,20 +82,18 @@ export function getFieldsWithEnemies(
     return [];
   }
   const distances = getFieldsInDistance(state, [startingField], entity, maxDistance, false);
-  const fieldsWithEnemies = [...distances.keys()]
-    .filter(field => field.entityUUID !== undefined)
+  return [...distances.keys()]
+    .filter(field => field.entityUUID !== undefined);
+}
+
+export function getFieldsWithEnemies(
+  state: StoreData,
+  entity: Entity,
+  maxDistance?: number,
+  fromField?: Field
+): Field[] {
+  return getFieldsWithEntities(state, entity, maxDistance, fromField)
     .filter(field => {
       return isEnemy(entity, getEntityInField(state, field));
     });
-
-  return fieldsWithEnemies;
-}
-
-export function getFieldsNearEntity(state: StoreData, entity: Entity, maxDistance: number): Field[] {
-  const startingField = findFieldByPosition(state, entity.position);
-  if (!startingField) {
-    return [];
-  }
-  const distances = getFieldsInDistance(state, [startingField], entity, maxDistance, false);
-  return [...distances.keys()];
 }

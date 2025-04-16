@@ -1,9 +1,7 @@
-import { getEntityField } from '../board';
 import { addEvent } from '../events';
 import { moveEntityTo } from '../movement';
-import { getEmptyFields, getFieldsInDistance } from '../pathfinding';
 import { getTargetField, Skill } from '../skills';
-import { getID } from '../utils';
+import { empty, inMoveDistance, targets } from './targetReducers';
 
 export const moveSkill: Skill = {
   id: 'move',
@@ -17,12 +15,5 @@ export const moveSkill: Skill = {
     addEvent(state, { type: 'move', entityId: ctx.user.id, from: ctx.user.position, to: field.position });
     return state;
   },
-  getPossibleTargets: (state, ctx) => {
-    const field = getEntityField(state, ctx.user);
-    if (!field) {
-      throw new Error(`Field with ID ${ctx.user.position.x},${ctx.user.position.y} not found`);
-    }
-    const fieldsMap = getFieldsInDistance(state, [field], ctx.user, 2);
-    return getEmptyFields(fieldsMap).map(getID);
-  },
+  getPossibleTargets: targets([inMoveDistance(2), empty]),
 };

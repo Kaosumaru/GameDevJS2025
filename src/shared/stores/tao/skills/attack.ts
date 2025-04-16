@@ -1,7 +1,6 @@
-import { fieldsWithEnemy, getEntityField, getFieldNeighbors } from '../board';
 import { damageEntity } from '../entity';
 import { getTargetEntityIdInField, Skill } from '../skills';
-import { getID } from '../utils';
+import { neighborsExcluding, targets, withEnemy } from './targetReducers';
 
 export const attackSkill: Skill = {
   id: 'attack',
@@ -12,9 +11,5 @@ export const attackSkill: Skill = {
   reducer: (state, ctx) => {
     return damageEntity(state, ctx.user.id, getTargetEntityIdInField(state, ctx), 1);
   },
-  getPossibleTargets: (state, ctx) => {
-    const userField = getEntityField(state, ctx.user);
-    const neighbors = getFieldNeighbors(state, userField);
-    return fieldsWithEnemy(state, neighbors, ctx.user).map(getID);
-  },
+  getPossibleTargets: targets([neighborsExcluding, withEnemy]),
 };

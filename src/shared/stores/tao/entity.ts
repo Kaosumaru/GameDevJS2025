@@ -51,6 +51,13 @@ export function damageReducer(damage: number): EntityReducer {
   });
 }
 
+export function healReducer(amount: number): EntityReducer {
+  return (entity: Entity) => ({
+    ...entity,
+    hp: { ...entity.hp, current: Math.min(entity.hp.max, entity.hp.current + amount) },
+  });
+}
+
 function useActionReducer(points: number): EntityReducer {
   return (entity: Entity) => ({
     ...entity,

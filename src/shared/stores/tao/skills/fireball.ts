@@ -1,8 +1,8 @@
 import { getFieldNeighbors } from '../board';
 import { damageReducer, modifyEntitiesInFields } from '../entity';
-import { getFieldsNearEntity, getFieldsWithEnemies } from '../pathfinding';
+import { getFieldsWithEnemies } from '../pathfinding';
 import { getTargetField, Skill } from '../skills';
-import { getID } from '../utils';
+import { area, targets } from './targetReducers';
 
 export const fireballSkill: Skill = {
   id: 'fireball',
@@ -17,9 +17,7 @@ export const fireballSkill: Skill = {
 
     return state;
   },
-  getPossibleTargets: (state, ctx) => {
-    return getFieldsNearEntity(state, ctx.user, 3).map(getID);
-  },
+  getPossibleTargets: targets([area(3)]),
   getAffectedFields(state, ctx) {
     const field = getTargetField(state, ctx);
     return getFieldNeighbors(state, field).map(f => f.id);
