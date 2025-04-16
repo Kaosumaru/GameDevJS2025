@@ -12,8 +12,8 @@ export class TaoClient extends BaseGameClient<StoreData, Action> {
     await this.sendAction({ type: 'useSkill', entityId, skillName, targetId });
   }
 
-  public async endRound() {
-    await this.sendAction({ type: 'endRound' });
+  public async endRound(seat: number) {
+    await this.sendAction({ type: 'endRound', seat });
   }
 
   public async newGame() {

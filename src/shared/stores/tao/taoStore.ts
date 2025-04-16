@@ -18,12 +18,14 @@ export interface UseSkillAction {
 
 export interface EndRoundAction {
   type: 'endRound';
+  seat: number;
 }
 
 export type Action = UseSkillAction | EndRoundAction;
 
 export interface StoreData {
   gameOver: boolean;
+  playersPassed: boolean[];
   board: Field[][];
   entities: Entity[];
   events: EventType[];
@@ -47,6 +49,7 @@ function convertNumbersToFieldType(numbers: number[][]): Field[][] {
 export function createGameStateStore(): StoreContainer<StoreData, Action> {
   return createComponentStore(
     {
+      playersPassed: [],
       board: [],
       gameOver: false,
       entities: [],
@@ -59,7 +62,15 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
   switch (action.type) {
     case 'endRound': {
-      return endOfRound(store);
+      if (!ctx.playerValidation.canMoveAsPlayer(action.seat)) {
+        throw new Error(`Cannot end round as player ${action.seat}`);
+      }
+      store = { ...store, playersPassed: store.playersPassed.map((v, i) => (i === action.seat ? true : v)) };
+      const allPassed = store.playersPassed.every(v => v);
+      if (allPassed) {
+        store = endOfRound(store);
+      }
+      return store;
     }
     case 'useSkill': {
       const { entityId, skillName, targetId } = action;
@@ -83,6 +94,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       const board = create2DArray(10, 10, 0);
       const fieldData = convertNumbersToFieldType(board);
       let state: StoreData = {
+        playersPassed: Array(action.options.players).fill(false),
         board: fieldData,
         gameOver: false,
         entities: [],

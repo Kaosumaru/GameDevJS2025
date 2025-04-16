@@ -83,7 +83,7 @@ export const TaoScene = ({ gameRoomClient, ui }: { gameRoomClient: GameRoomClien
                       return;
                     }
 
-                    client.useSkill(selectedEntity.id, skillID, field.id);
+                    void client.useSkill(selectedEntity.id, skillID, field.id);
                     setSkillID(undefined);
                     setUiAction([]);
                     setTargets([]);
@@ -122,7 +122,10 @@ export const TaoScene = ({ gameRoomClient, ui }: { gameRoomClient: GameRoomClien
             setTargets(targets);
           }}
           onEndTurn={() => {
-            void client.endRound();
+            if (selectedEntity?.ownerId) {
+              void client.endRound(selectedEntity.ownerId);
+            }
+
             setUiAction([]);
             setSelectedEntityId(null);
           }}
