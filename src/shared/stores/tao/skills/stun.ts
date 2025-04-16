@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { applyStatusForEntity } from '../entity';
 import { getFieldsWithEnemies } from '../pathfinding';
 import { getTargetEntityIdInField, Skill } from '../skills';

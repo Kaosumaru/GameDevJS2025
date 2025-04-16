@@ -1,5 +1,4 @@
 import { Entity } from '@shared/stores/tao/interface';
-import { TaoClient } from './TaoClient';
 import { Dock } from './UiComponents/Dock';
 import { HorizontalContainer } from './UiComponents/HorizontalContainer';
 import { JSX, useRef, memo } from 'react';
@@ -15,13 +14,11 @@ function skillNameFromInstance(skillInstance: SkillInstance): string {
 }
 
 const TaoUiComponent = ({
-  client,
   entity,
   onSkill,
   onEndTurn,
   ...rest
 }: JSX.IntrinsicElements['div'] & {
-  client: TaoClient;
   entity: Entity | undefined;
   onSkill: (skillInstance: SkillInstance) => void;
   onEndTurn: () => void;

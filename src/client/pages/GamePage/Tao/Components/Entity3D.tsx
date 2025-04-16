@@ -64,11 +64,9 @@ const TemporalEvent = memo(TemporalEventComponent);
 
 const Entity3DComponent = ({
   entity,
-  isSelected,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
-  isSelected: boolean;
   entity: TemporalEntity;
 }) => {
   const { camera } = useThree();
@@ -96,7 +94,7 @@ const Entity3DComponent = ({
         }[];
         startTime: number;
       }>(
-        (acc, event, index) => {
+        (acc, event) => {
           acc.events.push({
             event: event,
             startTime: acc.startTime,
@@ -186,4 +184,3 @@ const Entity3DComponent = ({
 };
 
 export const Entity3D = memo(Entity3DComponent);
-Entity3D;

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { AccumulativeShadows, RandomizedLight, Environment as EnvironmentImpl } from '@react-three/drei';
+import { Environment as EnvironmentImpl } from '@react-three/drei';
 
 export const Environment = memo(({ direction = [5, 5, 5] }: { direction?: [number, number, number] }) => (
   <>

@@ -36,7 +36,7 @@ export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomCli
                 sx={{ minWidth: matches ? 200 : 100 }}
                 size={matches ? 'large' : 'small'}
                 onClick={() => {
-                  gameRoomClient.takeSeat(index);
+                  void gameRoomClient.takeSeat(index);
                 }}
               >
                 {matches ? '<Nobody>(Take a Seat)' : '<Nobody>'}
@@ -49,7 +49,7 @@ export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomCli
                 color={'success'}
                 sx={{ minWidth: matches ? 200 : 100 }}
                 onClick={() => {
-                  gameRoomClient.leaveSeat(index);
+                  void gameRoomClient.leaveSeat(index);
                 }}
               >
                 {matches ? seat.name + ' (Leave)' : seat.name}

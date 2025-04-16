@@ -9,6 +9,7 @@ import { SnackBarChat } from './SnackBarChat';
 import GameChat from './GameChat';
 import { useClient } from 'pureboard/client/react';
 import { IBaseComponentClient } from 'pureboard/client/interface';
+import { ETabs } from './ETabs';
 
 export interface GameTabsProps {
   gameClient: IBaseComponentClient;
@@ -49,12 +50,6 @@ interface TopBarProps {
   unreadMessages: number;
   tab: ETabs;
   setTab: (tab: ETabs) => void;
-}
-
-export enum ETabs {
-  Game,
-  Chat,
-  Settings,
 }
 
 function TopBar(props: TopBarProps) {

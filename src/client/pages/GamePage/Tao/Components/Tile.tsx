@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, TextureLoader } from 'three';
 import { easeElasticOut } from 'd3-ease';
 import { Animation } from './Animation';
-import { Field } from '@shared/stores/tao/interface';
 
 const ease = easeElasticOut.amplitude(1).period(0.3);
 
@@ -11,12 +10,10 @@ export const Tile = ({
   highlightColor,
   col,
   row,
-  field,
   ...rest
 }: ThreeElements['mesh'] & {
   col: number;
   row: number;
-  field: Field;
   highlightColor?: Color;
 }) => {
   const [colorMap] = useLoader(TextureLoader, ['/wall.png']);

@@ -1,8 +1,9 @@
 import './LoginPage.css';
-import { Backdrop, CircularProgress, Stack } from '@mui/material';
-import { createContext, JSX, useCallback, useContext, useEffect, useState } from 'react';
+import { Backdrop, CircularProgress, Stack, Theme } from '@mui/material';
+import { JSX, useCallback, useEffect, useState } from 'react';
 import { useUserIdCookie } from '@client/api/auth';
 import { Login } from '../GamePage/Components/Login';
+import { LoginContext } from './LoginContext';
 
 export interface LoginProps {
   children?: JSX.Element | JSX.Element[];
@@ -12,13 +13,6 @@ export type GlobalContent = {
   logout: () => void;
   userId: string;
 };
-
-export const LoginContext = createContext<GlobalContent>({
-  logout: () => {
-    // do nothing
-  },
-  userId: '',
-});
 
 function LoginPage(props: LoginProps) {
   const [error, SetError] = useState<string | undefined>();
@@ -43,6 +37,7 @@ function LoginPage(props: LoginProps) {
 
     setIsLoggedIn(true);
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -56,11 +51,12 @@ function LoginPage(props: LoginProps) {
     } else {
       SetCheckingSession(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (checkingSession) {
     return (
-      <Backdrop sx={theme => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={checkingSession}>
+      <Backdrop sx={(theme: Theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={checkingSession}>
         <CircularProgress color="inherit" />
       </Backdrop>
     );
@@ -84,4 +80,3 @@ function LoginPage(props: LoginProps) {
 }
 
 export default LoginPage;
-export const useLoginContext = () => useContext(LoginContext);

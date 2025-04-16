@@ -3,8 +3,8 @@ import { JSX, useEffect, useState } from 'react';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { useParams } from 'react-router-dom';
 import GamePage from './GamePage';
-import { useLoginContext } from '../LoginPage/LoginPage';
-import { Box, Card, Link, Stack } from '@mui/material';
+import { useLoginContext } from '../LoginPage/useLoginContext';
+import { Box, Card, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 function JoinGamePage(): JSX.Element {
@@ -52,6 +52,7 @@ function JoinGamePage(): JSX.Element {
       client?.disconnect();
       setGameClient(undefined);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, gameId]);
 
   if (error) {

@@ -1,7 +1,7 @@
 import './GamePage.css';
 import { JSX, useEffect, useState } from 'react';
 import GamePage from './GamePage';
-import { useLoginContext } from '../LoginPage/LoginPage';
+import { useLoginContext } from '../LoginPage/useLoginContext';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 
 function CreateGamePage(): JSX.Element {
@@ -43,6 +43,7 @@ function CreateGamePage(): JSX.Element {
       client?.disconnect();
       setGameClient(undefined);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!gameClient) {
