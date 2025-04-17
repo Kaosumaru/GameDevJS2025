@@ -2,11 +2,12 @@ import { getEntityField, getField, getFieldNeighbors } from '../board';
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
-import { SkillContext } from '../skills';
+import { getAffectedTargets, SkillContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 
 export interface TargetContext {
   state: StoreData;
+  skillInstance?: SkillInstance;
   entity?: Entity;
   fields: Field[];
 }
@@ -24,6 +25,7 @@ export function targets(reducers: TargetReducer[]) {
   return (state: StoreData, ctx: SkillContext): string[] => {
     const context: TargetContext = {
       state,
+      skillInstance: ctx.skillInstance,
       entity: ctx.user,
       fields: [getEntityField(state, ctx.user)],
     };
@@ -37,6 +39,7 @@ export function affected(reducers: TargetReducer[]) {
   return (state: StoreData, ctx: SkillContext): string[] => {
     const context: TargetContext = {
       state,
+      skillInstance: ctx.skillInstance,
       entity: ctx.user,
       fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
     };
@@ -53,6 +56,18 @@ export function neighborsExcluding(ctx: TargetContext): TargetContext {
     result.push(...neighbors);
   }
   ctx.fields = result;
+  return ctx;
+}
+
+export function affectedFields(ctx: TargetContext): TargetContext {
+  const field = ctx.fields[0];
+  if (!ctx.skillInstance || !ctx.entity || !field) {
+    throw new Error('SkillInstance and Entity are required for affectedFields');
+  }
+
+  ctx.fields = getAffectedTargets(ctx.state, ctx.entity, ctx.skillInstance, field.id).map(fieldId =>
+    getField(ctx.state, fieldId)
+  );
   return ctx;
 }
 

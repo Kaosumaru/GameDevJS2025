@@ -82,6 +82,7 @@ export function actions(reducers: TargetReducer[]) {
   return (state: StoreData, ctx: SkillContext): StoreData => {
     const context: TargetContext = {
       state,
+      skillInstance: ctx.skillInstance,
       entity: ctx.user,
       fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
     };
@@ -94,6 +95,7 @@ export function rule(reducers: TargetReducer[]) {
   return (state: StoreData): StoreData => {
     const context: TargetContext = {
       state,
+      skillInstance: undefined,
       entity: undefined,
       fields: [],
     };

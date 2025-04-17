@@ -8,10 +8,11 @@ import { healSkill } from './skills/heal';
 import { moveSkill } from './skills/move';
 import { shieldSkill } from './skills/shield';
 import { stunSkill } from './skills/stun';
+import { tauntSkill } from './skills/taunt';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
 
-export type SkillID = 'move' | 'attack' | 'stun' | 'fireball' | 'shield' | 'heal';
+export type SkillID = 'move' | 'attack' | 'stun' | 'fireball' | 'shield' | 'heal' | 'taunt';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
@@ -43,6 +44,7 @@ const skills: SkillsMap = {
   fireball: fireballSkill,
   shield: shieldSkill,
   heal: healSkill,
+  taunt: tauntSkill,
 };
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {
