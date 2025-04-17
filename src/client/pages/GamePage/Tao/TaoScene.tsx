@@ -1,7 +1,7 @@
 import { Entity3D } from './Components/Entity3D';
 import { JSX, useState } from 'react';
 import { Tile } from './Components/Tile';
-import { getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
+import { getAffectedTargets, getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial';
 import { useTemporalEntities } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
@@ -19,9 +19,10 @@ const moveColor = new Color(0x00ff00);
 const defaultColor = new Color(0xffffff);
 const disabledColor = new Color(0x999999);
 
-function colorForSkill(skill: Skill | undefined): Color {
+function colorForSkill(skill: Skill | undefined, affected: boolean): Color {
   if (skill === undefined) return moveColor;
 
+  if (affected) return new Color(0xffff00); // yellow for affected fields
   switch (skill.type) {
     case 'attack':
       return attackColor;
@@ -45,6 +46,7 @@ export const TaoScene = ({
   const events = client.store(state => state.events);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction[]>([]);
+  const [affectedFields, setAffectedFields] = useState<string[]>([]);
 
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
   const temporalEntities = useTemporalEntities(entities, events);
@@ -56,10 +58,11 @@ export const TaoScene = ({
         {board.map((row, rowIdx) =>
           row.map((field, colIdx) => {
             const isTarget = targets.includes(field.id);
+            const isAffected = affectedFields.includes(field.id);
             const { x, y } = boardPositionToUiPosition(field.position.y, field.position.x);
 
             const isCurrentPlayerInControlOfSelectedEntity = client.haveSeat(selectedEntity?.ownerId ?? -1);
-            const color = isCurrentPlayerInControlOfSelectedEntity ? colorForSkill(skill) : disabledColor;
+            const color = isCurrentPlayerInControlOfSelectedEntity ? colorForSkill(skill, isAffected) : disabledColor;
             return (
               !field.blocking && (
                 <Tile
@@ -67,8 +70,14 @@ export const TaoScene = ({
                   col={colIdx}
                   row={rowIdx}
                   position={[x, -0.05, y]}
-                  highlightColor={isTarget ? color : undefined}
-                  onPointerEnter={() => {}}
+                  highlightColor={isTarget || isAffected ? color : undefined}
+                  onPointerEnter={() => {
+                    if (isTarget && selectedEntity && skill) {
+                      setAffectedFields(getAffectedTargets(client.store.getState(), selectedEntity, skill, field.id));
+                    } else {
+                      setAffectedFields([]);
+                    }
+                  }}
                   onClick={() => {
                     if (!selectedEntity) {
                       console.warn('No entity selected');
@@ -88,6 +97,7 @@ export const TaoScene = ({
 
                     void client.useSkill(selectedEntity.id, action.skill.id, field.id);
                     setUiAction([]);
+                    setAffectedFields([]);
                   }}
                 />
               )
@@ -120,10 +130,12 @@ export const TaoScene = ({
 
             const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
             setUiAction([{ action: 'select-target' as const, targets, skill }]);
+            setAffectedFields([]);
           }}
           onEndTurn={() => {
             void client.endRound();
             setUiAction([]);
+            setAffectedFields([]);
             setSelectedEntityId(null);
           }}
         />
