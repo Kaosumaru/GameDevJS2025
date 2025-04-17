@@ -100,6 +100,20 @@ export function getPossibleTargets(state: StoreData, user: Entity, skillInstance
   return skillFromInstance(skillInstance).getPossibleTargets(state, { user, skillInstance });
 }
 
+export function getAffectedTarget(
+  state: StoreData,
+  user: Entity,
+  skillInstance: SkillInstance,
+  targetId: string
+): string[] {
+  const skill = skillFromInstance(skillInstance);
+  if (!skill.getAffectedFields) {
+    return [];
+  }
+
+  return skill.getAffectedFields(state, { user, skillInstance, targetId });
+}
+
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
   if (hasStatus(user, 'stunned')) {
     return false;
