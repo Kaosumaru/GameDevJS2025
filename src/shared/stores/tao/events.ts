@@ -15,11 +15,12 @@ export interface AttackEvent {
   damage: number;
 }
 
-export type DamageType = 'standard' | 'poison' | 'heal';
+export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield';
 
 export interface DamageData {
   entityId: string;
   damage: number;
+  shieldDamage: number;
   damageType: DamageType;
 }
 

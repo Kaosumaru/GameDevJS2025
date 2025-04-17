@@ -4,12 +4,14 @@ import { addEvent } from './events';
 import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
 import { fireballSkill } from './skills/fireball';
+import { healSkill } from './skills/heal';
 import { moveSkill } from './skills/move';
+import { shieldSkill } from './skills/shield';
 import { stunSkill } from './skills/stun';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
 
-export type SkillID = 'move' | 'attack' | 'stun' | 'fireball';
+export type SkillID = 'move' | 'attack' | 'stun' | 'fireball' | 'shield' | 'heal';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
@@ -39,6 +41,8 @@ const skills: SkillsMap = {
   attack: attackSkill,
   stun: stunSkill,
   fireball: fireballSkill,
+  shield: shieldSkill,
+  heal: healSkill,
 };
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {

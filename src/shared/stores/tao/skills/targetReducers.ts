@@ -66,6 +66,10 @@ export function withEnemy(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isEnemy(ctx.entity, entity) : false));
 }
 
+export function withAlly(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? !isEnemy(ctx.entity, entity) : false));
+}
+
 export function empty(ctx: TargetContext) {
   ctx.fields = ctx.fields.filter(field => field.entityUUID === undefined);
 }
@@ -89,6 +93,13 @@ export function area(range: number) {
 
 export function allEntities(ctx: TargetContext) {
   ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+}
+
+export function self(ctx: TargetContext) {
+  if (!ctx.entity) {
+    throw new Error('Entity is undefined');
+  }
+  ctx.fields = [getEntityField(ctx.state, ctx.entity)];
 }
 
 function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolean): Field[] {

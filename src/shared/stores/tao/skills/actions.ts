@@ -8,26 +8,45 @@ import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
 export function damage(amount: number, type: DamageType = 'standard') {
-  return modifyEntities(damageReducer(amount), (ids, ctx) => {
-    addEvent(ctx.state, {
-      type: 'damage',
-      attackerId: ctx.entity?.id,
-      damages: ids.map(entityId => ({
-        entityId,
-        damage: amount,
-        damageType: type,
-      })),
-    });
+  return modifyEntities(damageReducer(amount), (entities, ctx) => {
+    addDamageEvent(ctx.state, ctx.entity, entities, type);
     return ctx.state;
   });
 }
 
+export function heal(amount: number) {
+  return modifyEntities(healReducer(amount), (entities, ctx) => {
+    addDamageEvent(ctx.state, ctx.entity, entities, 'heal');
+    return ctx.state;
+  });
+}
+
+export function gainShield(amount: number) {
+  return modifyEntities(gainShieldReducer(amount), (entities, ctx) => {
+    addDamageEvent(ctx.state, ctx.entity, entities, 'shield');
+    return ctx.state;
+  });
+}
+
+function addDamageEvent(state: StoreData, attacker: Entity | undefined, entities: EntityDelta[], type: DamageType) {
+  addEvent(state, {
+    type: 'damage',
+    attackerId: attacker?.id,
+    damages: entities.map(delta => ({
+      entityId: delta[0].id,
+      damage: delta[1].hp.current - delta[0].hp.current,
+      shieldDamage: delta[1].shield - delta[0].shield,
+      damageType: type,
+    })),
+  });
+}
+
 export function status(status: StatusEffect, amount: number) {
-  return modifyEntities(applyStatusReducer(status, amount), (ids, ctx) => {
+  return modifyEntities(applyStatusReducer(status, amount), (entities, ctx) => {
     addEvent(ctx.state, {
       type: 'applyStatus',
-      statuses: ids.map(entityId => ({
-        entityId,
+      statuses: entities.map(delta => ({
+        entityId: delta[0].id,
         status,
         amount,
       })),
@@ -48,11 +67,14 @@ export function move(ctx: TargetContext) {
   addEvent(ctx.state, { type: 'move', entityId: ctx.entity.id, from: ctx.entity.position, to: field.position });
 }
 
-function modifyEntities(modifier: EntityReducer, postProcess: (entityIds: string[], ctx: TargetContext) => StoreData) {
+function modifyEntities(
+  modifier: EntityReducer,
+  postProcess: (entityDeltas: EntityDelta[], ctx: TargetContext) => StoreData
+) {
   return (ctx: TargetContext) => {
-    const [newState, entityIds] = modifyEntitiesInFields(ctx.state, ctx.fields, modifier);
+    const [newState, entityDelta] = modifyEntitiesInFields(ctx.state, ctx.fields, modifier);
     ctx.state = newState;
-    ctx.state = postProcess(entityIds, ctx);
+    ctx.state = postProcess(entityDelta, ctx);
   };
 }
 
@@ -88,10 +110,15 @@ function applyStatusReducer(status: StatusEffect, amount: number): EntityReducer
 }
 
 function damageReducer(damage: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    hp: { ...entity.hp, current: Math.max(0, entity.hp.current - damage) },
-  });
+  return (entity: Entity) => {
+    const shieldDamage = Math.min(entity.shield, damage);
+    const remainingDamage = damage - shieldDamage;
+    return {
+      ...entity,
+      shield: Math.max(0, entity.shield - shieldDamage),
+      hp: { ...entity.hp, current: Math.max(0, entity.hp.current - remainingDamage) },
+    };
+  };
 }
 
 function healReducer(amount: number): EntityReducer {
@@ -101,14 +128,30 @@ function healReducer(amount: number): EntityReducer {
   });
 }
 
-function modifyEntitiesInFields(state: StoreData, fields: Field[], modifier: EntityReducer): [StoreData, string[]] {
+function gainShieldReducer(amount: number): EntityReducer {
+  return (entity: Entity) => ({
+    ...entity,
+    shield: entity.shield + amount,
+  });
+}
+
+type EntityDelta = [Entity, Entity];
+
+function modifyEntitiesInFields(
+  state: StoreData,
+  fields: Field[],
+  modifier: EntityReducer
+): [StoreData, EntityDelta[]] {
   const entityIds = fields.map(field => getEntityIdInField(state, field));
+  const modifiedEntities: EntityDelta[] = [];
   const newState = { ...state };
   newState.entities = newState.entities.map(entity => {
     if (entityIds.includes(entity.id)) {
-      return modifier(entity);
+      const newEntity = modifier(entity);
+      modifiedEntities.push([entity, newEntity]);
+      return newEntity;
     }
     return entity;
   });
-  return [newState, entityIds];
+  return [newState, modifiedEntities];
 }

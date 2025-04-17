@@ -1,6 +1,4 @@
-import { getEntityIdInField } from './board';
 import { EntityName } from './entities';
-import { addEvent } from './events';
 import { Entity, Field, StatusEffect } from './interface';
 import { StoreData } from './taoStore';
 
@@ -89,19 +87,4 @@ export function isEnemy(entityA: Entity, entityB: Entity): boolean {
     return false;
   }
   return entityA.type !== entityB.type;
-}
-
-export function createEntity(store: StoreData, name: string, avatar: EntityName, ownerId?: number): Entity {
-  return {
-    id: `entity-${store.entities.length}`,
-    name,
-    type: 'player',
-    avatar: `/avatars/${avatar}`,
-    ownerId,
-    skills: [{ id: 'move' }, { id: 'attack' }],
-    hp: { current: 100, max: 100 },
-    actionPoints: { current: 2, max: 2 },
-    position: { x: 0, y: 0 },
-    statuses: {},
-  };
 }
