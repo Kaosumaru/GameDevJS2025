@@ -1,4 +1,5 @@
 import { entities, EntityName } from './entities';
+import { addEvent } from './events';
 import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
 
@@ -37,6 +38,10 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
       const entityCreator = entities[entityName];
       const entity = entityCreator(`entity-${entityId++}`, { x, y });
       state = placeEntity(state, entity, { x, y });
+      addEvent(state, {
+        type: 'spawn',
+        entity,
+      });
     });
   });
 
