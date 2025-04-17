@@ -30,6 +30,7 @@ export interface Entity {
   position: Position;
   originalPosition?: Position;
   statuses: Statuses;
+  isTank?: boolean;
 }
 
 export interface Field {

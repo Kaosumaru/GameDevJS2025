@@ -145,6 +145,7 @@ const Entity3DComponent = ({
             </mesh>
           );
         })}
+
         <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 1]} zoom={0.4} renderOrder={5}>
           <planeGeometry args={[2, 2]} />
         </Image>

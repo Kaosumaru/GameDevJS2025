@@ -1,13 +1,13 @@
 import { Skill } from '../../skills';
-import { actions, heal } from '../actions';
-import { area, targets, withAlly } from '../targetReducers';
+import { actions, heal, status } from '../actions';
+import { area, targets, withAlly, withEnemy } from '../targetReducers';
 
-export const clericHeal: Skill = {
-  id: 'clericHeal',
-  name: 'Heal',
-  description: 'Heal self',
+export const clericDisarm: Skill = {
+  id: 'clericDisarm',
+  name: 'Disarm',
+  description: 'Disarm',
   type: 'defense',
   cost: 1,
-  reducer: actions([heal(4)]),
-  getPossibleTargets: targets([area(4), withAlly]),
+  reducer: actions([status('disarmed', 1)]),
+  getPossibleTargets: targets([area(4), withEnemy]),
 };

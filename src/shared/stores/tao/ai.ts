@@ -1,5 +1,5 @@
 import { findFieldByPosition, getField } from './board';
-import { getEntity } from './entity';
+import { getEntity, hasStatus } from './entity';
 import { Entity, Field } from './interface';
 import { getDistancesToPlayers } from './pathfinding';
 import {
@@ -57,7 +57,9 @@ function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: Skill
   const fieldsInRange = possibleTargets
     .map(targetId => getField(state, targetId))
     .filter((field): field is Field => field !== undefined);
-  const distances = getDistancesToPlayers(state);
+
+  const taunted = hasStatus(entity, 'taunted');
+  const distances = getDistancesToPlayers(state, taunted);
   const closestField = getClosestFieldToPlayers(state, fieldsInRange, entity, distances);
   return closestField;
 }
