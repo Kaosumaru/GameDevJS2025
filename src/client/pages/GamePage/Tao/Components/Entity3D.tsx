@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { JSX, useMemo, useRef } from 'react';
 import { Euler, Mesh } from 'three';
 import { Entity } from '@shared/stores/tao/interface';
+import { FireVFX } from '../VFX/FireVFX';
 
 export const Entity3DBase = ({
   hpLabel,
@@ -54,6 +55,19 @@ export const Entity3D = ({
 
   return (
     <group {...rest} dispose={null}>
+      <FireVFX
+          position={[0, 0.75, 0]}
+          radiusTop={0.5}
+          radiusBottom={0.5}
+          height={1.5}
+          color={[1.0, 0.5, 0.1]}
+          stripeCount={8}
+          blur={0.4}
+          skew={0.7}
+          speed1={-0.1}
+          speed2={0.1}
+      />
+
       <Text ref={textRef} color="black" anchorX="center" anchorY="middle" position={[0, 1.4, 0]} fontSize={0.2}>
         {entity.name}
       </Text>

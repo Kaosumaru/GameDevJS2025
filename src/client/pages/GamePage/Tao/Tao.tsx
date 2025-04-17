@@ -29,17 +29,6 @@ export const Tao = (props: SpecificGameProps) => {
         <color attach="background" args={['skyblue']} />
         <Environment />
         <OrbitControls makeDefault />
-        <FireVFX
-          radiusTop={0.3}
-          radiusBottom={0.6}
-          height={2}
-          color={[1.0, 0.5, 0.1]}
-          stripeCount={15}
-          blur={0.15}
-          skew={0.7}
-          speed1={-0.1}
-          speed2={0.1}
-        />
         <group>
           {board.map((row, rowIdx) =>
             row.map((field, colIdx) => {
