@@ -100,7 +100,7 @@ export function getPossibleTargets(state: StoreData, user: Entity, skillInstance
   return skillFromInstance(skillInstance).getPossibleTargets(state, { user, skillInstance });
 }
 
-export function getAffectedTarget(
+export function getAffectedTargets(
   state: StoreData,
   user: Entity,
   skillInstance: SkillInstance,
