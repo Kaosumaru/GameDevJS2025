@@ -34,8 +34,14 @@ function addDamageEvent(state: StoreData, attacker: Entity | undefined, entities
     attackerId: attacker?.id,
     damages: entities.map(delta => ({
       entityId: delta[0].id,
-      damage: delta[1].hp.current - delta[0].hp.current,
-      shieldDamage: delta[1].shield - delta[0].shield,
+      health: {
+        from: delta[0].hp.current,
+        to: delta[1].hp.current,
+      },
+      shield: {
+        from: delta[0].shield,
+        to: delta[1].shield,
+      },
       damageType: type,
     })),
   });

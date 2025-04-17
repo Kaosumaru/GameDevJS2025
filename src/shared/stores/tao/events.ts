@@ -8,6 +8,7 @@ export interface MoveEvent {
   to: Position;
 }
 
+// obsolete, isb't sent anymore
 export interface AttackEvent {
   type: 'attack';
   attackerId: string;
@@ -17,10 +18,14 @@ export interface AttackEvent {
 
 export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield';
 
+export interface Delta<T> {
+  from: T;
+  to: T;
+}
 export interface DamageData {
   entityId: string;
-  damage: number;
-  shieldDamage: number;
+  health: Delta<number>;
+  shield: Delta<number>;
   damageType: DamageType;
 }
 
