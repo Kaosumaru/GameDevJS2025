@@ -1,12 +1,13 @@
-import { fieldsWithEnemy, getEntityField, getField, getFieldNeighbors } from '../board';
-import { Entity, Field } from '../interface';
+import { getEntityField, getField, getFieldNeighbors } from '../board';
+import { getEntity, hasStatus, isEnemy } from '../entity';
+import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
 import { SkillContext } from '../skills';
 import { StoreData } from '../taoStore';
 
 export interface TargetContext {
   state: StoreData;
-  entity: Entity;
+  entity?: Entity;
   fields: Field[];
 }
 
@@ -62,11 +63,21 @@ export function inMoveDistance(range: number) {
 }
 
 export function withEnemy(ctx: TargetContext) {
-  ctx.fields = fieldsWithEnemy(ctx.state, ctx.fields, ctx.entity);
+  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isEnemy(ctx.entity, entity) : false));
 }
 
 export function empty(ctx: TargetContext) {
   ctx.fields = ctx.fields.filter(field => field.entityUUID === undefined);
+}
+
+export function withEntity(ctx: TargetContext) {
+  ctx.fields = ctx.fields.filter(field => field.entityUUID !== undefined);
+}
+
+export function withEntityWithStatus(status: StatusEffect) {
+  return (ctx: TargetContext) => {
+    ctx.fields = fieldsWithEntity(ctx, entity => hasStatus(entity, status));
+  };
 }
 
 export function area(range: number) {
@@ -74,4 +85,16 @@ export function area(range: number) {
     const distances = getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range, false);
     ctx.fields = [...distances.keys()];
   };
+}
+
+export function allEntities(ctx: TargetContext) {
+  ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+}
+
+function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolean): Field[] {
+  return ctx.fields.filter(field => {
+    if (field.entityUUID === undefined) return false;
+    const fieldEntity = getEntity(ctx.state, field.entityUUID);
+    return fieldEntity && filter(fieldEntity);
+  });
 }

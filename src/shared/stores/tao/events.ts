@@ -15,24 +15,37 @@ export interface AttackEvent {
   damage: number;
 }
 
+export type DamageType = 'standard' | 'poison' | 'heal';
+
+export interface DamageData {
+  entityId: string;
+  damage: number;
+  damageType: DamageType;
+}
+
+export interface DamageEvent {
+  type: 'damage';
+  attackerId?: string;
+  damages: DamageData[];
+}
+
 export interface DeathEvent {
   type: 'death';
   entityId: string;
 }
 
-export interface ApplyStatusEvent {
-  type: 'applyStatus';
+export interface ApplyStatusData {
   entityId: string;
   status: StatusEffect;
   amount: number;
 }
 
-export interface PoisonEvent {
-  type: 'poison';
-  entityIds: string[];
+export interface ApplyStatusEvent {
+  type: 'applyStatus';
+  statuses: ApplyStatusData[];
 }
 
-export type EventType = MoveEvent | AttackEvent | DeathEvent | ApplyStatusEvent | PoisonEvent;
+export type EventType = MoveEvent | AttackEvent | DeathEvent | ApplyStatusEvent | DamageEvent;
 
 export function addEvent(store: StoreData, event: EventType) {
   store.events.push(event);

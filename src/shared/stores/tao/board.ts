@@ -61,14 +61,6 @@ export function getFieldNeighbors(state: StoreData, field: Field): Field[] {
   return neighbors;
 }
 
-export function fieldsWithEnemy(state: StoreData, fields: Field[], entity: Entity): Field[] {
-  return fields.filter(field => {
-    if (field.entityUUID === undefined) return false;
-    const fieldEntity = getEntity(state, field.entityUUID);
-    return fieldEntity && isEnemy(entity, fieldEntity); // Filter out the user's own entity
-  });
-}
-
 export function getFieldsInRange(state: StoreData, field: Field, range: number): Field[] {
   const fieldsInRange: Field[] = [];
   for (let y = field.position.y - range; y <= field.position.y + range; y++) {

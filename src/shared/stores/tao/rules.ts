@@ -1,8 +1,11 @@
 import { monstersAi } from './ai';
-import { clearOriginalPositions, damageReducer, hasStatus, modifyAllEntities, refreshAllActionPoints } from './entity';
-import { addEvent, PoisonEvent } from './events';
+import { clearOriginalPositions, modifyAllEntities, refreshAllActionPoints } from './entity';
 import { Entity, StatusEffect, Statuses } from './interface';
+import { damage, rule } from './skills/actions';
+import { allEntities, withEntityWithStatus as withStatus } from './skills/targetReducers';
 import { StoreData } from './taoStore';
+
+const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 
 export function endOfRound(state: StoreData): StoreData {
   state = { ...state, events: [] };
@@ -31,22 +34,4 @@ function decrementAllStatuses(statuses: Statuses): Statuses {
     }
   }
   return newStatuses;
-}
-
-function applyPoison(state: StoreData): StoreData {
-  const poisonEvent: PoisonEvent = {
-    type: 'poison',
-    entityIds: state.entities.filter(entity => hasStatus(entity, 'poisoned')).map(entity => entity.id),
-  };
-  if (poisonEvent.entityIds.length === 0) {
-    return state;
-  }
-  state = modifyAllEntities(state, entity => {
-    if (hasStatus(entity, 'poisoned')) {
-      return damageReducer(1)(entity); // Apply poison damage
-    }
-    return entity;
-  });
-  addEvent(state, poisonEvent);
-  return state;
 }

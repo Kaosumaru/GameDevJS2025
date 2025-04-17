@@ -22,53 +22,16 @@ export function modifyEntity(state: StoreData, entityID: string, modifier: Entit
   return newState;
 }
 
-export function modifyEntitiesInFields(state: StoreData, fields: Field[], modifier: EntityReducer): StoreData {
-  const entityIds = fields.map(field => getEntityIdInField(state, field));
-  return modifyEntities(state, entityIds, modifier);
-}
-
-export function modifyEntities(state: StoreData, entityIds: string[], modifier: EntityReducer): StoreData {
-  const newState = { ...state };
-  newState.entities = newState.entities.map(entity => {
-    if (entityIds.includes(entity.id)) {
-      return modifier(entity);
-    }
-    return entity;
-  });
-  return newState;
-}
-
 export function modifyAllEntities(state: StoreData, modifier: EntityReducer): StoreData {
   const newState = { ...state };
   newState.entities = newState.entities.map(modifier);
   return newState;
 }
 
-export function damageReducer(damage: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    hp: { ...entity.hp, current: Math.max(0, entity.hp.current - damage) },
-  });
-}
-
-export function healReducer(amount: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    hp: { ...entity.hp, current: Math.min(entity.hp.max, entity.hp.current + amount) },
-  });
-}
-
 function useActionReducer(points: number): EntityReducer {
   return (entity: Entity) => ({
     ...entity,
     actionPoints: { ...entity.actionPoints, current: Math.max(0, entity.actionPoints.current - points) },
-  });
-}
-
-function applyStatusReducer(status: StatusEffect, amount: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    statuses: { ...entity.statuses, [status]: (entity.statuses[status] ?? 0) + amount },
   });
 }
 
@@ -84,23 +47,6 @@ function clearOriginalPositionReducer(entity: Entity): Entity {
     ...entity,
     originalPosition: entity.position,
   };
-}
-
-export function damageEntity(state: StoreData, attackerId: string, targetId: string, damage: number): StoreData {
-  state = modifyEntity(state, targetId, damageReducer(damage));
-  addEvent(state, { type: 'attack', attackerId, targetId, damage });
-  return state;
-}
-
-export function applyStatusForEntity(
-  state: StoreData,
-  entityId: string,
-  status: StatusEffect,
-  amount: number
-): StoreData {
-  state = modifyEntity(state, entityId, applyStatusReducer(status, amount));
-  addEvent(state, { type: 'applyStatus', entityId, status, amount });
-  return state;
 }
 
 export function getStatusAmount(entity: Entity, status: StatusEffect): number {
