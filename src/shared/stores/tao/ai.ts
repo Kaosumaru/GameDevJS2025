@@ -28,13 +28,6 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
     if (!entity) {
       break;
     }
-    const attackSkills = getUseableAttackSkills(state, entity);
-    if (attackSkills.length != 0) {
-      const skillId = attackSkills[0];
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      state = useSkillOnFirstTarget(state, entity, skillId);
-      continue;
-    }
 
     const movementSkills = getUseableMovementSkills(state, entity);
     if (movementSkills.length != 0) {
@@ -45,6 +38,14 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
         state = useSkill(state, entity, skillId, bestTarget.id);
         continue;
       }
+    }
+
+    const attackSkills = getUseableAttackSkills(state, entity);
+    if (attackSkills.length != 0) {
+      const skillId = attackSkills[0];
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      state = useSkillOnFirstTarget(state, entity, skillId);
+      continue;
     }
     break;
   }
@@ -67,9 +68,12 @@ function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: Skill
 function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID): StoreData {
   const skillInstance = getSkillInstance(entity, skillId);
   const targets = getPossibleTargets(state, entity, skillInstance);
+  // TODO
+  const taunted = hasStatus(entity, 'taunted');
   if (targets.length == 0) {
     return state;
   }
+
   const targetId = targets[0];
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSkill(state, entity, skillId, targetId);
