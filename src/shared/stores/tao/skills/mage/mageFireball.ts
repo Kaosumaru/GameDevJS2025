@@ -1,9 +1,9 @@
-import { Skill } from '../skills';
-import { actions, damage } from './actions';
-import { affected, affectedFields, area, targets, withEntity } from './targetReducers';
+import { Skill } from '../../skills';
+import { actions, damage } from '../actions';
+import { affected, affectedFields, area, targets, withEntity } from '../targetReducers';
 
-export const fireballSkill: Skill = {
-  id: 'fireball',
+export const mageFireball: Skill = {
+  id: 'mageFireball',
   name: 'Fireball',
   description: 'Cast a fireball',
   type: 'attack',

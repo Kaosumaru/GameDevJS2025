@@ -3,16 +3,21 @@ import { hasStatus, useActionPointsEntity } from './entity';
 import { addEvent } from './events';
 import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
-import { fireballSkill } from './skills/fireball';
-import { healSkill } from './skills/heal';
+import { mageFireball } from './skills/mage/mageFireball';
+import { clericHeal } from './skills/cleric/clericHeal';
+import { knightAttack } from './skills/knight/knightAttack';
 import { moveSkill } from './skills/move';
 import { shieldSkill } from './skills/shield';
 import { stunSkill } from './skills/stun';
-import { tauntSkill } from './skills/taunt';
+import { knightTaunt } from './skills/knight/knightTaunt';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
+import { clericDisarm } from './skills/cleric/clericDisarm';
+import { mageBlind } from './skills/mage/mageBlind';
+import { clericCritical } from './skills/cleric/clericCritical';
+import { knightSpeed } from './skills/knight/knightSpeed';
+import { mageSickle } from './skills/mage/mageSickle';
 
-export type SkillID = 'move' | 'attack' | 'stun' | 'fireball' | 'shield' | 'heal' | 'taunt';
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
 export interface Skill {
@@ -36,16 +41,26 @@ export interface SkillContext {
   targetId?: string;
 }
 
-type SkillsMap = { [key in SkillID]: Skill };
-const skills: SkillsMap = {
+const skills = {
   move: moveSkill,
   attack: attackSkill,
   stun: stunSkill,
-  fireball: fireballSkill,
   shield: shieldSkill,
-  heal: healSkill,
-  taunt: tauntSkill,
+
+  clericHeal,
+  clericDisarm,
+  clericCritical,
+
+  knightTaunt,
+  knightAttack,
+  knightSpeed,
+
+  mageFireball,
+  mageBlind,
+  mageSickle,
 };
+
+export type SkillID = Extract<keyof typeof skills, string>;
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {
   return skills[skillInstance.id];

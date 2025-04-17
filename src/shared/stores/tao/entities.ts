@@ -41,8 +41,8 @@ export const entities: EntitiesType = {
     name: 'Goth GF',
     avatar: '/avatars/goth-gf',
 
-    skills: [{ id: 'move' }, { id: 'attack' }, { id: 'fireball' }],
-    hp: { current: 2, max: 3 },
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
+    hp: { current: 3, max: 3 },
     ownerId: 0,
   }),
   'sun-princess': (id, position) => ({
@@ -52,7 +52,7 @@ export const entities: EntitiesType = {
     name: 'Sun Princess',
     avatar: '/avatars/sun-princess',
 
-    skills: [{ id: 'move' }, { id: 'attack' }, { id: 'heal' }],
+    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericDisarm' }],
     hp: { current: 3, max: 3 },
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
@@ -64,9 +64,10 @@ export const entities: EntitiesType = {
     name: 'Knight',
     avatar: '/avatars/knight',
 
-    skills: [{ id: 'move' }, { id: 'attack' }, { id: 'shield' }],
+    skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }],
     hp: { current: 3, max: 3 },
 
+    isTank: true,
     ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
   'mushroom-bomb': (id, position) => ({
