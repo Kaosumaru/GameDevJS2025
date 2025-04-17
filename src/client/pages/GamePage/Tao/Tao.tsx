@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 import './Materials/ColorTexMaterial';
 import tunnel from 'tunnel-rat';
 import { Environment } from './Components/Environment';
-import { Html, OrbitControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { LoadingFallback } from './Components/LoadingFallback';
 
 const ui = tunnel();
