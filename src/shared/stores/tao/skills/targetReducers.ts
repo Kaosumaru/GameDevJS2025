@@ -1,4 +1,4 @@
-import { getEntityField, getField, getFieldNeighbors } from '../board';
+import { getEntityField, getField, getFieldNeighbors, getFieldNeighbors9 } from '../board';
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
@@ -56,6 +56,26 @@ export function neighborsExcluding(ctx: TargetContext): TargetContext {
     result.push(...neighbors);
   }
   ctx.fields = result;
+  return ctx;
+}
+
+export function neighbors9Excluding(ctx: TargetContext): TargetContext {
+  const result: Field[] = [];
+  for (const field of ctx.fields) {
+    const neighbors = getFieldNeighbors9(ctx.state, field);
+    result.push(...neighbors);
+  }
+  ctx.fields = result;
+  return ctx;
+}
+
+export function neighbors9(ctx: TargetContext): TargetContext {
+  const result: Field[] = [];
+  for (const field of ctx.fields) {
+    const neighbors = getFieldNeighbors9(ctx.state, field);
+    result.push(...neighbors);
+  }
+  ctx.fields = [...ctx.fields, ...result];
   return ctx;
 }
 

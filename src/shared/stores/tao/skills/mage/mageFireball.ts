@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, damage } from '../actions';
-import { affected, affectedFields, area, targets, withEntity } from '../targetReducers';
+import { affected, area, neighbors9, neighbors9Excluding, targets, withEnemy } from '../targetReducers';
 
 export const mageFireball: Skill = {
   id: 'mageFireball',
@@ -8,7 +8,7 @@ export const mageFireball: Skill = {
   description: 'Cast a fireball',
   type: 'attack',
   cost: 1,
-  reducer: actions([affectedFields, withEntity, damage(2)]),
+  reducer: actions([damage(3), neighbors9Excluding, withEnemy, damage(1)]),
   getPossibleTargets: targets([area(3)]),
-  getAffectedFields: affected([area(1)]),
+  getAffectedFields: affected([neighbors9]),
 };

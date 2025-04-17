@@ -150,7 +150,7 @@ function modifyEntitiesInFields(
   fields: Field[],
   modifier: EntityReducer
 ): [StoreData, EntityDelta[]] {
-  const entityIds = fields.map(field => getEntityIdInField(state, field));
+  const entityIds = fields.filter(fields => fields.entityUUID).map(field => getEntityIdInField(state, field));
   const modifiedEntities: EntityDelta[] = [];
   const newState = { ...state };
   newState.entities = newState.entities.map(entity => {

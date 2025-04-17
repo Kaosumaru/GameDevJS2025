@@ -61,6 +61,27 @@ export function getFieldNeighbors(state: StoreData, field: Field): Field[] {
   return neighbors;
 }
 
+export function getFieldNeighbors9(state: StoreData, field: Field): Field[] {
+  const neighbors: Field[] = [];
+  const directions = [
+    { x: 0, y: -1 }, // Up
+    { x: 1, y: -1 }, // Up-Right
+    { x: 1, y: 0 }, // Right
+    { x: 1, y: 1 }, // Down-Right
+    { x: 0, y: 1 }, // Down
+    { x: -1, y: 1 }, // Down-Left
+    { x: -1, y: 0 }, // Left
+    { x: -1, y: -1 }, // Up-Left
+  ];
+  for (const { x, y } of directions) {
+    const neighbor = findFieldByPosition(state, { x: field.position.x + x, y: field.position.y + y });
+    if (neighbor) {
+      neighbors.push(neighbor);
+    }
+  }
+  return neighbors;
+}
+
 export function getFieldsInRange(state: StoreData, field: Field, range: number): Field[] {
   const fieldsInRange: Field[] = [];
   for (let y = field.position.y - range; y <= field.position.y + range; y++) {
