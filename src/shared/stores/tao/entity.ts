@@ -50,11 +50,13 @@ function clearOriginalPositionReducer(entity: Entity): Entity {
 }
 
 export function getStatusAmount(entity: Entity, status: StatusEffect): number {
-  return entity.statuses[status] ?? 0;
+  const amount = entity.statuses[status] ?? 0;
+  return amount;
 }
 
 export function hasStatus(entity: Entity, status: StatusEffect): boolean {
-  return getStatusAmount(entity, status) > 0;
+  const result = getStatusAmount(entity, status) > 0;
+  return result;
 }
 
 export function payForSkillEntity(state: StoreData, entityID: string, skill: Skill): StoreData {

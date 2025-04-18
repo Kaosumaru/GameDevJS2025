@@ -55,7 +55,7 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
         ...entity,
         statuses: {
           ...entity.statuses,
-          [status.status]: stat(status.amount),
+          [status.status]: status.amount,
         },
       };
     }

@@ -2,7 +2,6 @@ import { Skill } from '../../skills';
 import { actions, status } from '../actions';
 import { area, targets, withAlly, withEnemy } from '../targetReducers';
 
-// TODO critical is not implemented yet
 export const clericCritical: Skill = {
   id: 'clericCritical',
   name: 'Shine',

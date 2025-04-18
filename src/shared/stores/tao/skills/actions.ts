@@ -1,4 +1,5 @@
 import { getEntityInField, getField } from '../board';
+import { hasStatus } from '../entity';
 import { addEvent, DamageData, DamageType, EventType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
 import { SkillContext } from '../skills';
@@ -7,31 +8,30 @@ import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
-    addDamageEvent(ctx, entity => {
-      const damageToShield = Math.min(entity.shield, amount);
-      const damageToHealth = Math.max(0, amount - damageToShield);
-      return {
-        health: Math.max(0, entity.hp.current - damageToHealth),
-        shield: entity.shield - damageToShield,
-        damageType: 'heal',
-      };
-    });
+    addStandardDamageEvent(ctx, amount, type);
   };
 }
 
 export function attack(modifier: number = 0, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
-    addDamageEvent(ctx, entity => {
-      const amount = (ctx.entity?.attack ?? 0) + modifier;
-      const damageToShield = Math.min(entity.shield, amount);
-      const damageToHealth = Math.max(0, amount - damageToShield);
-      return {
-        health: Math.max(0, entity.hp.current - damageToHealth),
-        shield: entity.shield - damageToShield,
-        damageType: 'heal',
-      };
-    });
+    const amount = (ctx.entity?.attack ?? 0) + modifier;
+    addStandardDamageEvent(ctx, amount, type);
   };
+}
+
+function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
+  if (ctx.entity && hasStatus(ctx.entity, 'critical')) {
+    amount *= 2;
+  }
+  addDamageEvent(ctx, entity => {
+    const damageToShield = Math.min(entity.shield, amount);
+    const damageToHealth = Math.max(0, amount - damageToShield);
+    return {
+      health: Math.max(0, entity.hp.current - damageToHealth),
+      shield: entity.shield - damageToShield,
+      damageType,
+    };
+  });
 }
 
 export function heal(amount: number) {

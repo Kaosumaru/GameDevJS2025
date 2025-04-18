@@ -28,6 +28,8 @@ function colorForSkill(skill: Skill | undefined, affected: boolean): Color {
   switch (skill.type) {
     case 'attack':
       return attackColor;
+    case 'defense':
+    case 'support':
     case 'movement':
       return moveColor;
     default:
