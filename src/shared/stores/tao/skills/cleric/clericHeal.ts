@@ -4,7 +4,7 @@ import { area, targets, withAlly } from '../targetReducers';
 
 export const clericHeal: Skill = {
   id: 'clericHeal',
-  name: 'Heal',
+  name: 'Goddess` Touch [Heal]',
   description: 'Heal self',
   type: 'defense',
   actionCost: 1,

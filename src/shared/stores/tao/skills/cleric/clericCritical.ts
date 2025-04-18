@@ -5,7 +5,7 @@ import { area, targets, withAlly, withEnemy } from '../targetReducers';
 // TODO critical is not implemented yet
 export const clericCritical: Skill = {
   id: 'clericCritical',
-  name: 'Critical',
+  name: 'Shine',
   description: 'Critical',
   type: 'defense',
   actionCost: 1,

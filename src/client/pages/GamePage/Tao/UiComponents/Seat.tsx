@@ -2,7 +2,15 @@ import { Avatar, Box, Button, useMediaQuery } from '@mui/material';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Entity } from '@shared/stores/tao/interface';
 
-export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomClient; entities: Entity[] }) => {
+export const Seat = ({
+  gameRoomClient,
+  entities,
+  onAvatarSelected,
+}: {
+  gameRoomClient: GameRoomClient;
+  entities: Entity[];
+  onAvatarSelected: (entityId: string) => void;
+}) => {
   const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
   const seats = gameRoomClient.store(state => state.seats);
   return (
@@ -28,6 +36,7 @@ export const Seat = ({ gameRoomClient, entities }: { gameRoomClient: GameRoomCli
                 height: matches ? '3rem' : '1.5rem',
                 backgroundColor: 'white',
               }}
+              onClick={() => onAvatarSelected(entity ? entity.id : 'unknown')}
             />
             {seat === null ? (
               <Button

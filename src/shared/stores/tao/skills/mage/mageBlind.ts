@@ -4,7 +4,7 @@ import { neighborsExcluding, targets, withEnemy } from '../targetReducers';
 
 export const mageBlind: Skill = {
   id: 'mageBlind',
-  name: 'Blind',
+  name: 'Moon`s punishment',
   description: 'Cast a fireball',
   type: 'attack',
   actionCost: 1,

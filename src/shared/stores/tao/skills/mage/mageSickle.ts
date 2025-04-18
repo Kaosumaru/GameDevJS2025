@@ -5,7 +5,7 @@ import { affected, affectedFields, area, targets, withEntity } from '../targetRe
 // not implemented yet
 export const mageSickle: Skill = {
   id: 'mageFireball',
-  name: 'Fireball',
+  name: 'Moon`s push',
   description: 'Cast a fireball',
   type: 'attack',
   actionCost: 1,

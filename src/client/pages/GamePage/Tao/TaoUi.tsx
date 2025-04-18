@@ -42,7 +42,8 @@ const TaoUiComponent = ({
               {entity?.skills.map(skill => (
                 <Button
                   key={skill.id}
-                  variant={skill.id === selectedSkillId ? 'contained' : 'outlined'}
+                  variant="contained"
+                  color={selectedSkillId === skill.id ? 'primary' : 'secondary'}
                   sx={{
                     padding: matches ? 1 : 0.1,
                   }}
