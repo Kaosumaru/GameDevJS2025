@@ -1,5 +1,4 @@
-import { EntityName } from './entities';
-import { Entity, Field, StatusEffect } from './interface';
+import { Entity, StatusEffect } from './interface';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity {

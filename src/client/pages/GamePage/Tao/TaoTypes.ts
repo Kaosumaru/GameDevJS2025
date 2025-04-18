@@ -1,7 +1,6 @@
 import { EntityType, Position, Stat } from '@shared/stores/tao/interface';
 import { AnimationOptions, At, ObjectTarget } from 'motion';
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EntityAnimationEvent = [`${string}.${string}`, ObjectTarget<any>, AnimationOptions & At] | string;
 export type AnimatedEntity = {

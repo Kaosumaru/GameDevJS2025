@@ -1,4 +1,4 @@
-import { getEntity, isEnemy } from './entity';
+import { getEntity } from './entity';
 import { Entity, Field, Position } from './interface';
 import { StoreData } from './taoStore';
 

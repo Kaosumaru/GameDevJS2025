@@ -1,6 +1,4 @@
-import { addEvent } from '../events';
-import { moveEntityTo } from '../movement';
-import { getTargetField, Skill } from '../skills';
+import { Skill } from '../skills';
 import { actions, move } from './actions';
 import { empty, inMoveDistance, targets } from './targetReducers';
 

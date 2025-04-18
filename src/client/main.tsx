@@ -17,29 +17,31 @@ const darkTheme = createTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <CookiesProvider defaultSetOptions={{ path: '/' }}>
-    <ThemeProvider theme={darkTheme}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/joinGame/:id/:password"
-            element={
-              <LoginPage>
-                <JoinGamePage />
-              </LoginPage>
-            }
-          />
-          <Route path="/logout" element={<LogoutPage />} />
-          <Route
-            path="/"
-            element={
-              <LoginPage>
-                <CreateGamePage />
-              </LoginPage>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
-  </CookiesProvider>
+  <React.StrictMode>
+    <CookiesProvider defaultSetOptions={{ path: '/' }}>
+      <ThemeProvider theme={darkTheme}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/joinGame/:id/:password"
+              element={
+                <LoginPage>
+                  <JoinGamePage />
+                </LoginPage>
+              }
+            />
+            <Route path="/logout" element={<LogoutPage />} />
+            <Route
+              path="/"
+              element={
+                <LoginPage>
+                  <CreateGamePage />
+                </LoginPage>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </CookiesProvider>
+  </React.StrictMode>
 );

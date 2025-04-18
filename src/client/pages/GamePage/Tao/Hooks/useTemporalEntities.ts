@@ -20,9 +20,11 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
           position: event.entity.position,
           events: [
             'start',
-            ['container.position', { x, y: 3, z: y }, { duration: 0, delay: 1, at: 'start' }],
+            ['container.position', { x, y: 3, z: y }, { duration: 0, at: 'start' }],
+            ['container.position', { x, y: 3, z: y }, { duration: 0, delay: 1 }],
             ['container.position', { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
-            ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1, at: 'start' }],
+            ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
+            ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
             ['container.scale', { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
           ],
         },
@@ -30,37 +32,34 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
     }
     case 'move': {
       const { x, y } = boardPositionToUiPosition(event.to.x, event.to.y);
-      return {
-        ...acc,
-        ...Object.keys(acc).reduce((entityAcc, key) => {
-          const entity = acc[key];
-          if (key === event.entityId) {
-            return entityAcc;
-          }
+      return Object.keys(acc).reduce((acc, key) => {
+        const entity = acc[key];
+        if (key === event.entityId) {
+          const label = `move-${acc[event.entityId].events.length}`;
           return {
-            ...entityAcc,
+            ...acc,
             [key]: {
               ...entity,
+              position: event.to,
               events: [
-                ...entity.events,
-                'walk-wait',
-                ['container.position', { _nothing: 0 }, { delay: 0.5, duration: 0, at: 'walk-wait' }],
+                ...acc[event.entityId].events,
+                label,
+                ['container.position', { x, z: y }, { duration: 0.5 }],
+                ['character.position', { y: 0.75 }, { duration: 0.1, at: label, ease: 'easeIn' }],
+                ['character.position', { _nothing: 0 }, { duration: 0.3 }],
+                ['character.position', { y: 0 }, { duration: 0.1 }],
               ],
             },
           };
-        }, {}),
-        [event.entityId]: {
-          ...acc[event.entityId],
-          position: event.to,
-          events: [
-            ...acc[event.entityId].events,
-            ['container.position', { x, z: y }, { duration: 0.5 }],
-            ['character.position', { y: 0.75 }, { duration: 0.1, at: 0, ease: 'easeIn' }],
-            ['character.position', {}, { duration: 0.3, at: 0.1 }],
-            ['character.position', { y: 0 }, { duration: 0.1, at: 0.4 }],
-          ],
-        },
-      };
+        }
+        return {
+          ...acc,
+          [key]: {
+            ...entity,
+            events: [...entity.events, ['container.position', { _waitMove: 0 }, { delay: 0.5, duration: 0 }]],
+          },
+        };
+      }, acc);
     }
     case 'damage': {
       if (event.attackerId) {
@@ -73,7 +72,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
         ).normalize();
 
         const attackerPosition = boardPositionToUiPosition(attackerEntity.position.x, attackerEntity.position.y);
-        const targetPosition = boardPositionToUiPosition(targetEntity.position.x, targetEntity.position.y);
+        // const targetPosition = boardPositionToUiPosition(targetEntity.position.x, targetEntity.position.y);
         return {
           ...acc,
           ...Object.keys(acc).reduce((entityAcc, key) => {
@@ -116,14 +115,13 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
               ...acc[event.damages[0].entityId].events,
               'hit',
               [
-                'container.position',
+                'avatar.material',
                 {
-                  x: targetPosition.x + attackVector.x,
-                  z: targetPosition.y + attackVector.y,
+                  flash: 1,
                 },
                 { duration: 0.2, delay: 0.2, at: 'hit' },
               ],
-              ['container.position', { x: targetPosition.x, z: targetPosition.y }, { duration: 0.2 }],
+              ['avatar.material', { flash: 0 }, { duration: 0.2 }],
             ],
           },
         };

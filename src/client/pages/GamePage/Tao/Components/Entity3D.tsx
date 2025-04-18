@@ -1,10 +1,9 @@
-import { Image } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useLoader, useThree } from '@react-three/fiber';
 import { JSX, memo, useEffect, useRef } from 'react';
-import { Group, Mesh, Object3DEventMap } from 'three';
+import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
 import { AnimatedEntity, EntityAnimationEvent } from '../TaoTypes';
 
-import { animate } from 'motion';
+import { animate, AnimationPlaybackControlsWithThen } from 'motion';
 
 const activeColor = 0x66bb6a;
 const manaColor = 0x90caf9;
@@ -24,23 +23,34 @@ const Entity3DComponent = ({
   const shadowRef = useRef<Mesh>(null);
   const scheduledEvents = useRef<EntityAnimationEvent[]>([]);
   const notifyRef = useRef<() => void>(() => {});
+  const animationRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
+  const scheduleEnabled = useRef(false);
+  const [colorMap] = useLoader(TextureLoader, [`${entity.avatar}.png`]);
+
+  const imageRatio = colorMap.image.width / colorMap.image.height;
 
   const refs = useRef<{
-    [key: string]: Group<Object3DEventMap> | Mesh | null;
+    [key: string]:
+      | Group<Object3DEventMap>
+      | Mesh
+      | null
+      | {
+          material: object;
+        };
   }>({});
 
   useFrame(() => {
     if (refs.current['character']) {
-      refs.current['character'].lookAt(camera.position);
+      (refs.current['character'] as Mesh).lookAt(camera.position);
     }
   });
 
   useEffect(() => {
-    console.log('Scheduling events', entity.events);
-    scheduledEvents.current.push(...entity.events);
+    if (scheduleEnabled.current) {
+      scheduledEvents.current.push(...entity.events);
+    }
     if (scheduledEvents.current.length > 0) {
       notifyRef.current();
-      notifyRef.current = () => {};
     }
   }, [entity.events]);
 
@@ -48,7 +58,6 @@ const Entity3DComponent = ({
     const async = async () => {
       while (true) {
         if (scheduledEvents.current.length === 0) {
-          console.log('Waiting for events');
           await new Promise<void>(resolve => (notifyRef.current = resolve));
         } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,14 +73,25 @@ const Entity3DComponent = ({
           });
 
           scheduledEvents.current = [];
-          console.log('Animating events', resolvedEvents);
-          await animate(resolvedEvents);
+          const animation = animate(resolvedEvents);
+          animationRef.current = animation;
+          await animation;
         }
       }
     };
+    scheduleEnabled.current = true;
     void async();
     return () => {
-      console.log('Cleaning up Entity3D');
+      scheduleEnabled.current = false;
+      if (animationRef.current) {
+        animationRef.current.speed = 100;
+        animationRef.current.complete();
+        animationRef.current.stop();
+      }
+      scheduledEvents.current = [];
+      if (notifyRef.current) {
+        notifyRef.current();
+      }
     };
   }, []);
 
@@ -107,9 +127,19 @@ const Entity3DComponent = ({
             </mesh>
           );
         })}
-        <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 1]} zoom={0.4} renderOrder={5}>
-          <planeGeometry args={[2, 2]} />
-        </Image>
+        <mesh position={[0, 0.5, 1]} renderOrder={5}>
+          <planeGeometry args={[1, 1 / imageRatio]} />
+          <colorTexMaterial
+            ref={(r: object) => {
+              refs.current['avatar'] = {
+                material: r,
+              };
+            }}
+            uTexture={colorMap}
+            flashColor={new Color(0xff0000)}
+            transparent
+          />
+        </mesh>
       </group>
 
       <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>

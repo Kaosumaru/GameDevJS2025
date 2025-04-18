@@ -7,7 +7,7 @@ import { clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
 import { EventType } from './events';
 import { endOfRound } from './rules';
-import { createLevel1 } from './levels/level1';
+import { createLevel0 } from './levels/level0';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -90,7 +90,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         events: [],
       };
 
-      const level = createLevel1();
+      const level = createLevel0();
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       return state;

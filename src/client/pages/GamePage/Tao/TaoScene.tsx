@@ -1,8 +1,8 @@
 import { Entity3D } from './Components/Entity3D';
 import { JSX, useState } from 'react';
 import { Tile } from './Components/Tile';
-import { getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
-import './Materials/ColorTexMaterial';
+import { getAffectedTargets, getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
+import './Materials/ColorTexMaterial/ColorTexMaterial';
 import { useEntitiesState } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
 import { Color } from 'three';
@@ -11,6 +11,8 @@ import { TaoClient } from './TaoClient';
 import { Seat } from './UiComponents/Seat';
 import { TaoUi } from './TaoUi';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
+import { Environment } from './Components/Environment';
+import { OrbitControls } from '@react-three/drei';
 
 type UiAction = { action: 'select-target'; targets: string[]; skill: SkillInstance };
 
@@ -52,9 +54,11 @@ export const TaoScene = ({
   const entitiesState = useEntitiesState(events);
   const skill = uiAction.length >= 1 ? skillFromID(uiAction[0].skill.id) : undefined;
   const targets = uiAction.length >= 1 ? uiAction[0].targets : [];
-  console.log('events', events);
   return (
     <group>
+      <color attach="background" args={['black']} />
+      <Environment />
+      <OrbitControls makeDefault />
       <group>
         {board.map((row, rowIdx) =>
           row.map((field, colIdx) => {
@@ -72,13 +76,13 @@ export const TaoScene = ({
                   row={rowIdx}
                   position={[x, -0.05, y]}
                   highlightColor={isTarget || isAffected ? color : undefined}
-                  /*onPointerEnter={() => {
+                  onPointerEnter={() => {
                     if (isTarget && selectedEntity && skill) {
                       setAffectedFields(getAffectedTargets(client.store.getState(), selectedEntity, skill, field.id));
-                    } else {
+                    } else if (affectedFields.length > 0) {
                       setAffectedFields([]);
                     }
-                  }}*/
+                  }}
                   onClick={() => {
                     if (!selectedEntity) {
                       console.warn('No entity selected');
