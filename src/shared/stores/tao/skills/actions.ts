@@ -130,7 +130,7 @@ interface DamageInfo {
 type DamageDataReducer = (entity: Entity, ctx: TargetContext) => DamageInfo;
 function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): DamageData[] {
   return ctx.fields
-    .filter(f => f.entityUUID === undefined)
+    .filter(f => f.entityUUID !== undefined)
     .map(field => getEntityInField(ctx.state, field))
     .map(entity => {
       const info = reducer(entity, ctx);

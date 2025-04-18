@@ -1,3 +1,5 @@
+import { getEntityField, getField } from '../board';
+import { getEntity } from '../entity';
 import { Entity, stat } from '../interface';
 import { moveEntityTo, placeEntity } from '../movement';
 import { StoreData } from '../taoStore';
@@ -63,8 +65,15 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
 }
 
 function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
-  return {
+  const entity = getEntity(state, event.entityId);
+  const field = getEntityField(state, entity);
+  const newState: StoreData = {
     ...state,
     entities: state.entities.filter(entity => entity.id !== event.entityId),
   };
+
+  const newField = getField(newState, field.id);
+  newField.entityUUID = undefined;
+
+  return newState;
 }
