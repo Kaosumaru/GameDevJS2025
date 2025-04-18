@@ -1,19 +1,11 @@
-import { Entity, Position, StatusEffect } from './interface';
-import { StoreData } from './taoStore';
+import { Entity, Position, StatusEffect } from '../interface';
+import { StoreData } from '../taoStore';
 
 export interface MoveEvent {
   type: 'move';
   entityId: string;
   from: Position;
   to: Position;
-}
-
-// obsolete, isb't sent anymore
-export interface AttackEvent {
-  type: 'attack';
-  attackerId: string;
-  targetId: string;
-  damage: number;
 }
 
 export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield';
@@ -56,7 +48,7 @@ export interface ApplyStatusEvent {
   statuses: ApplyStatusData[];
 }
 
-export type EventType = MoveEvent | AttackEvent | DeathEvent | ApplyStatusEvent | DamageEvent | SpawnEvent;
+export type EventType = MoveEvent | DeathEvent | ApplyStatusEvent | DamageEvent | SpawnEvent;
 
 export function addEvent(store: StoreData, event: EventType) {
   store.events.push(event);

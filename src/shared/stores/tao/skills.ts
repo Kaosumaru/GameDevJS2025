@@ -1,6 +1,6 @@
 import { findFieldByPosition, getEntityIdInFieldId, getField } from './board';
 import { hasStatus, payForSkillEntity } from './entity';
-import { addEvent } from './events';
+import { addEvent } from './events/events';
 import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
 import { mageFireball } from './skills/mage/mageFireball';

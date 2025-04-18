@@ -1,5 +1,5 @@
 import { getEntityIdInField, getField } from '../board';
-import { addEvent, DamageType } from '../events';
+import { addEvent, DamageType } from '../events/events';
 import { Entity, Field, StatusEffect } from '../interface';
 import { moveEntityTo } from '../movement';
 import { SkillContext } from '../skills';

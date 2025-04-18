@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EventType } from '@shared/stores/tao/events';
+import { EventType } from '@shared/stores/tao/events/events';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { AnimatedEntities, AnimatedEntity } from '../TaoTypes';
 import { easeBounceOut } from 'd3-ease';

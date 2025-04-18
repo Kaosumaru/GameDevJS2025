@@ -1,5 +1,5 @@
 import { entities, EntityName } from './entities';
-import { addEvent } from './events';
+import { addEvent } from './events/events';
 import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
 

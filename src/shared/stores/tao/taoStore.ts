@@ -5,7 +5,7 @@ import { Entity, Field } from './interface';
 import { SkillID, useSkill } from './skills';
 import { clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
-import { EventType } from './events';
+import { EventType } from './events/events';
 import { endOfRound } from './rules';
 import { createLevel0 } from './levels/level0';
 
