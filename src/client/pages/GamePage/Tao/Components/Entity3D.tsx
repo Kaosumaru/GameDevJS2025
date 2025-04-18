@@ -4,11 +4,7 @@ import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
 import { AnimatedEntity, EntityAnimationEvent } from '../TaoTypes';
 
 import { animate, AnimationPlaybackControlsWithThen } from 'motion';
-
-const activeColor = 0x66bb6a;
-const manaColor = 0x90caf9;
-const damageColor = 0xff0000;
-const inactiveColor = 0x909090;
+import { Stats } from './Stats';
 
 const Entity3DComponent = ({
   entity,
@@ -108,25 +104,7 @@ const Entity3DComponent = ({
           refs.current['character'] = r;
         }}
       >
-        {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
-          return (
-            entity.type === 'player' && (
-              <mesh key={`action-${i}`} position={[0 - i * 0.1 - 0.2, 1, 0.02]}>
-                <sphereGeometry args={[0.05, 32]} />
-                <meshStandardMaterial color={i < entity.actionPoints.current ? manaColor : inactiveColor} />
-              </mesh>
-            )
-          );
-        })}
-        {Array.from({ length: entity.hp.max }).map((_, i) => {
-          const color = i < entity.hp.current ? activeColor : damageColor;
-          return (
-            <mesh key={`hp-${i}`} position={[0 + i * 0.12, 1, 0.02]}>
-              <boxGeometry args={[0.1, 0.05, 0.1]} />
-              <meshStandardMaterial color={color} />
-            </mesh>
-          );
-        })}
+        <Stats entity={entity} />
         <mesh position={[0, 0.5, 1]} renderOrder={5}>
           <planeGeometry args={[1, 1 / imageRatio]} />
           <colorTexMaterial
