@@ -1,4 +1,4 @@
-import { getEntityField, getField, getFieldNeighbors } from '../board';
+import { getEntityField, getField, getFieldNeighbors, getFieldNeighbors9 } from '../board';
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
@@ -59,6 +59,26 @@ export function neighborsExcluding(ctx: TargetContext): TargetContext {
   return ctx;
 }
 
+export function neighbors9Excluding(ctx: TargetContext): TargetContext {
+  const result: Field[] = [];
+  for (const field of ctx.fields) {
+    const neighbors = getFieldNeighbors9(ctx.state, field);
+    result.push(...neighbors);
+  }
+  ctx.fields = result;
+  return ctx;
+}
+
+export function neighbors9(ctx: TargetContext): TargetContext {
+  const result: Field[] = [];
+  for (const field of ctx.fields) {
+    const neighbors = getFieldNeighbors9(ctx.state, field);
+    result.push(...neighbors);
+  }
+  ctx.fields = [...ctx.fields, ...result];
+  return ctx;
+}
+
 export function affectedFields(ctx: TargetContext): TargetContext {
   const field = ctx.fields[0];
   if (!ctx.skillInstance || !ctx.entity || !field) {
@@ -71,9 +91,10 @@ export function affectedFields(ctx: TargetContext): TargetContext {
   return ctx;
 }
 
-export function inMoveDistance(range: number) {
+export function inMoveDistance(rangeModifier: number = 0) {
   return (ctx: TargetContext) => {
-    ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range).keys()];
+    const speed = (ctx.entity?.speed ?? 0) + rangeModifier;
+    ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
   };
 }
 

@@ -13,7 +13,7 @@ export interface Position {
 
 export type EntityType = 'player' | 'enemy';
 
-export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned' | 'taunted';
+export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned' | 'taunted' | 'critical';
 
 export type Statuses = { [key in StatusEffect]?: number };
 
@@ -24,12 +24,16 @@ export interface Entity {
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
+  attack: number;
+  speed: number;
   hp: Stat;
   shield: number;
+  movePoints: Stat;
   actionPoints: Stat;
   position: Position;
   originalPosition?: Position;
   statuses: Statuses;
+  isTank?: boolean;
 }
 
 export interface Field {

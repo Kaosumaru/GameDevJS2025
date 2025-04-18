@@ -1,5 +1,5 @@
 import { Skill } from '../skills';
-import { actions, damage } from './actions';
+import { actions, attack, damage } from './actions';
 import { neighborsExcluding, targets, withEnemy } from './targetReducers';
 
 export const attackSkill: Skill = {
@@ -7,7 +7,8 @@ export const attackSkill: Skill = {
   name: 'Attack',
   description: 'Attack a target entity',
   type: 'attack',
-  cost: 1,
-  reducer: actions([damage(2)]),
+  actionCost: 1,
+  moveCost: 0,
+  reducer: actions([attack()]),
   getPossibleTargets: targets([neighborsExcluding, withEnemy]),
 };

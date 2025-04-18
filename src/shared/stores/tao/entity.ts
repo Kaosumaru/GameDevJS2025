@@ -1,4 +1,5 @@
 import { Entity, StatusEffect } from './interface';
+import { Skill } from './skills';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity {
@@ -25,17 +26,19 @@ export function modifyAllEntities(state: StoreData, modifier: EntityReducer): St
   return newState;
 }
 
-function useActionReducer(points: number): EntityReducer {
+function payForSkillReducer(skill: Skill): EntityReducer {
   return (entity: Entity) => ({
     ...entity,
-    actionPoints: { ...entity.actionPoints, current: Math.max(0, entity.actionPoints.current - points) },
+    actionPoints: { ...entity.actionPoints, current: Math.max(0, entity.actionPoints.current - skill.actionCost) },
+    movePoints: { ...entity.movePoints, current: Math.max(0, entity.movePoints.current - skill.moveCost) },
   });
 }
 
-function refreshActionsReducer(entity: Entity): Entity {
+function refreshActionsAndMovesReducer(entity: Entity): Entity {
   return {
     ...entity,
     actionPoints: { ...entity.actionPoints, current: entity.actionPoints.max },
+    movePoints: { ...entity.movePoints, current: entity.movePoints.max },
   };
 }
 
@@ -54,16 +57,16 @@ export function hasStatus(entity: Entity, status: StatusEffect): boolean {
   return getStatusAmount(entity, status) > 0;
 }
 
-export function useActionPointsEntity(state: StoreData, entityID: string, points: number): StoreData {
-  return modifyEntity(state, entityID, useActionReducer(points));
+export function payForSkillEntity(state: StoreData, entityID: string, skill: Skill): StoreData {
+  return modifyEntity(state, entityID, payForSkillReducer(skill));
 }
 
 export function refreshActionPointsEntity(state: StoreData, entityID: string): StoreData {
-  return modifyEntity(state, entityID, refreshActionsReducer);
+  return modifyEntity(state, entityID, refreshActionsAndMovesReducer);
 }
 
 export function refreshAllActionPoints(state: StoreData): StoreData {
-  return modifyAllEntities(state, refreshActionsReducer);
+  return modifyAllEntities(state, refreshActionsAndMovesReducer);
 }
 
 export function clearOriginalPositions(state: StoreData): StoreData {

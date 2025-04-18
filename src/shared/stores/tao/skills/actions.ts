@@ -1,5 +1,4 @@
 import { getEntityIdInField, getField } from '../board';
-import { EntityReducer } from '../entity';
 import { addEvent, DamageType } from '../events';
 import { Entity, Field, StatusEffect } from '../interface';
 import { moveEntityTo } from '../movement';
@@ -9,6 +8,13 @@ import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return modifyEntities(damageReducer(amount), (entities, ctx) => {
+    addDamageEvent(ctx.state, ctx.entity, entities, type);
+    return ctx.state;
+  });
+}
+
+export function attack(modifier: number = 0, type: DamageType = 'standard') {
+  return modifyEntities(damageReducer(modifier, true), (entities, ctx) => {
     addDamageEvent(ctx.state, ctx.entity, entities, type);
     return ctx.state;
   });
@@ -73,12 +79,13 @@ export function move(ctx: TargetContext) {
   addEvent(ctx.state, { type: 'move', entityId: ctx.entity.id, from: ctx.entity.position, to: field.position });
 }
 
+export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
 function modifyEntities(
   modifier: EntityReducer,
   postProcess: (entityDeltas: EntityDelta[], ctx: TargetContext) => StoreData
 ) {
   return (ctx: TargetContext) => {
-    const [newState, entityDelta] = modifyEntitiesInFields(ctx.state, ctx.fields, modifier);
+    const [newState, entityDelta] = modifyEntitiesInFields(ctx, modifier);
     ctx.state = newState;
     ctx.state = postProcess(entityDelta, ctx);
   };
@@ -117,10 +124,14 @@ function applyStatusReducer(status: StatusEffect, amount: number): EntityReducer
   });
 }
 
-function damageReducer(damage: number): EntityReducer {
-  return (entity: Entity) => {
-    const shieldDamage = Math.min(entity.shield, damage);
-    const remainingDamage = damage - shieldDamage;
+function damageReducer(damage: number, addAttack = false): EntityReducer {
+  return (entity: Entity, ctx: TargetContext) => {
+    let dmgSum = damage;
+    if (addAttack) {
+      dmgSum += ctx.entity?.attack ?? 0;
+    }
+    const shieldDamage = Math.min(entity.shield, dmgSum);
+    const remainingDamage = dmgSum - shieldDamage;
     return {
       ...entity,
       shield: Math.max(0, entity.shield - shieldDamage),
@@ -145,17 +156,13 @@ function gainShieldReducer(amount: number): EntityReducer {
 
 type EntityDelta = [Entity, Entity];
 
-function modifyEntitiesInFields(
-  state: StoreData,
-  fields: Field[],
-  modifier: EntityReducer
-): [StoreData, EntityDelta[]] {
-  const entityIds = fields.map(field => getEntityIdInField(state, field));
+function modifyEntitiesInFields(ctx: TargetContext, modifier: EntityReducer): [StoreData, EntityDelta[]] {
+  const entityIds = ctx.fields.filter(fields => fields.entityUUID).map(field => getEntityIdInField(ctx.state, field));
   const modifiedEntities: EntityDelta[] = [];
-  const newState = { ...state };
+  const newState = { ...ctx.state };
   newState.entities = newState.entities.map(entity => {
     if (entityIds.includes(entity.id)) {
-      const newEntity = modifier(entity);
+      const newEntity = modifier(entity, ctx);
       modifiedEntities.push([entity, newEntity]);
       return newEntity;
     }

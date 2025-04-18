@@ -67,7 +67,15 @@ export function getDistancesToEntityType(state: StoreData, entityType: EntityTyp
   return getFieldsInDistance(state, fieldsWithEntityType);
 }
 
-export function getDistancesToPlayers(state: StoreData): Map<Field, number> {
+export function getDistancesToPlayers(state: StoreData, taunted: boolean): Map<Field, number> {
+  if (taunted) {
+    const fieldsWithEntityType = state.entities
+      .filter(e => 'player' === e.type && e.isTank)
+      .map(e => findFieldByPosition(state, e.position))
+      .filter(f => f !== undefined);
+
+    return getFieldsInDistance(state, fieldsWithEntityType);
+  }
   return getDistancesToEntityType(state, 'player');
 }
 
