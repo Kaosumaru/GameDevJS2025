@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EventType } from '@shared/stores/tao/events';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
-import { AnimatedEntities } from '../TaoTypes';
+import { AnimatedEntities, AnimatedEntity } from '../TaoTypes';
 import { easeBounceOut } from 'd3-ease';
 import { Vector2 } from 'three';
 
@@ -111,6 +111,10 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
           },
           [event.damages[0].entityId]: {
             ...acc[event.damages[0].entityId],
+            hp: {
+              ...acc[event.damages[0].entityId].hp,
+              current: event.damages[0].health.to,
+            },
             events: [
               ...acc[event.damages[0].entityId].events,
               'hit',
@@ -129,17 +133,49 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
       return acc;
     }
     case 'death': {
-      return Object.keys(acc).reduce<AnimatedEntities>(
-        (aAcc, key) => {
-          const entity = acc[key];
-          if (key === event.entityId) {
-            return aAcc;
-          }
-          aAcc[key] = entity;
-          return aAcc;
-        },
-        { ...acc }
-      );
+      const numberOfCurrentDeaths = Object.keys(acc).reduce((sum, key) => {
+        const entity: AnimatedEntity = acc[key];
+        if (entity.hp.current <= 0) {
+          return sum + 1;
+        }
+        return sum;
+      }, 0);
+      return Object.keys(acc).reduce((acc, key) => {
+        const entity = acc[key];
+        if (key === event.entityId) {
+          const label = `dead-${acc[event.entityId].events.length}`;
+          const deathPosition = {
+            x: -1,
+            y: -1 + numberOfCurrentDeaths,
+          };
+          const deadPositionOnBoard = boardPositionToUiPosition(deathPosition.x, deathPosition.y);
+          return {
+            ...acc,
+            [key]: {
+              ...entity,
+              position: {
+                x: -1,
+                y: -1,
+              },
+              events: [
+                ...acc[event.entityId].events,
+                label,
+                ['container.position', { x: deadPositionOnBoard.x, z: deadPositionOnBoard.y }, { duration: 0.5 }],
+                ['character.position', { y: 0.75 }, { duration: 0.1, at: label, ease: 'easeIn' }],
+                ['character.position', { _nothing: 0 }, { duration: 0.3 }],
+                ['character.position', { y: 0 }, { duration: 0.1 }],
+              ],
+            },
+          };
+        }
+        return {
+          ...acc,
+          [key]: {
+            ...entity,
+            events: [...entity.events, ['container.position', { _waitMove: 0 }, { delay: 0.5, duration: 0 }]],
+          },
+        };
+      }, acc);
     }
   }
 
