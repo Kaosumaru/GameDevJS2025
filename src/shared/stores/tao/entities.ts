@@ -52,7 +52,7 @@ export const entities: EntitiesType = {
     name: 'Sun Princess',
     avatar: '/avatars/sun-princess',
 
-    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericDisarm' }],
+    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }],
     hp: { current: 3, max: 3 },
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
