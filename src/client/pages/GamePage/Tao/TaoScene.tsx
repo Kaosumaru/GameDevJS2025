@@ -1,11 +1,11 @@
 import { Entity3D } from './Components/Entity3D';
-import { JSX, useState } from 'react';
+import { JSX, useCallback, useEffect, useState } from 'react';
 import { Tile } from './Components/Tile';
 import { getAffectedTargets, getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
 import { useEntitiesState } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
-import { Color } from 'three';
+import { Color, Vector3 } from 'three';
 import { useClient } from 'pureboard/client/react';
 import { TaoClient } from './TaoClient';
 import { Seat } from './UiComponents/Seat';
@@ -42,6 +42,7 @@ export const TaoScene = ({
   gameRoomClient: GameRoomClient;
   ui: { In: (props: { children: JSX.Element[] }) => null };
 }) => {
+  const [cameraTargetState, setCameraTargetState] = useState<Vector3 | undefined>(undefined);
   const client = useClient(TaoClient, gameRoomClient);
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
@@ -54,11 +55,27 @@ export const TaoScene = ({
   const entitiesState = useEntitiesState(events);
   const skill = uiAction.length >= 1 ? skillFromID(uiAction[0].skill.id) : undefined;
   const targets = uiAction.length >= 1 ? uiAction[0].targets : [];
+
+  const focusOnEntity = useCallback((entity: { position: { x: number; y: number }; id: string }) => {
+    const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
+    setSelectedEntityId(entity.id);
+    setCameraTargetState(new Vector3(x, 0.5, y));
+  }, []);
+
+  useEffect(() => {
+    if (cameraTargetState === undefined) {
+      const firstPlayer = entities.find(entity => entity.ownerId === 0);
+      if (firstPlayer) {
+        focusOnEntity(firstPlayer);
+      }
+    }
+  }, [entities, cameraTargetState, focusOnEntity]);
+
   return (
     <group>
       <color attach="background" args={['black']} />
       <Environment />
-      <OrbitControls makeDefault />
+      <OrbitControls makeDefault target={cameraTargetState} />
       <group>
         {board.map((row, rowIdx) =>
           row.map((field, colIdx) => {
@@ -116,14 +133,28 @@ export const TaoScene = ({
               isSelected={entity.id === selectedEntityId}
               entity={entity}
               onClick={() => {
-                setSelectedEntityId(entity.id);
+                if (entity.type === 'player') {
+                  focusOnEntity(entity);
+                }
               }}
             />
           );
         })}
       </group>
       <ui.In>
-        <Seat gameRoomClient={gameRoomClient} entities={entities} />
+        <Seat
+          gameRoomClient={gameRoomClient}
+          entities={entities}
+          onAvatarSelected={entityId => {
+            const entity = entities.find(entity => entity.id === entityId);
+            if (entity === undefined) {
+              console.warn('No entity found');
+              return;
+            }
+            const entityPosition = boardPositionToUiPosition(entity.position.x, entity.position.y);
+            setCameraTargetState(new Vector3(entityPosition.x, 0.5, entityPosition.y));
+          }}
+        />
         <TaoUi
           entity={selectedEntity}
           selectedSkillId={skill?.id ?? null}
