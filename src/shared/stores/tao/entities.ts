@@ -1,6 +1,6 @@
 import { Entity, Position } from './interface';
 
-export type EntityName = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb';
+export type EntityName = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb' | 'skullwyrm';
 type EntitiesType = { [key in EntityName]: (id: string, position: Position) => Entity };
 
 const defaultPlayer: Entity = {
@@ -80,5 +80,17 @@ export const entities: EntitiesType = {
 
     skills: [{ id: 'move' }, { id: 'attack' }],
     hp: { current: 1, max: 1 },
+  }),
+
+  skullwyrm: (id, position) => ({
+    ...defaultEnemy,
+    id,
+    position,
+
+    name: 'Skullwyrm',
+    avatar: '/avatars/skullwyrm',
+
+    skills: [{ id: 'move' }, { id: 'attack' }],
+    hp: { current: 6, max: 6 },
   }),
 };
