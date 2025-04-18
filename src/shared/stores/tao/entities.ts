@@ -11,6 +11,8 @@ const defaultPlayer: Entity = {
   skills: [],
   hp: { current: 0, max: 0 },
   shield: 0,
+  attack: 1,
+  speed: 1,
   actionPoints: { current: 1, max: 1 },
   movePoints: { current: 1, max: 1 },
   position: { x: 0, y: 0 },
@@ -27,6 +29,8 @@ const defaultEnemy: Entity = {
   skills: [],
   hp: { current: 0, max: 0 },
   shield: 0,
+  attack: 1,
+  speed: 2,
   actionPoints: { current: 2, max: 2 },
   movePoints: { current: 1, max: 1 },
   position: { x: 0, y: 0 },
@@ -81,7 +85,10 @@ export const entities: EntitiesType = {
     avatar: '/avatars/mushroom-bomb',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
+
     hp: { current: 1, max: 1 },
+    attack: 1,
+    speed: 1,
   }),
 
   skullwyrm: (id, position) => ({
@@ -93,6 +100,9 @@ export const entities: EntitiesType = {
     avatar: '/avatars/skullwyrm',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
+
     hp: { current: 6, max: 6 },
+    attack: 1,
+    speed: 1,
   }),
 };

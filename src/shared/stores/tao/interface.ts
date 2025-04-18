@@ -24,6 +24,8 @@ export interface Entity {
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
+  attack: number;
+  speed: number;
   hp: Stat;
   shield: number;
   movePoints: Stat;
