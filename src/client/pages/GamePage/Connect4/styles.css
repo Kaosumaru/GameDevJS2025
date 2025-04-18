@@ -27,9 +27,9 @@ h1 {
   padding: 5px;
   position: relative;
   display: grid;
-  grid-template-columns: var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(
-      --box-width
-    ) var(--box-width);
+  grid-template-columns:
+    var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width)
+    var(--box-width);
   grid-template-rows: var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(
       --box-width
     );
@@ -47,9 +47,9 @@ h1 {
   padding: 5px;
   position: relative;
   display: grid;
-  grid-template-columns: var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(
-      --box-width
-    ) var(--box-width);
+  grid-template-columns:
+    var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width)
+    var(--box-width);
   grid-template-rows: var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(--box-width) var(
       --box-width
     );

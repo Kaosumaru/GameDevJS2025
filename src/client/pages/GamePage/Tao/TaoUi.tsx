@@ -1,6 +1,5 @@
 import { Entity } from '@shared/stores/tao/interface';
 import { Dock } from './UiComponents/Dock';
-import { HorizontalContainer } from './UiComponents/HorizontalContainer';
 import { JSX, useRef, memo } from 'react';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import './styles.css';
@@ -29,7 +28,7 @@ const TaoUiComponent = ({
   const uiRef = useRef<HTMLDivElement>(null);
   return (
     <Dock {...rest}>
-      <HorizontalContainer>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
         <SwitchTransition mode="out-in">
           <CSSTransition
             key={entity !== null ? entity?.id : null}
@@ -60,7 +59,7 @@ const TaoUiComponent = ({
             End&nbsp;Turn
           </Button>
         </Box>
-      </HorizontalContainer>
+      </Box>
     </Dock>
   );
 };
