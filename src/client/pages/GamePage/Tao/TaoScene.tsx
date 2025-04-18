@@ -1,7 +1,14 @@
 import { Entity3D } from './Components/Entity3D';
 import { JSX, useCallback, useEffect, useState } from 'react';
 import { Tile } from './Components/Tile';
-import { getAffectedTargets, getPossibleTargets, Skill, skillFromID, SkillInstance } from '@shared/stores/tao/skills';
+import {
+  getAffectedTargets,
+  getPossibleTargets,
+  getRange,
+  Skill,
+  skillFromID,
+  SkillInstance,
+} from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
 import { useEntitiesState } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
@@ -14,27 +21,32 @@ import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Environment } from './Components/Environment';
 import { OrbitControls } from '@react-three/drei';
 
-type UiAction = { action: 'select-target'; targets: string[]; skill: SkillInstance };
+type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
 const attackColor = new Color(0xff0000);
 const moveColor = new Color(0x00ff00);
 const defaultColor = new Color(0xffffff);
 const disabledColor = new Color(0x999999);
 
-function colorForSkill(skill: Skill | undefined, affected: boolean): Color {
+function colorForSkill(skill: Skill | undefined, target: boolean, affected: boolean, range: boolean): Color {
   if (skill === undefined) return moveColor;
-
   if (affected) return new Color(0xffff00); // yellow for affected fields
-  switch (skill.type) {
-    case 'attack':
-      return attackColor;
-    case 'defense':
-    case 'support':
-    case 'movement':
-      return moveColor;
-    default:
-      return defaultColor;
+
+  if (target) {
+    switch (skill.type) {
+      case 'attack':
+        return attackColor;
+      case 'defense':
+      case 'support':
+      case 'movement':
+        return moveColor;
+      default:
+        return attackColor;
+    }
   }
+
+  if (range) return disabledColor;
+  return defaultColor;
 }
 
 export const TaoScene = ({
@@ -57,6 +69,7 @@ export const TaoScene = ({
   const entitiesState = useEntitiesState(events);
   const skill = uiAction.length >= 1 ? skillFromID(uiAction[0].skill.id) : undefined;
   const targets = uiAction.length >= 1 ? uiAction[0].targets : [];
+  const range = uiAction.length >= 1 ? uiAction[0].range : [];
 
   const focusOnEntity = useCallback((entity: { position: { x: number; y: number }; id: string }) => {
     const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
@@ -83,10 +96,14 @@ export const TaoScene = ({
           row.map((field, colIdx) => {
             const isTarget = targets.includes(field.id);
             const isAffected = affectedFields.includes(field.id);
+            const isRange = range.includes(field.id);
             const { x, y } = boardPositionToUiPosition(field.position.x, field.position.y);
 
             const isCurrentPlayerInControlOfSelectedEntity = client.haveSeat(selectedEntity?.ownerId ?? -1);
-            const color = isCurrentPlayerInControlOfSelectedEntity ? colorForSkill(skill, isAffected) : disabledColor;
+            const color = isCurrentPlayerInControlOfSelectedEntity
+              ? colorForSkill(skill, isTarget, isAffected, isRange)
+              : disabledColor;
+
             return (
               !field.blocking && (
                 <Tile
@@ -94,7 +111,7 @@ export const TaoScene = ({
                   col={colIdx}
                   row={rowIdx}
                   position={[x, -0.05, y]}
-                  highlightColor={isTarget || isAffected ? color : undefined}
+                  highlightColor={isRange || isTarget || isAffected ? color : undefined}
                   onPointerEnter={() => {
                     if (isTarget && selectedEntity && skill) {
                       setAffectedFields(getAffectedTargets(client.store.getState(), selectedEntity, skill, field.id));
@@ -167,7 +184,8 @@ export const TaoScene = ({
             }
 
             const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
-            setUiAction([{ action: 'select-target' as const, targets, skill }]);
+            const range = getRange(client.store.getState(), selectedEntity, skill);
+            setUiAction([{ action: 'select-target' as const, targets, range, skill }]);
             setAffectedFields([]);
           }}
           onEndTurn={() => {
