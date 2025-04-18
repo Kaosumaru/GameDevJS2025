@@ -34,6 +34,19 @@ export function gainShield(amount: number) {
   });
 }
 
+export function loseAllShield() {
+  return modifyEntities(
+    (entity: Entity) => ({
+      ...entity,
+      shield: 0,
+    }),
+    (entities, ctx) => {
+      addDamageEvent(ctx.state, ctx.entity, entities, 'standard');
+      return ctx.state;
+    }
+  );
+}
+
 function addDamageEvent(state: StoreData, attacker: Entity | undefined, entities: EntityDelta[], type: DamageType) {
   if (entities.length === 0) {
     return;

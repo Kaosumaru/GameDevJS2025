@@ -5,11 +5,12 @@ import {
   refreshAllActionPoints as refreshAllActionPointsAndMoves,
 } from './entity';
 import { Entity, StatusEffect, Statuses } from './interface';
-import { damage, rule } from './skills/actions';
-import { allEntities, withEntityWithStatus as withStatus } from './skills/targetReducers';
+import { damage, loseAllShield, rule } from './skills/actions';
+import { allEntities, withShield, withEntityWithStatus as withStatus } from './skills/targetReducers';
 import { StoreData } from './taoStore';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
+const loseShield = rule([allEntities, withShield, loseAllShield()]);
 
 export function endOfRound(state: StoreData): StoreData {
   state = { ...state, events: [] };
@@ -17,6 +18,7 @@ export function endOfRound(state: StoreData): StoreData {
   state = monstersAi(state);
   state = refreshAllActionPointsAndMoves(state);
   state = applyPoison(state);
+  state = loseShield(state);
   state = modifyAllEntities(state, decrementAllStatusesReducer);
   return state;
 }

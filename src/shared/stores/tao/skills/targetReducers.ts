@@ -120,6 +120,10 @@ export function withEntityWithStatus(status: StatusEffect) {
   };
 }
 
+export function withShield(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => entity.shield > 0);
+}
+
 export function area(range: number) {
   return (ctx: TargetContext) => {
     const distances = getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range, false);

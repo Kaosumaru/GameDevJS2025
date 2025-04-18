@@ -104,7 +104,6 @@ const Entity3DComponent = ({
           refs.current['character'] = r;
         }}
       >
-        <Stats entity={entity} position={[0, 1, 0]} />
         <mesh position={[0, 0.5, 1]} renderOrder={5}>
           <planeGeometry args={[1, 1 / imageRatio]} />
           <colorTexMaterial
@@ -118,6 +117,7 @@ const Entity3DComponent = ({
             transparent
           />
         </mesh>
+        <Stats entity={entity} position={[0, 1, 0]} />
       </group>
 
       <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>
