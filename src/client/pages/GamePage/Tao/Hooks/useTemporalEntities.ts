@@ -4,6 +4,11 @@ import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { AnimatedEntities, AnimatedEntity } from '../TaoTypes';
 import { easeBounceOut } from 'd3-ease';
 import { Vector2 } from 'three';
+import { v4 as uuid } from 'uuid';
+
+const createUniqueLabel = (prefix: string) => {
+  return `${prefix}-${uuid()}`;
+};
 
 const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities => {
   switch (event.type) {
@@ -27,6 +32,11 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
             ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
             ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
             ['container.scale', { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
+            [
+              'healthbar.material',
+              { hp: event.entity.hp.current, maxHp: event.entity.hp.max, shield: event.entity.shield },
+              { duration: 0 },
+            ],
           ],
         },
       };
@@ -74,6 +84,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
 
         const attackerPosition = boardPositionToUiPosition(attackerEntity.position.x, attackerEntity.position.y);
         // const targetPosition = boardPositionToUiPosition(targetEntity.position.x, targetEntity.position.y);
+        const hitLabel = createUniqueLabel('hit');
         return {
           ...acc,
           ...Object.keys(acc).reduce((entityAcc, key) => {
@@ -119,15 +130,20 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
             shield: event.damages[0].shield.to,
             events: [
               ...acc[event.damages[0].entityId].events,
-              'hit',
+              hitLabel,
               [
                 'avatar.material',
                 {
                   flash: 1,
                 },
-                { duration: 0.2, delay: 0.2, at: 'hit' },
+                { duration: 0.2, delay: 0.2, at: hitLabel },
               ],
               ['avatar.material', { flash: 0 }, { duration: 0.2 }],
+              [
+                'healthbar.material',
+                { hp: event.damages[0].health.to, shield: event.damages[0].shield.to },
+                { duration: 0.2 },
+              ],
             ],
           },
         };

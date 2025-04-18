@@ -26,18 +26,20 @@ const Entity3DComponent = ({
   const imageRatio = colorMap.image.width / colorMap.image.height;
 
   const refs = useRef<{
-    [key: string]:
-      | Group<Object3DEventMap>
-      | Mesh
-      | null
-      | {
-          material: object;
-        };
-  }>({});
+    container: Group | null;
+    character: Group<Object3DEventMap> | null;
+    avatar: { material: object | null };
+    healthbar: { material: object | null };
+  }>({
+    container: null,
+    character: null,
+    avatar: { material: null },
+    healthbar: { material: null },
+  });
 
   useFrame(() => {
     if (refs.current['character']) {
-      (refs.current['character'] as Mesh).lookAt(camera.position);
+      refs.current['character'].lookAt(camera.position);
     }
   });
 
@@ -64,8 +66,8 @@ const Entity3DComponent = ({
             const [selector, to, options] = anim;
             const [obj, prop] = selector.split('.');
 
-            const containerRef = refs.current[obj]!;
-            return [containerRef[prop as keyof typeof containerRef], to, options];
+            const objRef = refs.current[obj as keyof typeof refs.current]!;
+            return [objRef[prop as keyof typeof objRef], to, options];
           });
 
           scheduledEvents.current = [];
@@ -117,7 +119,17 @@ const Entity3DComponent = ({
             transparent
           />
         </mesh>
-        <Stats entity={entity} position={[0, 1, 0]} />
+        <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
+          <planeGeometry args={[0.6, 0.08]} />
+          <healthBar
+            ref={(r: object) => {
+              refs.current['healthbar'] = {
+                material: r,
+              };
+            }}
+          />
+        </mesh>
+        <Stats entity={entity} position={[0, 1.16, 0]} />
       </group>
 
       <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>
