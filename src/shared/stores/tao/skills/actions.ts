@@ -35,6 +35,9 @@ export function gainShield(amount: number) {
 }
 
 function addDamageEvent(state: StoreData, attacker: Entity | undefined, entities: EntityDelta[], type: DamageType) {
+  if (entities.length === 0) {
+    return;
+  }
   addEvent(state, {
     type: 'damage',
     attackerId: attacker?.id,
