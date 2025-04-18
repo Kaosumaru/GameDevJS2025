@@ -91,9 +91,10 @@ export function affectedFields(ctx: TargetContext): TargetContext {
   return ctx;
 }
 
-export function inMoveDistance(range: number) {
+export function inMoveDistance(rangeModifier: number = 0) {
   return (ctx: TargetContext) => {
-    ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, range).keys()];
+    const speed = (ctx.entity?.speed ?? 0) + rangeModifier;
+    ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
   };
 }
 

@@ -12,7 +12,7 @@ const defaultPlayer: Entity = {
   hp: { current: 0, max: 0 },
   shield: 0,
   attack: 1,
-  speed: 1,
+  speed: 2,
   actionPoints: { current: 1, max: 1 },
   movePoints: { current: 1, max: 1 },
   position: { x: 0, y: 0 },
