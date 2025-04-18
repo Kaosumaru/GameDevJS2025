@@ -43,3 +43,7 @@ export interface Field {
   position: Position;
   entityUUID?: string;
 }
+
+export function stat(amount: number): Stat {
+  return { current: amount, max: amount };
+}

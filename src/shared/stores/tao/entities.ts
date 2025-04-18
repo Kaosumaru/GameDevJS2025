@@ -1,6 +1,75 @@
-import { Entity, Position } from './interface';
+import { Entity, Position, stat } from './interface';
 
 export type EntityName = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb' | 'skullwyrm';
+
+export const entities: EntitiesType = {
+  'goth-gf': (id, position) => ({
+    ...defaultPlayer,
+    id,
+    position,
+    name: 'Goth GF',
+    avatar: '/avatars/goth-gf',
+
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
+    hp: stat(3),
+    ownerId: 0,
+  }),
+  'sun-princess': (id, position) => ({
+    ...defaultPlayer,
+    id,
+    position,
+    name: 'Sun Princess',
+    avatar: '/avatars/sun-princess',
+
+    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }],
+    hp: stat(3),
+
+    ownerId: 1, // Assuming ownerId is 0 for player entities
+  }),
+  knight: (id, position) => ({
+    ...defaultPlayer,
+    id,
+    position,
+    name: 'Knight',
+    avatar: '/avatars/knight',
+
+    skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }],
+    hp: stat(3),
+
+    isTank: true,
+    ownerId: 2, // Assuming ownerId is 0 for player entities
+  }),
+  'mushroom-bomb': (id, position) => ({
+    ...defaultEnemy,
+    id,
+    position,
+
+    name: 'Mushroom Bomb',
+    avatar: '/avatars/mushroom-bomb',
+
+    skills: [{ id: 'move' }, { id: 'attack' }],
+
+    hp: stat(1),
+    attack: 1,
+    speed: 1,
+  }),
+
+  skullwyrm: (id, position) => ({
+    ...defaultEnemy,
+    id,
+    position,
+
+    name: 'Skullwyrm',
+    avatar: '/avatars/skullwyrm',
+
+    skills: [{ id: 'move' }, { id: 'attack' }],
+
+    hp: stat(6),
+    attack: 1,
+    speed: 1,
+  }),
+};
+
 type EntitiesType = { [key in EntityName]: (id: string, position: Position) => Entity };
 
 const defaultPlayer: Entity = {
@@ -13,8 +82,8 @@ const defaultPlayer: Entity = {
   shield: 0,
   attack: 1,
   speed: 2,
-  actionPoints: { current: 1, max: 1 },
-  movePoints: { current: 1, max: 1 },
+  actionPoints: stat(1),
+  movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
   statuses: {},
@@ -31,78 +100,10 @@ const defaultEnemy: Entity = {
   shield: 0,
   attack: 1,
   speed: 2,
-  actionPoints: { current: 1, max: 1 },
-  movePoints: { current: 1, max: 1 },
+  actionPoints: stat(1),
+  movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
   statuses: {},
   ownerId: undefined,
-};
-
-export const entities: EntitiesType = {
-  'goth-gf': (id, position) => ({
-    ...defaultPlayer,
-    id,
-    position,
-    name: 'Goth GF',
-    avatar: '/avatars/goth-gf',
-
-    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
-    hp: { current: 3, max: 3 },
-    ownerId: 0,
-  }),
-  'sun-princess': (id, position) => ({
-    ...defaultPlayer,
-    id,
-    position,
-    name: 'Sun Princess',
-    avatar: '/avatars/sun-princess',
-
-    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }],
-    hp: { current: 3, max: 3 },
-
-    ownerId: 1, // Assuming ownerId is 0 for player entities
-  }),
-  knight: (id, position) => ({
-    ...defaultPlayer,
-    id,
-    position,
-    name: 'Knight',
-    avatar: '/avatars/knight',
-
-    skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }],
-    hp: { current: 3, max: 3 },
-
-    isTank: true,
-    ownerId: 2, // Assuming ownerId is 0 for player entities
-  }),
-  'mushroom-bomb': (id, position) => ({
-    ...defaultEnemy,
-    id,
-    position,
-
-    name: 'Mushroom Bomb',
-    avatar: '/avatars/mushroom-bomb',
-
-    skills: [{ id: 'move' }, { id: 'attack' }],
-
-    hp: { current: 1, max: 1 },
-    attack: 1,
-    speed: 1,
-  }),
-
-  skullwyrm: (id, position) => ({
-    ...defaultEnemy,
-    id,
-    position,
-
-    name: 'Skullwyrm',
-    avatar: '/avatars/skullwyrm',
-
-    skills: [{ id: 'move' }, { id: 'attack' }],
-
-    hp: { current: 6, max: 6 },
-    attack: 1,
-    speed: 1,
-  }),
 };
