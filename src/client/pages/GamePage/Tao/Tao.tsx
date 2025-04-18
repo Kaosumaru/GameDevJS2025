@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { SpecificGameProps } from '../GamePage';
 import { lazy, Suspense } from 'react';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
+import './Materials/HealthBar/HealthBar';
 import tunnel from 'tunnel-rat';
 import { LoadingFallback } from './Components/LoadingFallback';
 
