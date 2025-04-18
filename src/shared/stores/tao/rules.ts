@@ -10,7 +10,7 @@ import { allEntities, withShield, withEntityWithStatus as withStatus } from './s
 import { StoreData } from './taoStore';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
-const loseShield = rule([allEntities, withShield, loseAllShield()]);
+const loseShield = rule([allEntities, withShield, loseAllShield]);
 
 export function endOfRound(state: StoreData): StoreData {
   state = { ...state, events: [] };

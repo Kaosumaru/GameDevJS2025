@@ -1,5 +1,6 @@
 import { Entity, Position, StatusEffect } from '../interface';
 import { StoreData } from '../taoStore';
+import { reduceEvent } from './reducers';
 
 export interface MoveEvent {
   type: 'move';
@@ -50,6 +51,7 @@ export interface ApplyStatusEvent {
 
 export type EventType = MoveEvent | DeathEvent | ApplyStatusEvent | DamageEvent | SpawnEvent;
 
-export function addEvent(store: StoreData, event: EventType) {
+export function addEvent(store: StoreData, event: EventType): StoreData {
   store.events.push(event);
+  return reduceEvent(store, event);
 }

@@ -3,7 +3,8 @@ import { modifyEntity } from './entity';
 import { Entity, Position } from './interface';
 import { StoreData } from './taoStore';
 
-export function placeEntity(state: StoreData, entity: Entity, position: Position): StoreData {
+export function placeEntity(state: StoreData, entity: Entity): StoreData {
+  const position = entity.position;
   const field = findFieldByPosition(state, position);
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);
@@ -14,7 +15,6 @@ export function placeEntity(state: StoreData, entity: Entity, position: Position
     );
   }
   const newState = { ...state };
-  entity.position = position;
   field.entityUUID = entity.id;
   newState.entities = [...newState.entities, entity];
   return newState;

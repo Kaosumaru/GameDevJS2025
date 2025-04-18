@@ -104,13 +104,11 @@ export function getSkillInstance(user: Entity, skillId: SkillID): SkillInstance 
 function filterDeadEntities(state: StoreData): StoreData {
   const deadEntities = state.entities.filter(entity => entity.hp.current <= 0);
   if (deadEntities.length == 0) return state;
-  state = { ...state };
+
   for (const entity of deadEntities) {
-    const field = findFieldByPosition(state, entity.position);
-    if (field) field.entityUUID = undefined;
-    addEvent(state, { type: 'death', entityId: entity.id });
+    state = addEvent(state, { type: 'death', entityId: entity.id });
   }
-  state.entities = state.entities.filter(entity => entity.hp.current > 0);
+
   return state;
 }
 

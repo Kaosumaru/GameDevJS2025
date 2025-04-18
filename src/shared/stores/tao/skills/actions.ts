@@ -1,86 +1,81 @@
-import { getEntityIdInField, getField } from '../board';
-import { addEvent, DamageType } from '../events/events';
-import { Entity, Field, StatusEffect } from '../interface';
-import { moveEntityTo } from '../movement';
+import { getEntityInField, getField } from '../board';
+import { addEvent, DamageData, DamageType, EventType } from '../events/events';
+import { Entity, StatusEffect } from '../interface';
 import { SkillContext } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
 export function damage(amount: number, type: DamageType = 'standard') {
-  return modifyEntities(damageReducer(amount), (entities, ctx) => {
-    addDamageEvent(ctx.state, ctx.entity, entities, type);
-    return ctx.state;
-  });
+  return (ctx: TargetContext) => {
+    addDamageEvent(ctx, entity => {
+      const damageToShield = Math.min(entity.shield, amount);
+      const damageToHealth = Math.max(0, amount - damageToShield);
+      return {
+        health: Math.max(0, entity.hp.current - damageToHealth),
+        shield: entity.shield - damageToShield,
+        damageType: 'heal',
+      };
+    });
+  };
 }
 
 export function attack(modifier: number = 0, type: DamageType = 'standard') {
-  return modifyEntities(damageReducer(modifier, true), (entities, ctx) => {
-    addDamageEvent(ctx.state, ctx.entity, entities, type);
-    return ctx.state;
-  });
+  return (ctx: TargetContext) => {
+    addDamageEvent(ctx, entity => {
+      const amount = (ctx.entity?.attack ?? 0) + modifier;
+      const damageToShield = Math.min(entity.shield, amount);
+      const damageToHealth = Math.max(0, amount - damageToShield);
+      return {
+        health: Math.max(0, entity.hp.current - damageToHealth),
+        shield: entity.shield - damageToShield,
+        damageType: 'heal',
+      };
+    });
+  };
 }
 
 export function heal(amount: number) {
-  return modifyEntities(healReducer(amount), (entities, ctx) => {
-    addDamageEvent(ctx.state, ctx.entity, entities, 'heal');
-    return ctx.state;
-  });
+  return (ctx: TargetContext) => {
+    addDamageEvent(ctx, entity => {
+      return {
+        health: Math.min(entity.hp.max, entity.hp.current + amount),
+        damageType: 'heal',
+      };
+    });
+  };
 }
 
 export function gainShield(amount: number) {
-  return modifyEntities(gainShieldReducer(amount), (entities, ctx) => {
-    addDamageEvent(ctx.state, ctx.entity, entities, 'shield');
-    return ctx.state;
-  });
+  return (ctx: TargetContext) => {
+    addDamageEvent(ctx, entity => {
+      return {
+        shield: entity.shield + amount,
+        damageType: 'shield',
+      };
+    });
+  };
 }
 
-export function loseAllShield() {
-  return modifyEntities(
-    (entity: Entity) => ({
-      ...entity,
+export function loseAllShield(ctx: TargetContext) {
+  addDamageEvent(ctx, entity => {
+    return {
       shield: 0,
-    }),
-    (entities, ctx) => {
-      addDamageEvent(ctx.state, ctx.entity, entities, 'standard');
-      return ctx.state;
-    }
-  );
-}
-
-function addDamageEvent(state: StoreData, attacker: Entity | undefined, entities: EntityDelta[], type: DamageType) {
-  if (entities.length === 0) {
-    return;
-  }
-  addEvent(state, {
-    type: 'damage',
-    attackerId: attacker?.id,
-    damages: entities.map(delta => ({
-      entityId: delta[0].id,
-      health: {
-        from: delta[0].hp.current,
-        to: delta[1].hp.current,
-      },
-      shield: {
-        from: delta[0].shield,
-        to: delta[1].shield,
-      },
-      damageType: type,
-    })),
+      damageType: 'shield',
+    };
   });
 }
 
 export function status(status: StatusEffect, amount: number) {
-  return modifyEntities(applyStatusReducer(status, amount), (entities, ctx) => {
-    addEvent(ctx.state, {
+  return (ctx: TargetContext) => {
+    ctx.state = addEvent(ctx.state, {
       type: 'applyStatus',
-      statuses: entities.map(delta => ({
-        entityId: delta[0].id,
+      statuses: ctx.fields.map(field => ({
+        entityId: field.entityUUID ?? '',
         status,
         amount,
       })),
     });
-    return ctx.state;
-  });
+  };
 }
 
 export function move(ctx: TargetContext) {
@@ -91,21 +86,15 @@ export function move(ctx: TargetContext) {
     throw new Error('Entity is undefined');
   }
   const field = ctx.fields[0];
-  ctx.state = moveEntityTo(ctx.state, ctx.entity.id, field.position);
-  addEvent(ctx.state, { type: 'move', entityId: ctx.entity.id, from: ctx.entity.position, to: field.position });
+  ctx.state = addEvent(ctx.state, {
+    type: 'move',
+    entityId: ctx.entity.id,
+    from: ctx.entity.position,
+    to: field.position,
+  });
 }
 
 export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
-function modifyEntities(
-  modifier: EntityReducer,
-  postProcess: (entityDeltas: EntityDelta[], ctx: TargetContext) => StoreData
-) {
-  return (ctx: TargetContext) => {
-    const [newState, entityDelta] = modifyEntitiesInFields(ctx, modifier);
-    ctx.state = newState;
-    ctx.state = postProcess(entityDelta, ctx);
-  };
-}
 
 export function actions(reducers: TargetReducer[]) {
   return (state: StoreData, ctx: SkillContext): StoreData => {
@@ -133,56 +122,35 @@ export function rule(reducers: TargetReducer[]) {
   };
 }
 
-function applyStatusReducer(status: StatusEffect, amount: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    statuses: { ...entity.statuses, [status]: (entity.statuses[status] ?? 0) + amount },
-  });
+interface DamageInfo {
+  health?: number;
+  shield?: number;
+  damageType: DamageType;
+}
+type DamageDataReducer = (entity: Entity, ctx: TargetContext) => DamageInfo;
+function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): DamageData[] {
+  return ctx.fields
+    .filter(f => f.entityUUID === undefined)
+    .map(field => getEntityInField(ctx.state, field))
+    .map(entity => {
+      const info = reducer(entity, ctx);
+      return {
+        entityId: entity.id,
+        health: { from: entity.hp.current, to: info.health ?? entity.hp.current },
+        shield: { from: entity.shield, to: info.shield ?? entity.shield },
+        damageType: info.damageType,
+      };
+    });
 }
 
-function damageReducer(damage: number, addAttack = false): EntityReducer {
-  return (entity: Entity, ctx: TargetContext) => {
-    let dmgSum = damage;
-    if (addAttack) {
-      dmgSum += ctx.entity?.attack ?? 0;
-    }
-    const shieldDamage = Math.min(entity.shield, dmgSum);
-    const remainingDamage = dmgSum - shieldDamage;
-    return {
-      ...entity,
-      shield: Math.max(0, entity.shield - shieldDamage),
-      hp: { ...entity.hp, current: Math.max(0, entity.hp.current - remainingDamage) },
-    };
-  };
-}
-
-function healReducer(amount: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    hp: { ...entity.hp, current: Math.min(entity.hp.max, entity.hp.current + amount) },
+function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
+  const damages = createDamageData(ctx, reducer);
+  if (damages.length === 0) {
+    return;
+  }
+  ctx.state = addEvent(ctx.state, {
+    type: 'damage',
+    attackerId: ctx.entity?.id,
+    damages,
   });
-}
-
-function gainShieldReducer(amount: number): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    shield: entity.shield + amount,
-  });
-}
-
-type EntityDelta = [Entity, Entity];
-
-function modifyEntitiesInFields(ctx: TargetContext, modifier: EntityReducer): [StoreData, EntityDelta[]] {
-  const entityIds = ctx.fields.filter(fields => fields.entityUUID).map(field => getEntityIdInField(ctx.state, field));
-  const modifiedEntities: EntityDelta[] = [];
-  const newState = { ...ctx.state };
-  newState.entities = newState.entities.map(entity => {
-    if (entityIds.includes(entity.id)) {
-      const newEntity = modifier(entity, ctx);
-      modifiedEntities.push([entity, newEntity]);
-      return newEntity;
-    }
-    return entity;
-  });
-  return [newState, modifiedEntities];
 }
