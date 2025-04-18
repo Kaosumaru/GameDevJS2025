@@ -11,7 +11,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/goth-gf',
 
     skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
-    hp: stat(3),
+    hp: stat(4),
     ownerId: 0,
   }),
   'sun-princess': (id, position) => ({
@@ -22,7 +22,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/sun-princess',
 
     skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }],
-    hp: stat(3),
+    hp: stat(4),
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
   }),
@@ -34,7 +34,7 @@ export const entities: EntitiesType = {
     avatar: '/avatars/knight',
 
     skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }],
-    hp: stat(3),
+    hp: stat(4),
 
     isTank: true,
     ownerId: 2, // Assuming ownerId is 0 for player entities
@@ -51,7 +51,7 @@ export const entities: EntitiesType = {
 
     hp: stat(1),
     attack: 1,
-    speed: 1,
+    speed: 6,
   }),
 
   skullwyrm: (id, position) => ({
@@ -65,8 +65,8 @@ export const entities: EntitiesType = {
     skills: [{ id: 'move' }, { id: 'attack' }],
 
     hp: stat(6),
-    attack: 1,
-    speed: 1,
+    attack: 3,
+    speed: 3,
   }),
 };
 
@@ -81,7 +81,7 @@ const defaultPlayer: Entity = {
   hp: { current: 0, max: 0 },
   shield: 0,
   attack: 1,
-  speed: 2,
+  speed: 4,
   actionPoints: stat(1),
   movePoints: stat(1),
   position: { x: 0, y: 0 },
