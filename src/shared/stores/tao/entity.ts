@@ -1,5 +1,4 @@
-import { EntityName } from './entities';
-import { Entity, Field, StatusEffect } from './interface';
+import { Entity, StatusEffect } from './interface';
 import { Skill } from './skills';
 import { StoreData } from './taoStore';
 

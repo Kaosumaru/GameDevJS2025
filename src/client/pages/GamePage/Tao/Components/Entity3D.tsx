@@ -1,66 +1,14 @@
-import { Image } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
-import { JSX, memo, RefObject, useEffect, useMemo, useRef } from 'react';
-import { Group, Mesh, Vector2 } from 'three';
-import { easeBounceOut } from 'd3-ease';
-import { Animation } from './Animation';
-import { TemporalEntity, TemporalEvents } from '../TaoTypes';
-import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
+import { useFrame, useLoader, useThree } from '@react-three/fiber';
+import { JSX, memo, useEffect, useRef } from 'react';
+import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
+import { AnimatedEntity, EntityAnimationEvent } from '../TaoTypes';
+
+import { animate, AnimationPlaybackControlsWithThen } from 'motion';
 
 const activeColor = 0x66bb6a;
 const manaColor = 0x90caf9;
 const damageColor = 0xff0000;
 const inactiveColor = 0x909090;
-
-export const TemporalEventComponent = ({
-  event,
-  startTime,
-  targetMesh,
-}: {
-  event: TemporalEntity['events'][number];
-  startTime: number;
-  targetMesh: RefObject<Group | null>;
-}) => {
-  const fromVectorRef = useRef(new Vector2());
-  const toVectorRef = useRef(new Vector2());
-
-  useEffect(() => {
-    if (!targetMesh.current) return;
-
-    if (event.type === 'sync-position') {
-      const pos = boardPositionToUiPosition(event.position.y, event.position.x);
-      targetMesh.current.position.set(pos.x, 0, pos.y);
-    }
-  }, [event, targetMesh]);
-
-  useFrame(() => {
-    if (!targetMesh.current) return;
-
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 0) return;
-    if (elapsed > event.durationMs) return;
-
-    const progress = Math.min(elapsed / event.durationMs, 1);
-
-    if (event.type === 'move') {
-      const from = boardPositionToUiPosition(event.from.y, event.from.x);
-      const to = boardPositionToUiPosition(event.to.y, event.to.x);
-
-      fromVectorRef.current.set(from.x, from.y);
-      toVectorRef.current.set(to.x, to.y);
-
-      const position = fromVectorRef.current.lerp(toVectorRef.current, progress);
-      targetMesh.current.position.set(position.x, 0, position.y);
-    } else if (event.type === 'attack') {
-      // do nothing yet
-    } else if (event.type === 'death') {
-      // do nothing yet
-    }
-  });
-  return null;
-};
-
-const TemporalEvent = memo(TemporalEventComponent);
 
 const Entity3DComponent = ({
   entity,
@@ -69,63 +17,97 @@ const Entity3DComponent = ({
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
-  entity: TemporalEntity;
+  entity: AnimatedEntity;
 }) => {
   const { camera } = useThree();
-  const containerRef = useRef<Group>(null);
-  const rootRef = useRef<Mesh>(null);
   const shadowRef = useRef<Mesh>(null);
+  const scheduledEvents = useRef<EntityAnimationEvent[]>([]);
+  const notifyRef = useRef<() => void>(() => {});
+  const animationRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
+  const scheduleEnabled = useRef(false);
+  const [colorMap] = useLoader(TextureLoader, [`${entity.avatar}.png`]);
+
+  const imageRatio = colorMap.image.width / colorMap.image.height;
+
+  const refs = useRef<{
+    [key: string]:
+      | Group<Object3DEventMap>
+      | Mesh
+      | null
+      | {
+          material: object;
+        };
+  }>({});
 
   useFrame(() => {
-    if (rootRef.current) {
-      rootRef.current.lookAt(camera.position);
+    if (refs.current['character']) {
+      (refs.current['character'] as Mesh).lookAt(camera.position);
     }
   });
 
   useEffect(() => {
-    rootRef.current?.scale.set(0, 0, 0);
-    shadowRef.current?.scale.set(0, 0, 0);
-  }, [rootRef, shadowRef]);
+    if (scheduleEnabled.current) {
+      scheduledEvents.current.push(...entity.events);
+    }
+    if (scheduledEvents.current.length > 0) {
+      notifyRef.current();
+    }
+  }, [entity.events]);
 
-  const events = useMemo(
-    () =>
-      entity.events.reduce<{
-        events: {
-          event: TemporalEvents;
-          startTime: number;
-        }[];
-        startTime: number;
-      }>(
-        (acc, event) => {
-          acc.events.push({
-            event: event,
-            startTime: acc.startTime,
+  useEffect(() => {
+    const async = async () => {
+      while (true) {
+        if (scheduledEvents.current.length === 0) {
+          await new Promise<void>(resolve => (notifyRef.current = resolve));
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const resolvedEvents = scheduledEvents.current.map<any>(anim => {
+            if (typeof anim === 'string') {
+              return anim;
+            }
+            const [selector, to, options] = anim;
+            const [obj, prop] = selector.split('.');
+
+            const containerRef = refs.current[obj]!;
+            return [containerRef[prop as keyof typeof containerRef], to, options];
           });
-          acc.startTime += event.durationMs;
-          return acc;
-        },
-        { events: [], startTime: Date.now() }
-      ).events,
-    [entity.events]
-  );
+
+          scheduledEvents.current = [];
+          const animation = animate(resolvedEvents);
+          animationRef.current = animation;
+          await animation;
+        }
+      }
+    };
+    scheduleEnabled.current = true;
+    void async();
+    return () => {
+      scheduleEnabled.current = false;
+      if (animationRef.current) {
+        animationRef.current.speed = 100;
+        animationRef.current.complete();
+        animationRef.current.stop();
+      }
+      scheduledEvents.current = [];
+      if (notifyRef.current) {
+        notifyRef.current();
+      }
+    };
+  }, []);
 
   return (
-    <group ref={containerRef} {...rest} dispose={null}>
-      {events.map((event, index) => {
-        return <TemporalEvent key={index} event={event.event} startTime={event.startTime} targetMesh={containerRef} />;
-      })}
-      <Animation
-        delay={0.8}
-        ease={easeBounceOut}
-        sink={t => {
-          if (!rootRef.current) return;
-          rootRef.current.scale.set(t, t, t);
-          shadowRef.current!.scale.set(t, t, t);
-          rootRef.current.position.y = (t - 1) * -4;
+    <group
+      ref={r => {
+        refs.current['container'] = r;
+      }}
+      {...rest}
+      dispose={null}
+    >
+      <group
+        ref={r => {
+          refs.current['character'] = r;
         }}
-      />
-
-      <group ref={rootRef}>
+      >
         {Array.from({ length: entity.actionPoints.max }).map((_, i) => {
           return (
             entity.type === 'player' && (
@@ -145,10 +127,19 @@ const Entity3DComponent = ({
             </mesh>
           );
         })}
-
-        <Image url={`${entity.avatar}.png`} transparent position={[0, 0.5, 1]} zoom={0.4} renderOrder={5}>
-          <planeGeometry args={[2, 2]} />
-        </Image>
+        <mesh position={[0, 0.5, 1]} renderOrder={5}>
+          <planeGeometry args={[1, 1 / imageRatio]} />
+          <colorTexMaterial
+            ref={(r: object) => {
+              refs.current['avatar'] = {
+                material: r,
+              };
+            }}
+            uTexture={colorMap}
+            flashColor={new Color(0xff0000)}
+            transparent
+          />
+        </mesh>
       </group>
 
       <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>

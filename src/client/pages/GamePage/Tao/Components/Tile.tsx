@@ -36,9 +36,9 @@ export const Tile = ({
           meshRef.current.position.y = (t - 1) * 2;
         }}
       />
-      <mesh ref={meshRef} {...rest} castShadow receiveShadow>
+      <mesh ref={meshRef} {...rest}>
         <boxGeometry args={[1, 0.1, 1]} />
-        <colorTexMaterial color={highlightColor ?? neutralColor} map={colorMap} uTexture={colorMap} />
+        <colorTexMaterial color={highlightColor ?? neutralColor} uTexture={colorMap} />
       </mesh>
     </group>
   );
