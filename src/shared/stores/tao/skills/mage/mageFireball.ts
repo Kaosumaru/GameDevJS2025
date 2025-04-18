@@ -12,4 +12,5 @@ export const mageFireball: Skill = {
   reducer: actions([damage(3), neighbors9Excluding, withEnemy, damage(1)]),
   getPossibleTargets: targets([area(3)]),
   getAffectedFields: affected([neighbors9]),
+  getRange: targets([]),
 };

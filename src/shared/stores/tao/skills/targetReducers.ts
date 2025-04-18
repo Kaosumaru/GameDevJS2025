@@ -2,7 +2,14 @@ import { getEntityField, getField, getFieldNeighbors, getFieldNeighbors9 } from 
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
-import { getAffectedTargets, SkillContext, SkillInstance } from '../skills';
+import {
+  getAffectedTargets,
+  getRange,
+  getSkillInstance,
+  SkillContext,
+  skillFromInstance,
+  SkillInstance,
+} from '../skills';
 import { StoreData } from '../taoStore';
 
 export interface TargetContext {
@@ -22,7 +29,7 @@ export function reduceTargets(ctx: TargetContext, reducers: TargetReducer[]): Ta
 }
 
 export function targets(reducers: TargetReducer[]) {
-  return (state: StoreData, ctx: SkillContext): string[] => {
+  return (state: StoreData, ctx: SkillContext): Field[] => {
     const context: TargetContext = {
       state,
       skillInstance: ctx.skillInstance,
@@ -31,12 +38,12 @@ export function targets(reducers: TargetReducer[]) {
     };
 
     const fields = reduceTargets(context, reducers).fields;
-    return fields.map(field => field.id);
+    return fields;
   };
 }
 
 export function affected(reducers: TargetReducer[]) {
-  return (state: StoreData, ctx: SkillContext): string[] => {
+  return (state: StoreData, ctx: SkillContext): Field[] => {
     const context: TargetContext = {
       state,
       skillInstance: ctx.skillInstance,
@@ -45,7 +52,7 @@ export function affected(reducers: TargetReducer[]) {
     };
 
     const fields = reduceTargets(context, reducers).fields;
-    return fields.map(field => field.id);
+    return fields;
   };
 }
 
@@ -85,15 +92,37 @@ export function affectedFields(ctx: TargetContext): TargetContext {
     throw new Error('SkillInstance and Entity are required for affectedFields');
   }
 
-  ctx.fields = getAffectedTargets(ctx.state, ctx.entity, ctx.skillInstance, field.id).map(fieldId =>
-    getField(ctx.state, fieldId)
-  );
+  const skill = skillFromInstance(ctx.skillInstance);
+
+  if (skill.getAffectedFields) {
+    ctx.fields = skill.getAffectedFields(ctx.state, {
+      user: ctx.entity,
+      skillInstance: ctx.skillInstance,
+      targetId: field.id,
+    });
+  } else {
+    ctx.fields = [];
+  }
+
+  return ctx;
+}
+
+export function fieldsInRange(ctx: TargetContext): TargetContext {
+  if (!ctx.skillInstance || !ctx.entity) {
+    throw new Error('SkillInstance and Entity are required for affectedFields');
+  }
+
+  const skill = skillFromInstance(ctx.skillInstance);
+  ctx.fields = skill.getRange(ctx.state, { user: ctx.entity, skillInstance: ctx.skillInstance });
   return ctx;
 }
 
 export function inMoveDistance(rangeModifier: number = 0) {
   return (ctx: TargetContext) => {
-    const speed = (ctx.entity?.speed ?? 0) + rangeModifier;
+    let speed = (ctx.entity?.speed ?? 0) + rangeModifier;
+    if (ctx.entity && hasStatus(ctx.entity, 'speed+2')) {
+      speed += 2;
+    }
     ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
   };
 }
@@ -133,6 +162,11 @@ export function area(range: number) {
 
 export function allEntities(ctx: TargetContext) {
   ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+}
+
+export function allAllies(ctx: TargetContext) {
+  ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+  withAlly(ctx);
 }
 
 export function self(ctx: TargetContext) {

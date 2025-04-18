@@ -28,8 +28,9 @@ export interface Skill {
   actionCost: number;
   moveCost: number;
   reducer: (state: StoreData, ctx: SkillContext) => StoreData;
-  getPossibleTargets: (state: StoreData, ctx: SkillContext) => string[];
-  getAffectedFields?: (state: StoreData, ctx: SkillContext) => string[];
+  getRange: (state: StoreData, ctx: SkillContext) => Field[];
+  getPossibleTargets: (state: StoreData, ctx: SkillContext) => Field[];
+  getAffectedFields?: (state: StoreData, ctx: SkillContext) => Field[];
 }
 
 export interface SkillInstance {
@@ -75,7 +76,7 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   const skill = skillFromID(skillId);
   const skillInstance = getSkillInstance(user, skillId);
 
-  const possibleTargets = skill.getPossibleTargets(state, { user, skillInstance });
+  const possibleTargets = skill.getPossibleTargets(state, { user, skillInstance }).map(field => field.id);
   if (targetId && !possibleTargets.includes(targetId)) {
     throw new Error(`Target ${targetId} is not valid for skill ${skillId}`);
   }
@@ -113,7 +114,9 @@ function filterDeadEntities(state: StoreData): StoreData {
 }
 
 export function getPossibleTargets(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {
-  return skillFromInstance(skillInstance).getPossibleTargets(state, { user, skillInstance });
+  return skillFromInstance(skillInstance)
+    .getPossibleTargets(state, { user, skillInstance })
+    .map(field => field.id);
 }
 
 export function getAffectedTargets(
@@ -127,7 +130,13 @@ export function getAffectedTargets(
     return [];
   }
 
-  return skill.getAffectedFields(state, { user, skillInstance, targetId });
+  return skill.getAffectedFields(state, { user, skillInstance, targetId }).map(field => field.id);
+}
+
+export function getRange(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {
+  return skillFromInstance(skillInstance)
+    .getRange(state, { user, skillInstance })
+    .map(field => field.id);
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {

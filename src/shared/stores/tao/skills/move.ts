@@ -11,4 +11,5 @@ export const moveSkill: Skill = {
   moveCost: 1,
   reducer: actions([move]),
   getPossibleTargets: targets([inMoveDistance(), empty]),
+  getRange: targets([]),
 };

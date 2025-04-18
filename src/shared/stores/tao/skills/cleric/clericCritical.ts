@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, status } from '../actions';
-import { area, targets, withAlly, withEnemy } from '../targetReducers';
+import { area, fieldsInRange, targets, withAlly, withEnemy } from '../targetReducers';
 
 export const clericCritical: Skill = {
   id: 'clericCritical',
@@ -10,5 +10,6 @@ export const clericCritical: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([status('critical', 1)]),
-  getPossibleTargets: targets([area(4), withAlly]),
+  getPossibleTargets: targets([fieldsInRange, withAlly]),
+  getRange: targets([area(4)]),
 };

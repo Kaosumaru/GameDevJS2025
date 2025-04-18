@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, status } from '../actions';
-import { targets, self, affected, area, affectedFields, withEnemy } from '../targetReducers';
+import { targets, self, affected, area, affectedFields, withEnemy, allAllies } from '../targetReducers';
 
 // not implemented yet
 export const knightSpeed: Skill = {
@@ -10,7 +10,7 @@ export const knightSpeed: Skill = {
   type: 'defense',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([]),
-  getPossibleTargets: targets([]),
-  getAffectedFields: affected([]),
+  reducer: actions([allAllies, status('speed+2', 1)]),
+  getPossibleTargets: targets([allAllies]),
+  getRange: targets([allAllies]),
 };

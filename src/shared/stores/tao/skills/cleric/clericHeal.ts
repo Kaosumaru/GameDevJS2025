@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, heal } from '../actions';
-import { area, targets, withAlly } from '../targetReducers';
+import { area, fieldsInRange, targets, withAlly } from '../targetReducers';
 
 export const clericHeal: Skill = {
   id: 'clericHeal',
@@ -10,5 +10,6 @@ export const clericHeal: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([heal(4)]),
-  getPossibleTargets: targets([area(4), withAlly]),
+  getPossibleTargets: targets([fieldsInRange, withAlly]),
+  getRange: targets([area(4)]),
 };

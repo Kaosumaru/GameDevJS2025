@@ -11,4 +11,5 @@ export const attackSkill: Skill = {
   moveCost: 0,
   reducer: actions([attack()]),
   getPossibleTargets: targets([neighborsExcluding, withEnemy]),
+  getRange: targets([]),
 };

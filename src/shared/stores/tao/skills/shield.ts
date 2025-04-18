@@ -11,4 +11,5 @@ export const shieldSkill: Skill = {
   moveCost: 0,
   reducer: actions([gainShield(2)]),
   getPossibleTargets: targets([self]),
+  getRange: targets([]),
 };

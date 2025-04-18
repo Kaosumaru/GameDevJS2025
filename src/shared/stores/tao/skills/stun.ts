@@ -11,4 +11,5 @@ export const stunSkill: Skill = {
   moveCost: 0,
   reducer: actions([status('stunned', 1)]),
   getPossibleTargets: targets([area(3), withEnemy]),
+  getRange: targets([]),
 };

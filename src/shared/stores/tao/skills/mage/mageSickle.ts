@@ -13,4 +13,5 @@ export const mageSickle: Skill = {
   reducer: actions([]),
   getPossibleTargets: targets([]),
   getAffectedFields: affected([]),
+  getRange: targets([]),
 };

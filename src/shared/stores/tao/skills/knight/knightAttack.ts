@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, damage } from '../actions';
-import { neighborsExcluding, targets, withEnemy } from '../targetReducers';
+import { fieldsInRange, neighborsExcluding, targets, withEnemy } from '../targetReducers';
 
 export const knightAttack: Skill = {
   id: 'knightAttack',
@@ -10,5 +10,6 @@ export const knightAttack: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([damage(6)]),
-  getPossibleTargets: targets([neighborsExcluding, withEnemy]),
+  getPossibleTargets: targets([fieldsInRange, withEnemy]),
+  getRange: targets([neighborsExcluding]),
 };
