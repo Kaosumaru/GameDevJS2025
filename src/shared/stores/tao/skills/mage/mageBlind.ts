@@ -7,7 +7,8 @@ export const mageBlind: Skill = {
   name: 'Blind',
   description: 'Cast a fireball',
   type: 'attack',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([status('disarmed', 1), damage(3)]),
   getPossibleTargets: targets([neighborsExcluding, withEnemy]),
 };

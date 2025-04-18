@@ -26,6 +26,7 @@ export interface Entity {
   skills: SkillInstance[];
   hp: Stat;
   shield: number;
+  movePoints: Stat;
   actionPoints: Stat;
   position: Position;
   originalPosition?: Position;

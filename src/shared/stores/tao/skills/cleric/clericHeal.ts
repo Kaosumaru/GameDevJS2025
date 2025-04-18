@@ -7,7 +7,8 @@ export const clericHeal: Skill = {
   name: 'Heal',
   description: 'Heal self',
   type: 'defense',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([heal(4)]),
   getPossibleTargets: targets([area(4), withAlly]),
 };

@@ -7,7 +7,8 @@ export const clericDisarm: Skill = {
   name: 'Disarm',
   description: 'Disarm',
   type: 'defense',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([status('disarmed', 1)]),
   getPossibleTargets: targets([area(4), withEnemy]),
 };

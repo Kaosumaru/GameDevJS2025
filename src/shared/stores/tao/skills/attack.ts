@@ -7,7 +7,8 @@ export const attackSkill: Skill = {
   name: 'Attack',
   description: 'Attack a target entity',
   type: 'attack',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([damage(2)]),
   getPossibleTargets: targets([neighborsExcluding, withEnemy]),
 };

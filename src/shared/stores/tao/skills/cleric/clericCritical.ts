@@ -8,7 +8,8 @@ export const clericCritical: Skill = {
   name: 'Critical',
   description: 'Critical',
   type: 'defense',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([status('critical', 1)]),
   getPossibleTargets: targets([area(4), withAlly]),
 };

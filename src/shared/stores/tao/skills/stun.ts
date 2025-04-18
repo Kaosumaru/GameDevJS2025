@@ -7,7 +7,8 @@ export const stunSkill: Skill = {
   name: 'Stun',
   description: 'Stun a target entity',
   type: 'attack',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([status('stunned', 1)]),
   getPossibleTargets: targets([area(3), withEnemy]),
 };

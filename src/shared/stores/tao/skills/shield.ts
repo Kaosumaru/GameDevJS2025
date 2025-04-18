@@ -7,7 +7,8 @@ export const shieldSkill: Skill = {
   name: 'Shield',
   description: 'Shield self',
   type: 'defense',
-  cost: 1,
+  actionCost: 1,
+  moveCost: 0,
   reducer: actions([gainShield(2)]),
   getPossibleTargets: targets([self]),
 };

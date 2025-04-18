@@ -1,5 +1,5 @@
 import { findFieldByPosition, getEntityIdInFieldId, getField } from './board';
-import { hasStatus, useActionPointsEntity } from './entity';
+import { hasStatus, payForSkillEntity } from './entity';
 import { addEvent } from './events';
 import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
@@ -25,7 +25,8 @@ export interface Skill {
   type: SkillType;
   name: string;
   description: string;
-  cost: number;
+  actionCost: number;
+  moveCost: number;
   reducer: (state: StoreData, ctx: SkillContext) => StoreData;
   getPossibleTargets: (state: StoreData, ctx: SkillContext) => string[];
   getAffectedFields?: (state: StoreData, ctx: SkillContext) => string[];
@@ -79,11 +80,11 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
     throw new Error(`Target ${targetId} is not valid for skill ${skillId}`);
   }
 
-  if (user.actionPoints.current < skill.cost) {
-    throw new Error(`Not enough action points to use skill ${skillId}`);
+  if (!haveResourcesForSkill(user, skillInstance)) {
+    throw new Error(`Not enough resources to use skill ${skillId}`);
   }
 
-  state = useActionPointsEntity(state, user.id, skill.cost);
+  state = payForSkillEntity(state, user.id, skill);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   state = skill.reducer(state, { user, skillInstance, targetId });
@@ -141,7 +142,10 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
       return false;
     }
   }
-  return user.actionPoints.current >= skillFromInstance(skillInstance).cost;
+  return (
+    user.actionPoints.current >= skillFromInstance(skillInstance).actionCost &&
+    user.movePoints.current >= skillFromInstance(skillInstance).moveCost
+  );
 }
 
 export function haveResourcesAndTargetsForSkill(state: StoreData, user: Entity, skillInstance: SkillInstance): boolean {
