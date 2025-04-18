@@ -4,7 +4,7 @@ import { targets, self, affected, area, affectedFields, withEnemy } from '../tar
 
 export const knightTaunt: Skill = {
   id: 'knightTaunt',
-  name: 'Taunt',
+  name: 'Defensive posture',
   description: 'Taunt',
   type: 'defense',
   actionCost: 1,

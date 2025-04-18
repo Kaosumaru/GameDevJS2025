@@ -7,7 +7,7 @@ export const entities: EntitiesType = {
     ...defaultPlayer,
     id,
     position,
-    name: 'Goth GF',
+    name: 'Lacrimosa',
     avatar: '/avatars/goth-gf',
 
     skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
@@ -18,7 +18,7 @@ export const entities: EntitiesType = {
     ...defaultPlayer,
     id,
     position,
-    name: 'Sun Princess',
+    name: 'Aurora',
     avatar: '/avatars/sun-princess',
 
     skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }],
@@ -30,7 +30,7 @@ export const entities: EntitiesType = {
     ...defaultPlayer,
     id,
     position,
-    name: 'Knight',
+    name: 'Vacuan',
     avatar: '/avatars/knight',
 
     skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }],

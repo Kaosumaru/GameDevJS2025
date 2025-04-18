@@ -5,7 +5,7 @@ import { targets, self, affected, area, affectedFields, withEnemy } from '../tar
 // not implemented yet
 export const knightSpeed: Skill = {
   id: 'knightSpeed',
-  name: 'Speed',
+  name: 'Balancing Act [Speed]',
   description: 'Speed',
   type: 'defense',
   actionCost: 1,

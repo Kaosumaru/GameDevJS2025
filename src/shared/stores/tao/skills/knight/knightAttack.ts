@@ -4,7 +4,7 @@ import { neighborsExcluding, targets, withEnemy } from '../targetReducers';
 
 export const knightAttack: Skill = {
   id: 'knightAttack',
-  name: 'Attack',
+  name: 'Hollow Thrust',
   description: 'Attack a target entity',
   type: 'attack',
   actionCost: 1,

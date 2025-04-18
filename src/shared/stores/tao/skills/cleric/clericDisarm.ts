@@ -4,7 +4,7 @@ import { area, targets, withAlly, withEnemy } from '../targetReducers';
 
 export const clericDisarm: Skill = {
   id: 'clericDisarm',
-  name: 'Disarm',
+  name: 'Blinding',
   description: 'Disarm',
   type: 'defense',
   actionCost: 1,

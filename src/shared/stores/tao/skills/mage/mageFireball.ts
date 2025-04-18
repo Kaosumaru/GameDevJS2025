@@ -4,7 +4,7 @@ import { affected, area, neighbors9, neighbors9Excluding, targets, withEnemy } f
 
 export const mageFireball: Skill = {
   id: 'mageFireball',
-  name: 'Fireball',
+  name: 'Horror of the Moon [Area DMG]',
   description: 'Cast a fireball',
   type: 'attack',
   actionCost: 1,
