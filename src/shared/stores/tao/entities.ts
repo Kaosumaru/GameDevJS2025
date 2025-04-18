@@ -31,7 +31,7 @@ const defaultEnemy: Entity = {
   shield: 0,
   attack: 1,
   speed: 2,
-  actionPoints: { current: 2, max: 2 },
+  actionPoints: { current: 1, max: 1 },
   movePoints: { current: 1, max: 1 },
   position: { x: 0, y: 0 },
   originalPosition: undefined,
