@@ -16,6 +16,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
           type: event.entity.type,
           hp: event.entity.hp,
           actionPoints: event.entity.actionPoints,
+          shield: event.entity.shield,
           avatar: event.entity.avatar,
           position: event.entity.position,
           events: [
@@ -115,6 +116,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
               ...acc[event.damages[0].entityId].hp,
               current: event.damages[0].health.to,
             },
+            shield: event.damages[0].shield.to,
             events: [
               ...acc[event.damages[0].entityId].events,
               'hit',

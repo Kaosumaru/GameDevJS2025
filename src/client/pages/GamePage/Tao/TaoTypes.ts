@@ -10,6 +10,7 @@ export type AnimatedEntity = {
   position: Position;
   hp: Stat;
   actionPoints: Stat;
+  shield: number;
   avatar: string;
 };
 export type AnimatedEntities = Record<string, AnimatedEntity>;

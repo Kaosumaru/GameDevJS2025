@@ -104,7 +104,7 @@ const Entity3DComponent = ({
           refs.current['character'] = r;
         }}
       >
-        <Stats entity={entity} />
+        <Stats entity={entity} position={[0, 1, 0]} />
         <mesh position={[0, 0.5, 1]} renderOrder={5}>
           <planeGeometry args={[1, 1 / imageRatio]} />
           <colorTexMaterial
