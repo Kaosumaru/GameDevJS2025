@@ -13,8 +13,10 @@ const skillNameFromInstance = (skillInstance: SkillInstance, isDesktopView: bool
 };
 
 const skillDescriptionFromInstance = (skillInstance: SkillInstance): string => {
-  const description = skillFromInstance(skillInstance).description;
-
+  const skill = skillFromInstance(skillInstance);
+  const description = skill.description
+    .replaceAll('{actionCost}', `${skill.actionCost}`)
+    .replaceAll('{moveCost}', `${skill.moveCost}`);
   return description;
 };
 
@@ -58,6 +60,8 @@ const DockComponent = ({
               <Box
                 sx={{
                   display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
                   justifyContent: 'center',
                   color: 'white',
                   bgcolor: 'black',
@@ -66,9 +70,10 @@ const DockComponent = ({
                   m: 1,
                   p: isDesktopView ? 0.5 : 0.1,
                 }}
-              >
-                {selectedSkill?.id ? skillDescriptionFromInstance(selectedSkill) : 'Select a skill'}
-              </Box>
+                dangerouslySetInnerHTML={{
+                  __html: selectedSkill?.id ? skillDescriptionFromInstance(selectedSkill) : 'Select a skill',
+                }}
+              ></Box>
               <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
                 {entity?.skills.map(skill => (
                   <Button
