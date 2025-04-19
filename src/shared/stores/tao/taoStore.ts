@@ -23,6 +23,7 @@ export interface EndRoundAction {
 export type Action = UseSkillAction | EndRoundAction;
 
 export interface StoreData {
+  oldState?: StoreData;
   gameOver: boolean;
   board: Field[][];
   entities: Entity[];
@@ -59,9 +60,23 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
   switch (action.type) {
     case 'endRound': {
+      // caching old state for client animations
+      store = {
+        ...store,
+        oldState: {
+          ...store,
+        },
+      };
       return endOfRound(store);
     }
     case 'useSkill': {
+      // caching old state for client animations
+      store = {
+        ...store,
+        oldState: {
+          ...store,
+        },
+      };
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
       if (!entity) {
@@ -81,6 +96,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
     }
 
     case 'newGame': {
+      store = { ...store, oldState: undefined };
       const board = create2DArray(10, 10, 0);
       const fieldData = convertNumbersToFieldType(board);
       let state: StoreData = {

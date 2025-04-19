@@ -23,7 +23,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
             hp: entity.hp,
             actionPoints: entity.actionPoints,
             shield: entity.shield,
-            avatar: entity.avatar,
+            kind: entity.kind,
             position: entity.position,
             events: [
               'start',

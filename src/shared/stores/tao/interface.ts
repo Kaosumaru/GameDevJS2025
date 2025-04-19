@@ -1,4 +1,4 @@
-import { EntityName } from './entities';
+import { EntityTypeId as EntityKindId } from './entities';
 import { SkillInstance } from './skills';
 
 export interface Stat {
@@ -20,7 +20,7 @@ export type Statuses = { [key in StatusEffect]?: number };
 export interface Entity {
   id: string;
   name: string;
-  avatar: `/avatars/${EntityName}`;
+  kind: EntityKindId;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];

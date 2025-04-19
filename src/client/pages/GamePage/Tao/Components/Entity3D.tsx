@@ -21,7 +21,7 @@ const Entity3DComponent = ({
   const notifyRef = useRef<() => void>(() => {});
   const animationRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
   const scheduleEnabled = useRef(true);
-  const [colorMap] = useLoader(TextureLoader, [`${entity.avatar}.png`]);
+  const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.kind}.png`]);
 
   const imageRatio = colorMap.image.width / colorMap.image.height;
 
