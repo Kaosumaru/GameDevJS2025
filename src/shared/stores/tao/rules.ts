@@ -5,6 +5,7 @@ import {
   modifyAllEntities,
   refreshAllActionPoints as refreshAllActionPointsAndMoves,
 } from './entity';
+import { entitiesAfterRoundStart } from './entityInfo';
 import { Entity, StatusEffect, Statuses } from './interface';
 import { damage, loseAllShield, rule } from './skills/actions';
 import { allEntities, withShield, withEntityWithStatus as withStatus } from './skills/targetReducers';
@@ -22,6 +23,7 @@ export function endOfRound(state: StoreData): StoreData {
   state = loseShield(state);
   state = modifyAllEntities(state, decrementAllStatusesReducer);
   state = filterDeadEntities(state);
+  state = entitiesAfterRoundStart(state);
   return state;
 }
 
