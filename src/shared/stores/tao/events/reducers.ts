@@ -1,6 +1,5 @@
 import { getEntityField, getField } from '../board';
 import { getEntity } from '../entity';
-import { Entity, stat } from '../interface';
 import { moveEntityTo, placeEntity } from '../movement';
 import { StoreData } from '../taoStore';
 import { ApplyStatusEvent, DamageEvent, DeathEvent, EventType, MoveEvent, SpawnEvent } from './events';
@@ -39,11 +38,17 @@ function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
 }
 
 function reduceSpawn(state: StoreData, event: SpawnEvent): StoreData {
-  return placeEntity(state, event.entity);
+  for (const entity of event.entities) {
+    state = placeEntity(state, entity);
+  }
+  return state;
 }
 
 function reduceMove(state: StoreData, event: MoveEvent): StoreData {
-  return moveEntityTo(state, event.entityId, event.to);
+  for (const move of event.moves) {
+    state = moveEntityTo(state, move.entityId, move.to);
+  }
+  return state;
 }
 
 function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData {

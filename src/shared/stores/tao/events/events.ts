@@ -2,11 +2,15 @@ import { Entity, Position, StatusEffect } from '../interface';
 import { StoreData } from '../taoStore';
 import { reduceEvent } from './reducers';
 
-export interface MoveEvent {
-  type: 'move';
+export interface MoveData {
   entityId: string;
   from: Position;
   to: Position;
+}
+
+export interface MoveEvent {
+  type: 'move';
+  moves: MoveData[];
 }
 
 export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield';
@@ -35,7 +39,7 @@ export interface DeathEvent {
 
 export interface SpawnEvent {
   type: 'spawn';
-  entity: Entity;
+  entities: Entity[];
 }
 
 export interface ApplyStatusData {
