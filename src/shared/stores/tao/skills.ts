@@ -16,6 +16,7 @@ import { mageBlind } from './skills/mage/mageBlind';
 import { clericCritical } from './skills/cleric/clericCritical';
 import { knightSpeed } from './skills/knight/knightSpeed';
 import { mageSickle } from './skills/mage/mageSickle';
+import { knightDarkWide } from './skills/knight/knightDarkWide';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
@@ -62,6 +63,8 @@ const skills = {
   mageFireball,
   mageBlind,
   mageSickle,
+
+  knightDarkWide,
 };
 
 export type SkillID = Extract<keyof typeof skills, string>;

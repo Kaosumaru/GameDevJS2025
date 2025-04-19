@@ -40,7 +40,13 @@ export const entities: EntitiesType = {
     name: 'Vacuan',
     kind: 'knight',
 
-    skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }, { id: 'knightSpeed' }],
+    skills: [
+      { id: 'move' },
+      { id: 'knightAttack' },
+      { id: 'knightTaunt' },
+      { id: 'knightSpeed' },
+      { id: 'knightDarkWide' },
+    ],
     hp: stat(4),
 
     isTank: true,

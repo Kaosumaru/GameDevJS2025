@@ -1,4 +1,12 @@
-import { getEntityField, getField, getFieldNeighbors, getFieldNeighbors9 } from '../board';
+import {
+  getDirection,
+  getEntityField,
+  getField,
+  getFieldInDirection,
+  getFieldNeighbors,
+  getFieldNeighbors9,
+  getPerpendicularDirections,
+} from '../board';
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
@@ -175,4 +183,27 @@ function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolea
     const fieldEntity = getEntity(ctx.state, field.entityUUID);
     return fieldEntity && filter(fieldEntity);
   });
+}
+
+export function perpendicularFields(length: number) {
+  return (ctx: TargetContext) => {
+    if (!ctx.entity) {
+      throw new Error('Entity is undefined');
+    }
+    const entityField = getEntityField(ctx.state, ctx.entity);
+    const results: Field[] = [];
+    for (const field of ctx.fields) {
+      const direction = getDirection(entityField.position, field.position);
+      const perpendicularDirections = getPerpendicularDirections(direction);
+      results.push(field);
+      for (let i = 1; i <= length - 1; i++) {
+        for (const perpendicularDirection of perpendicularDirections) {
+          const newField = getFieldInDirection(ctx.state, field, perpendicularDirection, i);
+          if (newField) {
+            results.push(newField);
+          }
+        }
+      }
+    }
+  };
 }
