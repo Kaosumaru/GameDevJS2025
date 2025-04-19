@@ -131,7 +131,9 @@ interface DamageInfo {
   shield?: number;
   damageType: DamageType;
 }
+
 type DamageDataReducer = (entity: Entity, ctx: TargetContext) => DamageInfo;
+
 function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): DamageData[] {
   return ctx.fields
     .filter(f => f.entityUUID !== undefined)
