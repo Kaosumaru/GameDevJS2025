@@ -185,7 +185,7 @@ function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolea
   });
 }
 
-export function perpendicularFields(length: number) {
+export function fieldsInFront(width: number, height: number) {
   return (ctx: TargetContext) => {
     if (!ctx.entity) {
       throw new Error('Entity is undefined');
@@ -195,12 +195,20 @@ export function perpendicularFields(length: number) {
     for (const field of ctx.fields) {
       const direction = getDirection(entityField.position, field.position);
       const perpendicularDirections = getPerpendicularDirections(direction);
-      results.push(field);
-      for (let i = 1; i <= length; i++) {
-        for (const perpendicularDirection of perpendicularDirections) {
-          const newField = getFieldInDirection(ctx.state, field, perpendicularDirection, i);
-          if (newField) {
-            results.push(newField);
+
+      for (let h = 0; h <= height; h++) {
+        const heightField = getFieldInDirection(ctx.state, field, direction, h);
+        if (!heightField) {
+          break;
+        }
+        results.push(heightField);
+
+        for (let i = 1; i <= width; i++) {
+          for (const perpendicularDirection of perpendicularDirections) {
+            const newField = getFieldInDirection(ctx.state, heightField, perpendicularDirection, i);
+            if (newField) {
+              results.push(newField);
+            }
           }
         }
       }

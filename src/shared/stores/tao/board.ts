@@ -111,7 +111,7 @@ const directionOffset = {
 
 export function getDirection(from: Position, to: Position): Direction {
   if (from.x === to.x) {
-    return from.y < to.y ? Direction.Up : Direction.Down;
+    return from.y < to.y ? Direction.Down : Direction.Up;
   } else if (from.y === to.y) {
     return from.x < to.x ? Direction.Right : Direction.Left;
   } else {
