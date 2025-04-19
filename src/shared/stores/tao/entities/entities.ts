@@ -1,6 +1,13 @@
 import { Entity, Position, stat } from '../interface';
 
-export type EntityTypeId = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb' | 'skullwyrm';
+export type EntityTypeId =
+  | 'goth-gf'
+  | 'sun-princess'
+  | 'knight'
+  | 'mushroom-bomb'
+  | 'skullwyrm'
+  | 'voidling'
+  | 'voidbug';
 
 export const entities: EntitiesType = {
   'goth-gf': (id, position) => ({
@@ -61,6 +68,36 @@ export const entities: EntitiesType = {
 
     name: 'Skullwyrm',
     kind: 'skullwyrm',
+
+    skills: [{ id: 'move' }, { id: 'attack' }],
+
+    hp: stat(6),
+    attack: 3,
+    speed: 3,
+  }),
+
+  voidling: (id, position) => ({
+    ...defaultEnemy,
+    id,
+    position,
+
+    name: 'Voidling',
+    kind: 'voidling',
+
+    skills: [{ id: 'move' }, { id: 'attack' }],
+
+    hp: stat(1),
+    attack: 1,
+    speed: 6,
+  }),
+
+  voidbug: (id, position) => ({
+    ...defaultEnemy,
+    id,
+    position,
+
+    name: 'Voidbug',
+    kind: 'voidbug',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 

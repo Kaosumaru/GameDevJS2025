@@ -27,7 +27,6 @@ export function createLevel0(): LevelDescription {
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-
     ],
     tileToField: {
       0: { tileId: 0, blocking: false },
@@ -38,7 +37,7 @@ export function createLevel0(): LevelDescription {
       6: 'knight',
       7: 'sun-princess',
       8: 'goth-gf',
-      9: 'mushroom-bomb',
+      9: 'voidling',
     },
   };
 }
