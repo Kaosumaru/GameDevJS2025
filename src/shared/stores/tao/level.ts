@@ -14,8 +14,7 @@ export interface LevelDescription {
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
-  state = { ...state };
-  state.board = level.tiles.map((row, y) =>
+  const board = level.tiles.map((row, y) =>
     row.map((tile, x) => {
       const tileInfo = level.tileToField[tile] ?? { blocking: false, tileId: 0 };
 
@@ -29,6 +28,13 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
   );
 
   let entityId = 0;
+  state = {
+    ...state,
+    oldState: {
+      ...state,
+    },
+    board,
+  };
   level.tiles.forEach((row, y) => {
     row.forEach((tile, x) => {
       const entityName = level.tileToEntity[tile];

@@ -99,7 +99,6 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
     }
 
     case 'newGame': {
-      store = { ...store, oldState: undefined };
       const board = create2DArray(10, 10, 0);
       const fieldData = convertNumbersToFieldType(board);
       let state: StoreData = {
