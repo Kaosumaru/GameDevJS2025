@@ -21,6 +21,7 @@ import { Environment } from './Components/Environment';
 import { OrbitControls } from '@react-three/drei';
 import { Dock } from './UiComponents/Dock';
 import { Entity } from '@shared/stores/tao/interface';
+import { useAnimationState } from './Animation/useAnimationState';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -59,6 +60,8 @@ export const TaoScene = ({
 }) => {
   const [cameraTargetState, setCameraTargetState] = useState<Vector3 | undefined>(undefined);
   const client = useClient(TaoClient, gameRoomClient);
+  const animationState = useAnimationState(client);
+
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
   const events = client.store(state => state.events);
@@ -71,6 +74,8 @@ export const TaoScene = ({
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
+
+  console.log('animationState', animationState);
 
   const selectSkill = useCallback(
     (selectedEntity: Entity, skill: SkillInstance) => {
