@@ -30,11 +30,14 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
   let entityId = 0;
   state = {
     ...state,
-    oldState: {
-      ...state,
-    },
     board,
   };
+
+  state.oldState = {
+    ...state,
+    board: state.board.map(row => row.map(field => ({ ...field }))),
+  };
+
   level.tiles.forEach((row, y) => {
     row.forEach((tile, x) => {
       const entityName = level.tileToEntity[tile];
