@@ -1,6 +1,6 @@
-import { getEntityInField, getField } from '../board';
+import { getEntityField, getEntityInField, getField } from '../board';
 import { hasStatus } from '../entity';
-import { addEvent, DamageData, DamageType, EventType } from '../events/events';
+import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
 import { SkillContext } from '../skills';
 import { StoreData } from '../taoStore';
@@ -57,7 +57,7 @@ export function gainShield(amount: number) {
 }
 
 export function loseAllShield(ctx: TargetContext) {
-  addDamageEvent(ctx, entity => {
+  addDamageEvent(ctx, () => {
     return {
       shield: 0,
       damageType: 'shield',
@@ -116,6 +116,19 @@ export function rule(reducers: TargetReducer[]) {
       skillInstance: undefined,
       entity: undefined,
       fields: [],
+    };
+
+    return reduceTargets(context, reducers).state;
+  };
+}
+
+export function passive(reducers: TargetReducer[]) {
+  return (state: StoreData, entity: Entity): StoreData => {
+    const context: TargetContext = {
+      state,
+      skillInstance: undefined,
+      entity: entity,
+      fields: [getEntityField(state, entity)],
     };
 
     return reduceTargets(context, reducers).state;

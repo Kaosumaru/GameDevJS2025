@@ -1,6 +1,5 @@
-import { entities, EntityTypeId } from './entities';
+import { entities, EntityTypeId } from './entities/entities';
 import { addEvent } from './events/events';
-import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
 
 interface TileInfo {

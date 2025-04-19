@@ -8,6 +8,7 @@ import { fillState } from './level';
 import { EventType } from './events/events';
 import { endOfRound } from './rules';
 import { createLevel0 } from './levels/level0';
+import { entitiesAfterRoundStart } from './entityInfo';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -109,6 +110,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       const level = createLevel0();
       state = fillState(state, level);
       state = clearOriginalPositions(state);
+      state = entitiesAfterRoundStart(state);
       return state;
     }
   }

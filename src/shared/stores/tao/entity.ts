@@ -1,3 +1,5 @@
+import { entityBeforeDeath } from './entityInfo';
+import { addEvent } from './events/events';
 import { Entity, StatusEffect } from './interface';
 import { Skill } from './skills';
 import { StoreData } from './taoStore';
@@ -91,4 +93,16 @@ export function isEnemy(entityA: Entity, entityB: Entity): boolean {
     return false;
   }
   return entityA.type !== entityB.type;
+}
+
+export function filterDeadEntities(state: StoreData): StoreData {
+  const deadEntities = state.entities.filter(entity => entity.hp.current <= 0);
+  if (deadEntities.length == 0) return state;
+
+  for (const entity of deadEntities) {
+    state = entityBeforeDeath(state, entity);
+    state = addEvent(state, { type: 'death', entityId: entity.id });
+  }
+
+  return state;
 }

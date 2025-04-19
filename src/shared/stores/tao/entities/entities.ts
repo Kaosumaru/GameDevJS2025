@@ -1,4 +1,4 @@
-import { Entity, Position, stat } from './interface';
+import { Entity, Position, stat } from '../interface';
 
 export type EntityTypeId = 'goth-gf' | 'sun-princess' | 'knight' | 'mushroom-bomb' | 'skullwyrm';
 

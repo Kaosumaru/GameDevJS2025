@@ -1,6 +1,7 @@
 import { monstersAi } from './ai';
 import {
   clearOriginalPositions,
+  filterDeadEntities,
   modifyAllEntities,
   refreshAllActionPoints as refreshAllActionPointsAndMoves,
 } from './entity';
@@ -20,6 +21,7 @@ export function endOfRound(state: StoreData): StoreData {
   state = applyPoison(state);
   state = loseShield(state);
   state = modifyAllEntities(state, decrementAllStatusesReducer);
+  state = filterDeadEntities(state);
   return state;
 }
 

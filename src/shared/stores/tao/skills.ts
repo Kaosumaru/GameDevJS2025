@@ -1,6 +1,5 @@
-import { findFieldByPosition, getEntityIdInFieldId, getField } from './board';
-import { hasStatus, payForSkillEntity } from './entity';
-import { addEvent } from './events/events';
+import { getEntityIdInFieldId, getField } from './board';
+import { filterDeadEntities, hasStatus, payForSkillEntity } from './entity';
 import { Entity, Field } from './interface';
 import { attackSkill } from './skills/attack';
 import { mageFireball } from './skills/mage/mageFireball';
@@ -20,6 +19,9 @@ import { mageSickle } from './skills/mage/mageSickle';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
+export type SkillReducer = (state: StoreData, ctx: SkillContext) => StoreData;
+export type SkillTargetsReducer = (state: StoreData, ctx: SkillContext) => Field[];
+
 export interface Skill {
   id: SkillID;
   type: SkillType;
@@ -27,10 +29,10 @@ export interface Skill {
   description: string;
   actionCost: number;
   moveCost: number;
-  reducer: (state: StoreData, ctx: SkillContext) => StoreData;
-  getRange: (state: StoreData, ctx: SkillContext) => Field[];
-  getPossibleTargets: (state: StoreData, ctx: SkillContext) => Field[];
-  getAffectedFields?: (state: StoreData, ctx: SkillContext) => Field[];
+  reducer: SkillReducer;
+  getRange: SkillTargetsReducer;
+  getPossibleTargets: SkillTargetsReducer;
+  getAffectedFields?: SkillTargetsReducer;
 }
 
 export interface SkillInstance {
@@ -100,17 +102,6 @@ export function getSkillInstance(user: Entity, skillId: SkillID): SkillInstance 
     throw new Error(`Skill instance ${skillId} not found for user ${user.id}`);
   }
   return skillInstance;
-}
-
-function filterDeadEntities(state: StoreData): StoreData {
-  const deadEntities = state.entities.filter(entity => entity.hp.current <= 0);
-  if (deadEntities.length == 0) return state;
-
-  for (const entity of deadEntities) {
-    state = addEvent(state, { type: 'death', entityId: entity.id });
-  }
-
-  return state;
 }
 
 export function getPossibleTargets(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {

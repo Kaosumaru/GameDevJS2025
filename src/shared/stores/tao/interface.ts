@@ -1,4 +1,4 @@
-import { EntityTypeId as EntityKindId } from './entities';
+import { EntityTypeId as EntityKindId } from './entities/entities';
 import { SkillInstance } from './skills';
 
 export interface Stat {
