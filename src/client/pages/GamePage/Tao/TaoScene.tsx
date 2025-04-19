@@ -20,6 +20,7 @@ import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Environment } from './Components/Environment';
 import { OrbitControls } from '@react-three/drei';
 import { Dock } from './UiComponents/Dock';
+import { Entity } from '@shared/stores/tao/interface';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -71,22 +72,35 @@ export const TaoScene = ({
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
 
+  const selectSkill = useCallback(
+    (selectedEntity: Entity, skill: SkillInstance) => {
+      const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
+      const range = getRange(client.store.getState(), selectedEntity, skill);
+      setUiAction({ action: 'select-target' as const, targets, range, skill });
+      setAffectedFields([]);
+    },
+    [client]
+  );
+
   const focusOnEntity = useCallback(
-    (entity: { position: { x: number; y: number }; id: string }, moveCamera: boolean = true) => {
+    (entity: Entity, moveCamera: boolean = true, autoSelectFirstSkill: boolean = true) => {
       const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
       setSelectedEntityId(entity.id);
+      if (autoSelectFirstSkill && entity.skills.length > 0) {
+        selectSkill(entity, entity.skills[0]);
+      }
       if (moveCamera) {
         setCameraTargetState(new Vector3(x, 0.5, y));
       }
     },
-    []
+    [selectSkill]
   );
 
   useEffect(() => {
     if (cameraTargetState === undefined) {
       const firstPlayer = entities.find(entity => entity.ownerId === 0);
       if (firstPlayer) {
-        focusOnEntity(firstPlayer);
+        focusOnEntity(firstPlayer, true, false);
       }
     }
   }, [entities, cameraTargetState, focusOnEntity]);
@@ -156,7 +170,12 @@ export const TaoScene = ({
               isSelected={entity.id === selectedEntityId}
               entity={entity}
               onClick={() => {
-                focusOnEntity(entity, entity.type === 'player');
+                const e = entities.find(e => e.id === entity.id);
+                if (e === undefined) {
+                  console.warn('No entity found');
+                  return;
+                }
+                focusOnEntity(e, entity.type === 'player');
               }}
             />
           );
@@ -181,9 +200,13 @@ export const TaoScene = ({
           entity={selectedEntity}
           isActionable={client.haveSeat(selectedEntity?.ownerId ?? -1)}
           selectedSkillId={skill?.id ?? null}
-          onSkill={skill => {
+          onSkill={() => {
             if (selectedEntity == undefined) {
               console.warn('No entity selected');
+              return;
+            }
+            if (skill === undefined) {
+              console.warn('No skill selected');
               return;
             }
             if (uiAction && uiAction.skill.id === skill.id) {
@@ -191,11 +214,7 @@ export const TaoScene = ({
               setAffectedFields([]);
               return;
             }
-
-            const targets = getPossibleTargets(client.store.getState(), selectedEntity, skill);
-            const range = getRange(client.store.getState(), selectedEntity, skill);
-            setUiAction({ action: 'select-target' as const, targets, range, skill });
-            setAffectedFields([]);
+            selectSkill(selectedEntity, skill);
           }}
           onEndTurn={() => {
             void client.endRound();
