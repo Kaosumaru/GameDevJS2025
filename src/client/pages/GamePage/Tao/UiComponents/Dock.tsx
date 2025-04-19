@@ -12,10 +12,10 @@ const skillNameFromInstance = (skillInstance: SkillInstance, isDesktopView: bool
   return name;
 };
 
-const skillDescriptionFromInstance = (skillInstance: SkillInstance): string => {
+const skillDescriptionFromInstance = (skillInstance: SkillInstance): string[] => {
   const description = skillFromInstance(skillInstance).description;
-
-  return description;
+  const lines = description.split('{newline}');
+  return lines;
 };
 
 const DockComponent = ({
@@ -58,6 +58,8 @@ const DockComponent = ({
               <Box
                 sx={{
                   display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
                   justifyContent: 'center',
                   color: 'white',
                   bgcolor: 'black',
@@ -67,7 +69,9 @@ const DockComponent = ({
                   p: isDesktopView ? 0.5 : 0.1,
                 }}
               >
-                {selectedSkill?.id ? skillDescriptionFromInstance(selectedSkill) : 'Select a skill'}
+                {selectedSkill?.id
+                  ? skillDescriptionFromInstance(selectedSkill).map(line => <p>{line}</p>)
+                  : 'Select a skill'}
               </Box>
               <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
                 {entity?.skills.map(skill => (
