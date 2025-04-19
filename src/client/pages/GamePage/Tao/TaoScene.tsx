@@ -88,6 +88,8 @@ export const TaoScene = ({
       setSelectedEntityId(entity.id);
       if (autoSelectFirstSkill && entity.skills.length > 0) {
         selectSkill(entity, entity.skills[0]);
+      } else {
+        setUiAction(null);
       }
       if (moveCamera) {
         setCameraTargetState(new Vector3(x, 0.5, y));
@@ -175,7 +177,7 @@ export const TaoScene = ({
                   console.warn('No entity found');
                   return;
                 }
-                focusOnEntity(e, entity.type === 'player');
+                focusOnEntity(e, entity.type === 'player', entity.type !== 'player');
               }}
             />
           );
@@ -200,13 +202,9 @@ export const TaoScene = ({
           entity={selectedEntity}
           isActionable={client.haveSeat(selectedEntity?.ownerId ?? -1)}
           selectedSkillId={skill?.id ?? null}
-          onSkill={() => {
+          onSkill={skill => {
             if (selectedEntity == undefined) {
               console.warn('No entity selected');
-              return;
-            }
-            if (skill === undefined) {
-              console.warn('No skill selected');
               return;
             }
             if (uiAction && uiAction.skill.id === skill.id) {
