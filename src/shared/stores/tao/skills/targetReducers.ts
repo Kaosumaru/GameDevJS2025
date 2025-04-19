@@ -196,7 +196,7 @@ export function perpendicularFields(length: number) {
       const direction = getDirection(entityField.position, field.position);
       const perpendicularDirections = getPerpendicularDirections(direction);
       results.push(field);
-      for (let i = 1; i <= length - 1; i++) {
+      for (let i = 1; i <= length; i++) {
         for (const perpendicularDirection of perpendicularDirections) {
           const newField = getFieldInDirection(ctx.state, field, perpendicularDirection, i);
           if (newField) {
@@ -205,5 +205,6 @@ export function perpendicularFields(length: number) {
         }
       }
     }
+    ctx.fields = results;
   };
 }
