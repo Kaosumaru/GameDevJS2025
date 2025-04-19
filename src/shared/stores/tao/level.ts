@@ -1,4 +1,4 @@
-import { entities, EntityName } from './entities';
+import { entities, EntityTypeId } from './entities';
 import { addEvent } from './events/events';
 import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
@@ -11,7 +11,7 @@ interface TileInfo {
 export interface LevelDescription {
   tiles: number[][];
   tileToField: { [id: number]: TileInfo };
-  tileToEntity: { [id: number]: EntityName };
+  tileToEntity: { [id: number]: EntityTypeId };
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
