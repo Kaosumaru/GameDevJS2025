@@ -1,6 +1,5 @@
 import { entities, EntityTypeId } from './entities';
 import { addEvent } from './events/events';
-import { placeEntity } from './movement';
 import { StoreData } from './taoStore';
 
 interface TileInfo {
@@ -39,7 +38,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
       const entity = entityCreator(`entity-${entityId++}`, { x, y });
       state = addEvent(state, {
         type: 'spawn',
-        entity,
+        entities: [entity],
       });
     });
   });
