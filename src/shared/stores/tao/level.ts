@@ -38,7 +38,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
       const entity = entityCreator(`entity-${entityId++}`, { x, y });
       state = addEvent(state, {
         type: 'spawn',
-        entity,
+        entities: [entity],
       });
     });
   });

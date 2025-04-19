@@ -88,9 +88,13 @@ export function move(ctx: TargetContext) {
   const field = ctx.fields[0];
   ctx.state = addEvent(ctx.state, {
     type: 'move',
-    entityId: ctx.entity.id,
-    from: ctx.entity.position,
-    to: field.position,
+    moves: [
+      {
+        entityId: ctx.entity.id,
+        from: ctx.entity.position,
+        to: field.position,
+      },
+    ],
   });
 }
 
@@ -140,7 +144,9 @@ interface DamageInfo {
   shield?: number;
   damageType: DamageType;
 }
+
 type DamageDataReducer = (entity: Entity, ctx: TargetContext) => DamageInfo;
+
 function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): DamageData[] {
   return ctx.fields
     .filter(f => f.entityUUID !== undefined)
