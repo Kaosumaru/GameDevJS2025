@@ -1,5 +1,6 @@
 import { getEntityField, getField } from '../board';
 import { getEntity, modifyEntity } from '../entity';
+import { entitiesAfterBalanceChange } from '../entityInfo';
 import { moveEntityTo, placeEntity } from '../movement';
 import { StoreData } from '../taoStore';
 import {
@@ -96,10 +97,13 @@ function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
   return newState;
 }
 function reduceBalance(state: StoreData, event: ChangeBalanceEvent): StoreData {
-  return {
+  let newState: StoreData = {
     ...state,
     balance: event.to,
   };
+
+  newState = entitiesAfterBalanceChange(newState, event.from, event.to);
+  return newState;
 }
 function reduceChangeSkills(state: StoreData, event: ChangeSkillsEvent): StoreData {
   throw modifyEntity(state, event.entityId, entity => {

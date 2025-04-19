@@ -1,8 +1,9 @@
 import { getEntityField, getEntityInField, getField } from '../board';
 import { hasStatus } from '../entity';
+import { entitiesAfterBalanceChange } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
-import { SkillContext } from '../skills';
+import { SkillContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
@@ -98,6 +99,32 @@ export function move(ctx: TargetContext) {
   });
 }
 
+export function balance(amount: number) {
+  return (ctx: TargetContext) => {
+    const from = ctx.state.balance;
+    const to = clamp(ctx.state.balance + amount, -3, 3);
+    ctx.state = addEvent(ctx.state, {
+      type: 'balance',
+      from,
+      to,
+    });
+    ctx.state = entitiesAfterBalanceChange(ctx.state, from, to);
+  };
+}
+
+export function changeSkills(skillInstances: SkillInstance[]) {
+  return (ctx: TargetContext) => {
+    if (ctx.entity === undefined) {
+      throw new Error('Entity is undefined');
+    }
+    ctx.state = addEvent(ctx.state, {
+      type: 'skills',
+      entityId: ctx.entity.id,
+      skills: skillInstances.map(skill => ({ ...skill })),
+    });
+  };
+}
+
 export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
 
 export function actions(reducers: TargetReducer[]) {
@@ -172,4 +199,8 @@ function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
     attackerId: ctx.entity?.id,
     damages,
   });
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
 }
