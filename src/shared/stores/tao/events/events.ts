@@ -1,4 +1,5 @@
 import { Entity, Position, StatusEffect } from '../interface';
+import { SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceEvent } from './reducers';
 
@@ -53,7 +54,26 @@ export interface ApplyStatusEvent {
   statuses: ApplyStatusData[];
 }
 
-export type EventType = MoveEvent | DeathEvent | ApplyStatusEvent | DamageEvent | SpawnEvent;
+export interface ChangeBalanceEvent {
+  type: 'balance';
+  from: number;
+  to: number;
+}
+
+export interface ChangeSkillsEvent {
+  type: 'skills';
+  entityId: string;
+  skills: SkillInstance[];
+}
+
+export type EventType =
+  | MoveEvent
+  | DeathEvent
+  | ApplyStatusEvent
+  | DamageEvent
+  | SpawnEvent
+  | ChangeBalanceEvent
+  | ChangeSkillsEvent;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {
   store.events.push(event);

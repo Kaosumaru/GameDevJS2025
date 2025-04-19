@@ -29,6 +29,7 @@ export interface StoreData {
   board: Field[][];
   entities: Entity[];
   events: EventType[];
+  balance: number;
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
@@ -53,6 +54,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       gameOver: false,
       entities: [],
       events: [],
+      balance: 0,
     },
     makeAction
   );
@@ -105,6 +107,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         gameOver: false,
         entities: [],
         events: [],
+        balance: 0,
       };
 
       const level = createLevel0();

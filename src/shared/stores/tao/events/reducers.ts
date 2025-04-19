@@ -1,8 +1,17 @@
 import { getEntityField, getField } from '../board';
-import { getEntity } from '../entity';
+import { getEntity, modifyEntity } from '../entity';
 import { moveEntityTo, placeEntity } from '../movement';
 import { StoreData } from '../taoStore';
-import { ApplyStatusEvent, DamageEvent, DeathEvent, EventType, MoveEvent, SpawnEvent } from './events';
+import {
+  ApplyStatusEvent,
+  ChangeBalanceEvent,
+  ChangeSkillsEvent,
+  DamageEvent,
+  DeathEvent,
+  EventType,
+  MoveEvent,
+  SpawnEvent,
+} from './events';
 
 export function reduceEvent(state: StoreData, event: EventType): StoreData {
   switch (event.type) {
@@ -16,6 +25,10 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return reduceApplyStatus(state, event);
     case 'death':
       return reduceDeath(state, event);
+    case 'balance':
+      return reduceBalance(state, event);
+    case 'skills':
+      return reduceChangeSkills(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -81,4 +94,15 @@ function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
   newField.entityUUID = undefined;
 
   return newState;
+}
+function reduceBalance(state: StoreData, event: ChangeBalanceEvent): StoreData {
+  return {
+    ...state,
+    balance: event.to,
+  };
+}
+function reduceChangeSkills(state: StoreData, event: ChangeSkillsEvent): StoreData {
+  throw modifyEntity(state, event.entityId, entity => {
+    return { ...entity, skills: event.skills.map(skill => ({ ...skill })) };
+  });
 }
