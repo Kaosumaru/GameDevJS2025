@@ -5,8 +5,8 @@ import { targets, self, affected, area, affectedFields, withEnemy, allAllies } f
 // not implemented yet
 export const knightSpeed: Skill = {
   id: 'knightSpeed',
-  name: 'Balancing Act [Speed]',
-  description: 'Speed',
+  name: 'Balancing Act',
+  description: '<p>Support</p> <br> <p>+1 Light or Dark<p/> <br> <p><b>+2</b> movement for each character</p>',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,

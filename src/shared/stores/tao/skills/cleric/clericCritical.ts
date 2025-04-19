@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withAlly, withEnemy } from '../targetRedu
 export const clericCritical: Skill = {
   id: 'clericCritical',
   name: 'Shine',
-  description: 'Critical',
+  description: '<p>Support</p> <br> <p>dmg <b>x2</b></p>',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,

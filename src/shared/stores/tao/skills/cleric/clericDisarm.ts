@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withAlly, withEnemy } from '../targetRedu
 export const clericDisarm: Skill = {
   id: 'clericDisarm',
   name: 'Blinding',
-  description: 'Disarm',
+  description: 'Blind - 1 turn [Skill in progress]',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,

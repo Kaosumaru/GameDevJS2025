@@ -4,8 +4,8 @@ import { fieldsInRange, neighborsExcluding, targets, withEnemy } from '../target
 
 export const mageBlind: Skill = {
   id: 'mageBlind',
-  name: 'Moon`s punishment',
-  description: 'Cast a fireball',
+  name: 'Moonlight',
+  description: '<p>Attack</p> <br> <p>Stun - 2 turns</p> <br> <p><b>2</b> dmg and 1 dmg every turn until death</p> <br> <p>[Skill in progress]</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
