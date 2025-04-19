@@ -13,64 +13,72 @@ const createUniqueLabel = (prefix: string) => {
 const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities => {
   switch (event.type) {
     case 'spawn': {
-      const { x, y } = boardPositionToUiPosition(event.entity.position.x, event.entity.position.y);
-      return {
-        ...acc,
-        [event.entity.id]: {
-          id: event.entity.id,
-          type: event.entity.type,
-          hp: event.entity.hp,
-          actionPoints: event.entity.actionPoints,
-          shield: event.entity.shield,
-          avatar: event.entity.avatar,
-          position: event.entity.position,
-          events: [
-            'start',
-            ['container.position', { x, y: 3, z: y }, { duration: 0, at: 'start' }],
-            ['container.position', { x, y: 3, z: y }, { duration: 0, delay: 1 }],
-            ['container.position', { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
-            ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
-            ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
-            ['container.scale', { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
-            [
-              'healthbar.material',
-              { hp: event.entity.hp.current, maxHp: event.entity.hp.max, shield: event.entity.shield },
-              { duration: 0 },
-            ],
-          ],
-        },
-      };
-    }
-    case 'move': {
-      const { x, y } = boardPositionToUiPosition(event.to.x, event.to.y);
-      return Object.keys(acc).reduce((acc, key) => {
-        const entity = acc[key];
-        if (key === event.entityId) {
-          const label = `move-${acc[event.entityId].events.length}`;
-          return {
-            ...acc,
-            [key]: {
-              ...entity,
-              position: event.to,
-              events: [
-                ...acc[event.entityId].events,
-                label,
-                ['container.position', { x, z: y }, { duration: 0.5 }],
-                ['character.position', { y: 0.75 }, { duration: 0.1, at: label, ease: 'easeIn' }],
-                ['character.position', { _nothing: 0 }, { duration: 0.3 }],
-                ['character.position', { y: 0 }, { duration: 0.1 }],
-              ],
-            },
-          };
-        }
+      return event.entities.reduce((state, entity) => {
+        const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
         return {
-          ...acc,
-          [key]: {
-            ...entity,
-            events: [...entity.events, ['container.position', { _waitMove: 0 }, { delay: 0.5, duration: 0 }]],
+          ...state,
+          [entity.id]: {
+            id: entity.id,
+            type: entity.type,
+            hp: entity.hp,
+            actionPoints: entity.actionPoints,
+            shield: entity.shield,
+            avatar: entity.avatar,
+            position: entity.position,
+            events: [
+              'start',
+              ['container.position', { x, y: 3, z: y }, { duration: 0, at: 'start' }],
+              ['container.position', { x, y: 3, z: y }, { duration: 0, delay: 1 }],
+              ['container.position', { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
+              ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
+              ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
+              ['container.scale', { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
+              [
+                'healthbar.material',
+                { hp: entity.hp.current, maxHp: entity.hp.max, shield: entity.shield },
+                { duration: 0 },
+              ],
+            ],
           },
         };
       }, acc);
+    }
+    case 'move': {
+      // apply moves
+      const state = event.moves.reduce<AnimatedEntities>((acc, move) => {
+        const entity = acc[move.entityId];
+        const label = createUniqueLabel('move');
+        const { x, y } = boardPositionToUiPosition(move.to.x, move.to.y);
+        return {
+          ...acc,
+          [move.entityId]: {
+            ...entity,
+            position: move.to,
+            events: [
+              ...acc[move.entityId].events,
+              label,
+              ['container.position', { x, z: y }, { duration: 0.5 }],
+              ['character.position', { y: 0.75 }, { duration: 0.1, at: label, ease: 'easeIn' }],
+              ['character.position', { _nothing: 0 }, { duration: 0.3 }],
+              ['character.position', { y: 0 }, { duration: 0.1 }],
+            ],
+          },
+        };
+      }, acc);
+
+      // apply wait for everyone else
+      return Object.keys(acc)
+        .filter(entityId => event.moves.find(move => move.entityId === entityId) === undefined)
+        .reduce((state, entityId) => {
+          const entity = state[entityId];
+          return {
+            ...state,
+            [entityId]: {
+              ...entity,
+              events: [...entity.events, ['container.position', { _waitMove: 0 }, { delay: 0.5, duration: 0 }]],
+            },
+          };
+        }, state);
     }
     case 'damage': {
       if (event.attackerId) {
