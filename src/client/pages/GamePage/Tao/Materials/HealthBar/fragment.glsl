@@ -19,7 +19,7 @@ void main()
     vec3 green = vec3(0,1,0);
     vec3 blue = vec3(0,0,1);
     
-    float x = uv.x * (maxHp + shield);
+    float x = uv.x * (maxHp + shield - 0.1);
     float index = floor(x);
     x = fract(x);
     
