@@ -80,7 +80,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
           ...store,
         },
       };
-      return endOfRound(store);
+      return endOfRound(store, ctx.random);
     }
     case 'useSkill': {
       // caching old state for client animations
@@ -105,10 +105,10 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       store = { ...store, events: [] };
       store = clearOriginalPositions(store);
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      store = useSkill(store, entity, skillName, targetId);
+      store = useSkill(store, entity, skillName, ctx.random, targetId);
 
       if (!anyPlayerHasActions(store)) {
-        store = endOfRound(store);
+        store = endOfRound(store, ctx.random);
       }
       return store;
     }

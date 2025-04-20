@@ -22,7 +22,7 @@ export interface TargetContext {
 
 export type TargetReducer = (ctx: TargetContext) => void;
 
-export function reduceTargets(ctx: TargetContext, reducers: TargetReducer[]): TargetContext {
+export function reduceTargets<T extends TargetContext>(ctx: T, reducers: ((ctx: T) => void)[]): T {
   for (const reducer of reducers) {
     reducer(ctx);
   }

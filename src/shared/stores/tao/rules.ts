@@ -1,3 +1,4 @@
+import { RandomGenerator } from 'pureboard/shared/interface';
 import { monstersAi } from './ai';
 import { clearOriginalPositions, filterDeadEntities, modifyAllEntities } from './entity';
 import { entitiesAfterRoundStart } from './entityInfo';
@@ -12,10 +13,10 @@ const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poi
 const loseShield = rule([allEntities, withShield, loseAllShield]);
 const refreshEntities = rule([allEntities, refreshResources]);
 
-export function endOfRound(state: StoreData): StoreData {
+export function endOfRound(state: StoreData, random: RandomGenerator): StoreData {
   state = { ...state, events: [] };
   state = clearOriginalPositions(state);
-  state = monstersAi(state);
+  state = monstersAi(state, random);
   state = refreshEntities(state);
   state = lightIfNotKilled(state);
   state = applyPoison(state);

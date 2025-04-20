@@ -25,10 +25,11 @@ import { knightSpeedDark } from './skills/knight/knightSpeedDark';
 import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
 import { pass } from './skills/pass';
 import { testSpawner } from './skills/spawnSkills/testSpawner';
+import { RandomGenerator } from 'pureboard/shared/interface';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
-export type SkillReducer = (state: StoreData, ctx: SkillContext) => StoreData;
+export type SkillReducer = (state: StoreData, ctx: SkillActionContext) => StoreData;
 export type SkillTargetsReducer = (state: StoreData, ctx: SkillContext) => Field[];
 
 export interface Skill {
@@ -53,6 +54,10 @@ export interface SkillContext {
   user: Entity;
   skillInstance: SkillInstance;
   targetId?: string;
+}
+
+export interface SkillActionContext extends SkillContext {
+  random: RandomGenerator;
 }
 
 const skills = {
@@ -95,7 +100,13 @@ export function skillFromID(id: SkillID): Skill {
   return skills[id];
 }
 
-export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {
+export function useSkill(
+  state: StoreData,
+  user: Entity,
+  skillId: SkillID,
+  random: RandomGenerator,
+  targetId?: string
+): StoreData {
   const skill = skillFromID(skillId);
   const skillInstance = getSkillInstance(user, skillId);
 
@@ -111,7 +122,7 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
   state = payForSkillEntity(state, user, skill);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
-  state = skill.reducer(state, { user, skillInstance, targetId });
+  state = skill.reducer(state, { user, skillInstance, targetId, random });
   state = filterDeadEntities(state);
 
   return state;

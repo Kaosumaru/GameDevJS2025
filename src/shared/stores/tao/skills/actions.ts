@@ -1,10 +1,11 @@
+import { RandomGenerator } from 'pureboard/shared/interface';
 import { getEntityField, getEntityInField, getField } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
-import { SkillContext, SkillInstance } from '../skills';
+import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
@@ -154,35 +155,28 @@ export function changeSkills(skillInstances: SkillInstance[]) {
 
 export type SpawnInfo = [EntityTypeId, number];
 
-export function spawn(_entities: SpawnInfo[]) {
-  return (_ctx: TargetContext) => {
-    /*
-    ctx.state = addEvent(ctx.state, {
-      type: 'spawn',
-      entities: entities.map(entity => ({ ...entity })),
-    });*/
-  };
+export function spawn(entities: SpawnInfo[]) {
+  return (ctx: ActionTargetContext) => {};
 }
 
 export function spawnFrom(entities: SpawnInfo[][]) {
-  return (_ctx: TargetContext) => {
-    /*
-    ctx.state = addEvent(ctx.state, {
-      type: 'spawn',
-      entities: entities.map(entity => ({ ...entity })),
-    });*/
+  return (ctx: ActionTargetContext) => {
+    const index = ctx.random.int(entities.length);
+    const randomEntry = entities[index];
+    return spawn(randomEntry)(ctx);
   };
 }
 
 export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
 
-export function actions(reducers: TargetReducer[]) {
-  return (state: StoreData, ctx: SkillContext): StoreData => {
-    const context: TargetContext = {
+export function actions(reducers: TargetActionReducer[]) {
+  return (state: StoreData, ctx: SkillActionContext): StoreData => {
+    const context: ActionTargetContext = {
       state,
       skillInstance: ctx.skillInstance,
       entity: ctx.user,
       fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
+      random: ctx.random,
     };
 
     return reduceTargets(context, reducers).state;
@@ -261,3 +255,9 @@ function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
+
+export interface ActionTargetContext extends TargetContext {
+  random: RandomGenerator;
+}
+
+export type TargetActionReducer = (ctx: ActionTargetContext) => void;
