@@ -148,7 +148,7 @@ const defaultEnemy: Entity = {
   kind: 'goth-gf',
   type: 'enemy',
   skills: [],
-  hp: { current: 0, max: 0 },
+  hp: { current: 1, max: 1 },
   shield: 0,
   attack: 1,
   speed: 2,

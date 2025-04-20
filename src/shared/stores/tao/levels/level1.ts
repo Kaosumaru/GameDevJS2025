@@ -4,10 +4,10 @@ export function createLevel1(): LevelDescription {
   return {
     tiles: [
       [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 4, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 1, 0, 0, 0],
-      [0, 0, 9, 9, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [8, 7, 6, 0, 0, 0, 0],
     ],
@@ -16,6 +16,7 @@ export function createLevel1(): LevelDescription {
       1: { tileId: 1, blocking: true },
     },
     tileToEntity: {
+      4: 'testSpawner',
       6: 'knight',
       7: 'sun-princess',
       8: 'goth-gf',
