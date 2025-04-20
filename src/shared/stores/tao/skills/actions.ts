@@ -1,10 +1,10 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
-import { addEntity, getEntityField, getEntityInField, getField } from '../board';
+import { addEntities, getEntityField, getEntityInField, getField } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
-import { Entity, Field, StatusEffect } from '../interface';
+import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { empty, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
@@ -163,15 +163,18 @@ export function spawn(spawnInfo: SpawnInfo[]) {
     empty(emptyCtx);
     const fields = emptyCtx.fields;
 
+    const infos: [EntityTypeId, Position][] = [];
     for (const [typeId, amount] of spawnInfo) {
       for (let i = 0; i < amount; i++) {
         const field = removeRandomField(fields, ctx.random);
         if (!field) {
           break;
         }
-        ctx.state = addEntity(ctx.state, typeId, field.position);
+        infos.push([typeId, field.position]);
       }
     }
+
+    ctx.state = addEntities(ctx.state, infos);
   };
 }
 
