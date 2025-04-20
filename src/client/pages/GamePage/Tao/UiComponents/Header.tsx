@@ -43,7 +43,7 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
       sx={{
         position: 'absolute',
         top: '1rem',
-        left: '50%',
+        left: 'calc(50% - 3rem)',
         transform: 'translate(-50%, 0)',
         color: 'white',
       }}
@@ -51,19 +51,19 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
       <motion.img
         initial={{ scale: 0 }}
         animate={animationYin}
-        style={{ width: '8rem', height: '8rem', position: 'absolute', top: 0, left: 0 }}
+        style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yin.png'}
       />
       <motion.img
         initial={{ scale: 0 }}
         animate={animationYang}
-        style={{ width: '8rem', height: '8rem', position: 'absolute', top: 0, left: 0 }}
+        style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yang.png'}
       />
       <Box
         sx={{
-          width: '28rem',
-          height: '8rem',
+          width: '26rem',
+          height: '6rem',
           position: 'absolute',
           top: 0,
           left: '-10rem',
