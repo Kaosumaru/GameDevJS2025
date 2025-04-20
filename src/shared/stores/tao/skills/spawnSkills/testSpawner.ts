@@ -14,7 +14,7 @@ export const testSpawner: Skill = {
   id: 'testSpawner',
   name: 'testSpawner',
   description: '',
-  type: 'defense',
+  type: 'attack',
   actionCost: 1,
   moveCost: 0,
   cooldown: 2,
