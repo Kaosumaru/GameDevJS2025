@@ -44,8 +44,8 @@ export const entities: EntitiesType = {
       { id: 'move' },
       { id: 'knightAttack' },
       { id: 'knightTaunt' },
-      { id: 'knightSpeed' },
-      { id: 'knightDarkWide' },
+      { id: 'knightSpeedLight' },
+      { id: 'knightSpeedDark' },
     ],
     hp: stat(4),
 

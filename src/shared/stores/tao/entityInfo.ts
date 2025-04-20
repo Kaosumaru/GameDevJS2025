@@ -6,6 +6,7 @@ export type EntityPassive = (state: StoreData, entity: Entity) => StoreData;
 
 export interface EntityInfo {
   beforeDeath?: EntityPassive;
+  afterKill?: EntityPassive;
   afterRoundStart?: EntityPassive;
   afterDarkness?: EntityPassive;
   afterLight?: EntityPassive;
@@ -33,6 +34,14 @@ export function entityBeforeDeath(state: StoreData, entity: Entity): StoreData {
   return state;
 }
 
+export function entityAfterKill(state: StoreData, entity: Entity): StoreData {
+  const info = infoFromEntity(entity);
+  if (info.afterKill) {
+    state = info.afterKill(state, entity);
+  }
+  return state;
+}
+
 function balanceNumberToOption(balance: number): BalanceOption {
   if (balance < 0) {
     return 'darkness';
@@ -50,7 +59,8 @@ export function entitiesAfterBalanceChange(state: StoreData, from: number, to: n
     return state;
   }
 
-  for (const entity of state.entities) {
+  const entities = [...state.entities];
+  for (const entity of entities) {
     const info = infoFromEntity(entity);
     switch (balanceTo) {
       case 'darkness':

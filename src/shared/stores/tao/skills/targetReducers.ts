@@ -121,8 +121,8 @@ export function fieldsInRange(ctx: TargetContext): TargetContext {
 export function inMoveDistance(rangeModifier: number = 0) {
   return (ctx: TargetContext) => {
     let speed = (ctx.entity?.speed ?? 0) + rangeModifier;
-    if (ctx.entity && hasStatus(ctx.entity, 'speed+2')) {
-      speed += 2;
+    if (ctx.entity && hasStatus(ctx.entity, 'speed+3')) {
+      speed += 3;
     }
     ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
   };

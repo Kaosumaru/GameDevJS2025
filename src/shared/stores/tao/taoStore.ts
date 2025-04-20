@@ -1,11 +1,11 @@
 import { Context, StoreContainer } from 'pureboard/shared/interface';
 import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
-import { Entity, Field } from './interface';
+import { Entity, Field, Position } from './interface';
 import { SkillID, useSkill } from './skills';
 import { clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
-import { EventType } from './events/events';
+import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
 import { createLevel0 } from './levels/level0';
 import { entitiesAfterRoundStart } from './entityInfo';
@@ -29,7 +29,12 @@ export interface StoreData {
   board: Field[][];
   entities: Entity[];
   events: EventType[];
-  balance: number;
+  info: {
+    balance: number;
+    perRound: {
+      positionsOfDeaths: Position[];
+    };
+  };
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
@@ -54,7 +59,12 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       gameOver: false,
       entities: [],
       events: [],
-      balance: 0,
+      info: {
+        balance: 0,
+        perRound: {
+          positionsOfDeaths: [],
+        },
+      },
     },
     makeAction
   );
@@ -106,13 +116,24 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         gameOver: false,
         entities: [],
         events: [],
-        balance: 0,
+        info: {
+          balance: 0,
+          perRound: {
+            positionsOfDeaths: [],
+          },
+        },
       };
 
       const level = createLevel0();
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       state = entitiesAfterRoundStart(state);
+      state = addEvent(state, {
+        type: 'balance',
+        from: -3,
+        to: 0,
+      });
+
       return state;
     }
   }

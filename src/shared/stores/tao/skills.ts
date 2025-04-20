@@ -14,9 +14,15 @@ import { deepCopy2DArray } from './utils';
 import { clericDisarm } from './skills/cleric/clericDisarm';
 import { mageBlind } from './skills/mage/mageBlind';
 import { clericCritical } from './skills/cleric/clericCritical';
-import { knightSpeed } from './skills/knight/knightSpeed';
+import { knightSpeedLight } from './skills/knight/knightSpeedLight';
 import { mageSickle } from './skills/mage/mageSickle';
 import { knightDarkWide } from './skills/knight/knightDarkWide';
+import { knightLightStun } from './skills/knight/knightLightStun';
+import { clericLightAllHeal } from './skills/cleric/clericLightAllHeal';
+import { mageDarkFireball } from './skills/mage/mageDarkFireball';
+import { mageLightFireball } from './skills/mage/mageLightFireball';
+import { knightSpeedDark } from './skills/knight/knightSpeedDark';
+import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
@@ -53,14 +59,20 @@ const skills = {
   shield: shieldSkill,
 
   clericHeal,
+  clericLightAllHeal,
+  clericDarkHeal,
   clericDisarm,
   clericCritical,
 
   knightTaunt,
   knightAttack,
-  knightSpeed,
+  knightLightStun,
+  knightSpeedLight,
+  knightSpeedDark,
 
   mageFireball,
+  mageDarkFireball,
+  mageLightFireball,
   mageBlind,
   mageSickle,
 
