@@ -37,6 +37,7 @@ export interface Skill {
   description: string;
   actionCost: number;
   moveCost: number;
+  cooldown?: number;
   reducer: SkillReducer;
   getRange: SkillTargetsReducer;
   getPossibleTargets: SkillTargetsReducer;
@@ -157,6 +158,11 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
     if (skill.type === 'attack') {
       return false;
     }
+  }
+
+  // cooldown
+  if (hasStatus(user, skillInstance.id)) {
+    return false;
   }
   return (
     user.actionPoints.current >= skillFromInstance(skillInstance).actionCost &&

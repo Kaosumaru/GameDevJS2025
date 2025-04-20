@@ -36,7 +36,7 @@ function clearOriginalPositionReducer(entity: Entity): Entity {
 }
 
 export function getStatusAmount(entity: Entity, status: StatusEffect): number {
-  const amount = entity.statuses[status] ?? 0;
+  const amount = entity.statusesCooldowns[status] ?? 0;
   return amount;
 }
 
@@ -46,12 +46,27 @@ export function hasStatus(entity: Entity, status: StatusEffect): boolean {
 }
 
 export function payForSkillEntity(state: StoreData, entity: Entity, skill: Skill): StoreData {
-  return addEvent(state, {
+  state = addEvent(state, {
     type: 'changeResources',
     entityId: entity.id,
     actions: { from: entity.actionPoints.current, to: Math.max(0, entity.actionPoints.current - skill.actionCost) },
     moves: { from: entity.movePoints.current, to: Math.max(0, entity.movePoints.current - skill.moveCost) },
   });
+
+  if (skill.cooldown) {
+    state = addEvent(state, {
+      type: 'applyStatus',
+      statuses: [
+        {
+          entityId: entity.id,
+          status: skill.id,
+          amount: skill.cooldown + 1,
+        },
+      ],
+    });
+  }
+
+  return state;
 }
 
 export function clearOriginalPositions(state: StoreData): StoreData {

@@ -39,7 +39,7 @@ export function endOfRound(state: StoreData): StoreData {
 function decrementAllStatusesReducer(entity: Entity): Entity {
   return {
     ...entity,
-    statuses: decrementAllStatuses(entity.statuses),
+    statusesCooldowns: decrementAllStatuses(entity.statusesCooldowns),
   };
 }
 

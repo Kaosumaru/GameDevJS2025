@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, status } from '../actions';
-import { area, fieldsInRange, targets, withAlly, withEnemy } from '../targetReducers';
+import { area, fieldsInRange, targets, withAlly } from '../targetReducers';
 
 export const clericCritical: Skill = {
   id: 'clericCritical',

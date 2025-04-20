@@ -75,9 +75,9 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
     if (status) {
       return {
         ...entity,
-        statuses: {
-          ...entity.statuses,
-          [status.status]: status.amount + (entity.statuses[status.status] ?? 0),
+        statusesCooldowns: {
+          ...entity.statusesCooldowns,
+          [status.status]: status.amount + (entity.statusesCooldowns[status.status] ?? 0),
         },
       };
     }

@@ -130,7 +130,7 @@ const defaultPlayer: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statuses: {},
+  statusesCooldowns: {},
   ownerId: undefined,
 };
 
@@ -148,6 +148,6 @@ const defaultEnemy: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statuses: {},
+  statusesCooldowns: {},
   ownerId: undefined,
 };
