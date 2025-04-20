@@ -1,6 +1,6 @@
 import { ThreeElements } from '@react-three/fiber';
-import { AnimatedEntity } from '../TaoTypes';
 import { memo } from 'react';
+import { Entity } from '@shared/stores/tao/interface';
 
 const manaColor = 0x90caf9;
 const inactiveColor = 0x909090;
@@ -9,7 +9,7 @@ const GameStats = ({
   entity,
   ...rest
 }: ThreeElements['group'] & {
-  entity: AnimatedEntity;
+  entity: Entity;
 }) => {
   return (
     <group {...rest}>

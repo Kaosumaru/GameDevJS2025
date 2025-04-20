@@ -1,10 +1,13 @@
 import { useFrame, useLoader, useThree } from '@react-three/fiber';
 import { JSX, memo, useEffect, useRef } from 'react';
 import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
-import { AnimatedEntity, EntityAnimationEvent } from '../TaoTypes';
+import { easeBounceOut } from 'd3-ease';
 
-import { animate, AnimationPlaybackControlsWithThen } from 'motion';
+import { animate } from 'motion';
 import { Stats } from './Stats';
+import { useAnimationMotion } from '../Animation/useAnimationMotion';
+import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
+import { Entity } from '@shared/stores/tao/interface';
 
 const Entity3DComponent = ({
   entity,
@@ -13,17 +16,45 @@ const Entity3DComponent = ({
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
-  entity: AnimatedEntity;
+  entity: Entity;
 }) => {
+  const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
-  const scheduledEvents = useRef<EntityAnimationEvent[]>([]);
-  const notifyRef = useRef<() => void>(() => {});
-  const animationRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
-  const scheduleEnabled = useRef(true);
   const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.kind}.png`]);
-
   const imageRatio = colorMap.image.width / colorMap.image.height;
+
+  const playNext = useAnimationMotion();
+
+  useEffect(() => {
+    const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
+    if (hasSpawned.current) {
+      hasSpawned.current = false;
+      playNext('opening', async () => {
+        const obj = refs.current['container']!;
+        await animate([
+          'start',
+          [obj.position, { x, y: 3, z: y }, { duration: 0, at: 'start' }],
+          [obj.position, { x, y: 3, z: y }, { duration: 0, delay: 1 }],
+          [obj.position, { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
+          [obj.scale, { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
+          [obj.scale, { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
+          [obj.scale, { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
+        ]);
+      });
+    } else {
+      playNext('move', async () => {
+        const obj = refs.current['container']!;
+        await animate([
+          'start',
+          [obj.position, { x, z: y }, { duration: 0.5 }],
+          [obj.position, { y: 0.75 }, { duration: 0.1, at: 'start', ease: 'easeIn' }],
+          [obj.position, { _nothing: 0 }, { duration: 0.3 }],
+          [obj.position, { y: 0 }, { duration: 0.1 }],
+        ]);
+      });
+    }
+  }, [playNext, entity.position.x, entity.position.y]);
 
   const refs = useRef<{
     container: Group | null;
@@ -42,56 +73,6 @@ const Entity3DComponent = ({
       refs.current['character'].lookAt(camera.position);
     }
   });
-
-  useEffect(() => {
-    if (scheduleEnabled.current) {
-      scheduledEvents.current.push(...entity.events);
-    }
-    if (scheduledEvents.current.length > 0) {
-      notifyRef.current();
-    }
-  }, [entity.events]);
-
-  useEffect(() => {
-    const async = async () => {
-      while (true) {
-        if (scheduledEvents.current.length === 0) {
-          await new Promise<void>(resolve => (notifyRef.current = resolve));
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const resolvedEvents = scheduledEvents.current.map<any>(anim => {
-            if (typeof anim === 'string') {
-              return anim;
-            }
-            const [selector, to, options] = anim;
-            const [obj, prop] = selector.split('.');
-
-            const objRef = refs.current[obj as keyof typeof refs.current]!;
-            return [objRef[prop as keyof typeof objRef], to, options];
-          });
-
-          scheduledEvents.current = [];
-          const animation = animate(resolvedEvents);
-          animationRef.current = animation;
-          await animation;
-        }
-      }
-    };
-    scheduleEnabled.current = true;
-    void async();
-    return () => {
-      scheduleEnabled.current = false;
-      if (animationRef.current) {
-        animationRef.current.speed = 100;
-        animationRef.current.complete();
-        animationRef.current.stop();
-      }
-      scheduledEvents.current = [];
-      if (notifyRef.current) {
-        notifyRef.current();
-      }
-    };
-  }, []);
 
   return (
     <group
@@ -121,13 +102,7 @@ const Entity3DComponent = ({
         </mesh>
         <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
           <planeGeometry args={[0.6, 0.08]} />
-          <healthBar
-            ref={(r: object) => {
-              refs.current['healthbar'] = {
-                material: r,
-              };
-            }}
-          />
+          <healthBar hp={entity.hp.current} maxHp={entity.hp.max} shield={entity.shield} />
         </mesh>
         <Stats entity={entity} position={[0, 1.16, 0]} />
       </group>

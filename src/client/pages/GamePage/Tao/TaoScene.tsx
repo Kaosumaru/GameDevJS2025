@@ -10,7 +10,6 @@ import {
   SkillInstance,
 } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
-import { useEntitiesState } from './Hooks/useTemporalEntities';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
 import { Color, Vector3 } from 'three';
 import { useClient } from 'pureboard/client/react';
@@ -60,22 +59,18 @@ export const TaoScene = ({
 }) => {
   const [cameraTargetState, setCameraTargetState] = useState<Vector3 | undefined>(undefined);
   const client = useClient(TaoClient, gameRoomClient);
-  const animationState = useAnimationState(client);
+  const state = useAnimationState(client);
 
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
-  const events = client.store(state => state.events);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction | null>(null);
   const [affectedFields, setAffectedFields] = useState<string[]>([]);
 
   const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
-  const entitiesState = useEntitiesState(events);
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
-
-  console.log('animationState', animationState);
 
   const selectSkill = useCallback(
     (selectedEntity: Entity, skill: SkillInstance) => {
@@ -170,7 +165,7 @@ export const TaoScene = ({
             );
           })
         )}
-        {Object.values(entitiesState).map(entity => {
+        {state?.entities.map(entity => {
           return (
             <Entity3D
               key={entity.id}
