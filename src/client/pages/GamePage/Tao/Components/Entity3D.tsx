@@ -159,6 +159,8 @@ const Entity3DComponent = ({
 
 export const Entity3D = memo(Entity3DComponent);
 
-useLoader.preload(TextureLoader, [`/avatars/player.png`]);
-useLoader.preload(TextureLoader, [`/avatars/enemy.png`]);
-useLoader.preload(TextureLoader, [`/avatars/neutral.png`]);
+Object.values(entities)
+  .map(entity => entity({ x: 0, y: 0 }))
+  .forEach(entity => {
+    useLoader.preload(TextureLoader, [`/avatars/${entity.kind}.png`]);
+  });
