@@ -6,6 +6,7 @@ import { StoreData } from '../taoStore';
 import {
   ApplyStatusEvent,
   ChangeBalanceEvent,
+  ChangeResourcesEvent,
   ChangeSkillsEvent,
   DamageEvent,
   DeathEvent,
@@ -30,6 +31,8 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return reduceBalance(state, event);
     case 'skills':
       return reduceChangeSkills(state, event);
+    case 'changeResources':
+      return changeResources(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -119,5 +122,20 @@ function reduceBalance(state: StoreData, event: ChangeBalanceEvent): StoreData {
 function reduceChangeSkills(state: StoreData, event: ChangeSkillsEvent): StoreData {
   return modifyEntity(state, event.entityId, entity => {
     return { ...entity, skills: event.skills.map(skill => ({ ...skill })) };
+  });
+}
+function changeResources(state: StoreData, event: ChangeResourcesEvent): StoreData {
+  return modifyEntity(state, event.entityId, entity => {
+    return {
+      ...entity,
+      actionPoints: {
+        ...entity.actionPoints,
+        current: Math.max(0, event.actions.to),
+      },
+      movePoints: {
+        ...entity.movePoints,
+        current: Math.max(0, event.moves.to),
+      },
+    };
   });
 }

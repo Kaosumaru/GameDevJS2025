@@ -20,6 +20,32 @@ export function attack(modifier: number = 0, type: DamageType = 'standard') {
   };
 }
 
+export function setResources(actions: number, moves: number) {
+  return (ctx: TargetContext) => {
+    for (const field of ctx.fields) {
+      const entity = getEntityInField(ctx.state, field);
+      ctx.state = addEvent(ctx.state, {
+        type: 'changeResources',
+        entityId: entity.id,
+        actions: { from: entity.actionPoints.current, to: actions },
+        moves: { from: entity.movePoints.current, to: moves },
+      });
+    }
+  };
+}
+
+export function refreshResources(ctx: TargetContext) {
+  for (const field of ctx.fields) {
+    const entity = getEntityInField(ctx.state, field);
+    ctx.state = addEvent(ctx.state, {
+      type: 'changeResources',
+      entityId: entity.id,
+      actions: { from: entity.actionPoints.current, to: entity.actionPoints.max },
+      moves: { from: entity.movePoints.current, to: entity.movePoints.max },
+    });
+  }
+}
+
 function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
   if (ctx.entity && hasStatus(ctx.entity, 'critical')) {
     amount *= 2;

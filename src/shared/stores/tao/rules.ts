@@ -1,26 +1,22 @@
 import { monstersAi } from './ai';
-import {
-  clearOriginalPositions,
-  filterDeadEntities,
-  modifyAllEntities,
-  refreshAllActionPoints as refreshAllActionPointsAndMoves,
-} from './entity';
+import { clearOriginalPositions, filterDeadEntities, modifyAllEntities } from './entity';
 import { entitiesAfterRoundStart } from './entityInfo';
 import { addEvent } from './events/events';
 import { Entity, StatusEffect, Statuses } from './interface';
-import { damage, loseAllShield, rule } from './skills/actions';
+import { damage, loseAllShield, refreshResources, rule } from './skills/actions';
 import { allEntities, withShield, withEntityWithStatus as withStatus } from './skills/targetReducers';
 import { StoreData } from './taoStore';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poison')]);
 const loseShield = rule([allEntities, withShield, loseAllShield]);
+const refreshEntities = rule([allEntities, refreshResources]);
 
 export function endOfRound(state: StoreData): StoreData {
   state = { ...state, events: [] };
   state = clearOriginalPositions(state);
   state = monstersAi(state);
-  state = refreshAllActionPointsAndMoves(state);
+  state = refreshEntities(state);
   state = lightIfNotKilled(state);
   state = applyPoison(state);
   state = applyPoison2(state);

@@ -17,7 +17,7 @@ export const entities: EntitiesType = {
     name: 'Lacrimosa',
     kind: 'goth-gf',
 
-    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
     hp: stat(4),
     ownerId: 0,
   }),
@@ -28,7 +28,7 @@ export const entities: EntitiesType = {
     name: 'Aurora',
     kind: 'sun-princess',
 
-    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }],
+    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }, { id: 'pass' }],
     hp: stat(4),
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
@@ -46,6 +46,7 @@ export const entities: EntitiesType = {
       { id: 'knightTaunt' },
       { id: 'knightSpeedLight' },
       { id: 'knightSpeedDark' },
+      { id: 'pass' },
     ],
     hp: stat(4),
 

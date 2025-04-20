@@ -3,7 +3,7 @@ import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field, Position } from './interface';
 import { SkillID, useSkill } from './skills';
-import { clearOriginalPositions, getEntity } from './entity';
+import { anyPlayerHasActions, clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
 import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
@@ -105,7 +105,12 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       store = { ...store, events: [] };
       store = clearOriginalPositions(store);
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useSkill(store, entity, skillName, targetId);
+      store = useSkill(store, entity, skillName, targetId);
+
+      if (!anyPlayerHasActions(store)) {
+        store = endOfRound(store);
+      }
+      return store;
     }
 
     case 'newGame': {

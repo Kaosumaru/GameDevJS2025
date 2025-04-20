@@ -23,6 +23,7 @@ import { mageDarkFireball } from './skills/mage/mageDarkFireball';
 import { mageLightFireball } from './skills/mage/mageLightFireball';
 import { knightSpeedDark } from './skills/knight/knightSpeedDark';
 import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
+import { pass } from './skills/pass';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
@@ -57,6 +58,8 @@ const skills = {
   attack: attackSkill,
   stun: stunSkill,
   shield: shieldSkill,
+
+  pass,
 
   clericHeal,
   clericLightAllHeal,
@@ -102,7 +105,7 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
     throw new Error(`Not enough resources to use skill ${skillId}`);
   }
 
-  state = payForSkillEntity(state, user.id, skill);
+  state = payForSkillEntity(state, user, skill);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   state = skill.reducer(state, { user, skillInstance, targetId });
