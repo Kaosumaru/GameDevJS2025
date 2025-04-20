@@ -147,8 +147,7 @@ export function addEntity(state: StoreData, id: EntityTypeId, position: Position
   });
 }
 
-export type SpawnInfo = [EntityTypeId, number];
-export function addEntities(state: StoreData, infos: SpawnInfo[]): StoreData {
+export function addEntities(state: StoreData, infos: [EntityTypeId, Position][]): StoreData {
   return addEvent(state, {
     type: 'spawn',
     entities: infos.map(([id, position]) => {

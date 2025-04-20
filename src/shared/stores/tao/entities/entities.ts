@@ -7,7 +7,8 @@ export type EntityTypeId =
   | 'mushroom-bomb'
   | 'skullwyrm'
   | 'voidling'
-  | 'voidbug';
+  | 'voidbug'
+  | 'testSpawner';
 
 export const entities: EntitiesType = {
   'goth-gf': position => ({
@@ -104,6 +105,20 @@ export const entities: EntitiesType = {
     hp: stat(6),
     attack: 3,
     speed: 3,
+  }),
+
+  testSpawner: position => ({
+    ...defaultEnemy,
+    position,
+
+    name: 'testSpawner',
+    kind: 'testSpawner',
+
+    skills: [{ id: 'testSpawner' }],
+
+    statusesCooldowns: {
+      testSpawner: 1,
+    },
   }),
 };
 

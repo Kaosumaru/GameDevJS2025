@@ -25,7 +25,7 @@ export function createLevel0(): LevelDescription {
       [1, 1, 1, 1, 1, 0, 0, 0, 8, 0, 7, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
     ],
     tileToField: {
@@ -33,6 +33,7 @@ export function createLevel0(): LevelDescription {
       1: { tileId: 1, blocking: true },
     },
     tileToEntity: {
+      4: 'testSpawner',
       5: 'skullwyrm',
       6: 'knight',
       7: 'sun-princess',
