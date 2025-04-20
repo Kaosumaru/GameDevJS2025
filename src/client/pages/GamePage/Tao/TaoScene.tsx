@@ -1,5 +1,5 @@
 import { Entity3D } from './Components/Entity3D';
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { JSX, useCallback, useEffect, useState } from 'react';
 import { Tile } from './Components/Tile';
 import {
   getAffectedTargets,
@@ -59,14 +59,12 @@ export const TaoScene = ({
   gameRoomClient: GameRoomClient;
   ui: { In: (props: { children: JSX.Element[] }) => null };
 }) => {
-  const audio = useMemo(() => new Audio('/music.mp3'), []);
   const [cameraTargetState, setCameraTargetState] = useState<Vector3 | undefined>(undefined);
   const client = useClient(TaoClient, gameRoomClient);
   const state = useAnimationState(client);
 
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
-  const balance = client.store(state => state.info.balance);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction | null>(null);
   const [affectedFields, setAffectedFields] = useState<string[]>([]);
@@ -175,6 +173,7 @@ export const TaoScene = ({
               key={entity.id}
               isSelected={entity.id === selectedEntityId}
               entity={entity}
+              // audio={audioSFXChannel}
               onClick={() => {
                 const e = entities.find(e => e.id === entity.id);
                 if (e === undefined) {
@@ -188,8 +187,8 @@ export const TaoScene = ({
         })}
       </group>
       <ui.In>
-        <Header audio={audio}/>
-        <Jukebox audio={audio} />
+        <Header balance={state?.info.balance ?? 0}/>
+        <Jukebox />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={entities}
@@ -226,7 +225,6 @@ export const TaoScene = ({
             setAffectedFields([]);
             setSelectedEntityId(null);
           }}
-          balance={balance}
         />
       </ui.In>
     </group>

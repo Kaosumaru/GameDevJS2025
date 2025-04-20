@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
 import { AnimationProps, motion } from 'motion/react';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { easeBounceOut } from 'd3-ease';
+import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 
 type Animation = AnimationProps['animate'];
 
@@ -22,21 +23,24 @@ const shiftRightAnimation: Animation = {
   transition: { duration: 0.5, ease: easeBounceOut },
 };
 
-export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
+export const Header = ({ balance }: { balance: number }) => {
+  const { play } = useTaoAudio();
   const [animationYin, setAnimationYin] = useState(showAnimtion);
   const [animationYang, setAnimationYang] = useState(showAnimtion);
 
-  const [forceSequenceIndex, setForceSequenceIndex] = useState<number>(0);
-  const forceSequence = ['balance', 'yin', 'balance', 'yang'] as const;
-
-  const play = useCallback(() => {
-    const isPlaying =
-      audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
-
-    if (!isPlaying) {
-      audio.play();
+  useEffect(() => {
+    if (balance == 0) {
+      setAnimationYin(showAnimtion);
+      setAnimationYang(showAnimtion);
+      play('music', 'balance-loop');
+    } else if (balance < 0) {
+      setAnimationYin(shiftLeftAnimation);
+      play('music', 'darkness-loop');
+    } else {
+      setAnimationYang(shiftRightAnimation);
+      play('music', 'light-loop');
     }
-  }, [audio]);
+  }, [balance, play]);
 
   return (
     <Box
@@ -46,6 +50,8 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
         left: 'calc(50% - 3rem)',
         transform: 'translate(-50%, 0)',
         color: 'white',
+        userSelect: 'none',
+        pointerEvents: 'none',
       }}
     >
       <motion.img
@@ -62,34 +68,20 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
       />
       <Box
         sx={{
-          width: '26rem',
-          height: '6rem',
+          width: '1rem',
+          height: '1rem',
           position: 'absolute',
-          top: 0,
-          left: '-10rem',
+          top: '6rem',
+          left: '2.5rem',
+          zIndex: 1000,
+          color: 'white',
+          fontSize: '2rem',
+          userSelect: 'none',
+          pointerEvents: 'none',
         }}
-        onClick={() => {
-          const nextIndex = (forceSequenceIndex + 1) % forceSequence.length;
-          const current = forceSequence[nextIndex];
-          if (current === 'yin') {
-            setAnimationYin(shiftLeftAnimation);
-            setAnimationYang(showAnimtion);
-            audio.src = '/darkness-loop.mp3';
-          } else if (current === 'yang') {
-            setAnimationYang(shiftRightAnimation);
-            setAnimationYin(showAnimtion);
-            audio.src = '/light-loop.mp3';
-          } else {
-            setAnimationYin(showAnimtion);
-            setAnimationYang(showAnimtion);
-            audio.src = '/balance-loop.mp3';
-          }
-          audio.loop = true;
-          play();
-
-          setForceSequenceIndex(nextIndex);
-        }}
-      ></Box>
+      >
+        {balance}
+      </Box>
     </Box>
   );
 };

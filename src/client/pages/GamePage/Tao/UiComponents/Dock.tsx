@@ -24,13 +24,11 @@ const DockComponent = ({
   entity,
   isActionable,
   selectedSkillId,
-  balance,
   onSkill,
   onEndTurn,
 }: JSX.IntrinsicElements['div'] & {
   entity: Entity | undefined;
   isActionable: boolean;
-  balance: number;
   selectedSkillId: string | null;
   onSkill: (skillInstance: SkillInstance) => void;
   onEndTurn: () => void;
@@ -110,9 +108,6 @@ const DockComponent = ({
             </Button>
           </Box>
         )}
-        <Button variant="contained" color="success" onClick={onEndTurn}>
-          Balance: {balance}
-        </Button>
       </Box>
     </Box>
   );

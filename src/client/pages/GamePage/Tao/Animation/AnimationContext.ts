@@ -11,7 +11,13 @@ export type AnimationContext = {
 
 export const AnimationContext = createContext<AnimationContext>({
   notify: () => {},
-  increaseAnimationCount: () => {},
-  decreaseAnimationCount: () => {},
-  scheduleFunctionAfterAnimation: () => {},
+  increaseAnimationCount: () => {
+    console.error('increaseAnimationCount function not implemented');
+  },
+  decreaseAnimationCount: () => {
+    console.error('decreaseAnimationCount function not implemented');
+  },
+  scheduleFunctionAfterAnimation: () => {
+    console.error('scheduleFunctionAfterAnimation function not implemented');
+  },
 });

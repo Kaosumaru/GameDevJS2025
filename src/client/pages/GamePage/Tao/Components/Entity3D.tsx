@@ -10,21 +10,22 @@ import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
+import { useTaoAudio } from './Audio/useTaoAudio';
+import { getRandomMoveSound } from './Audio/TaoAudioData';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
 const Entity3DComponent = ({
   entity,
   isSelected,
-  // playNext: parentPlayNext,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
   entity: Entity;
-  // playNext: (label: string, callback: () => Promise<void>) => void;
   onClick: () => void;
 }) => {
+  const { play } = useTaoAudio();
   const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
@@ -50,8 +51,9 @@ const Entity3DComponent = ({
       });
     } else {
       playNext('move', async () => {
+        play('sfx', getRandomMoveSound());
         const obj = refs.current['container']!;
-        console.log('move', entity.position.x, entity.position.y);
+
         await animate([
           'start',
           [obj.position, { x, z: y }, { duration: 0.5 }],
@@ -61,7 +63,7 @@ const Entity3DComponent = ({
         ]);
       });
     }
-  }, [playNext, entity.position.x, entity.position.y]);
+  }, [playNext, play, entity.position.x, entity.position.y]);
 
   useEffect(() => {
     if (!previousHp) return;
