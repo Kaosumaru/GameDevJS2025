@@ -117,7 +117,7 @@ export const entities: EntitiesType = {
     skills: [{ id: 'testSpawner' }],
 
     statusesCooldowns: {
-      testSpawner: 1,
+      testSpawner: 2,
     },
   }),
 };

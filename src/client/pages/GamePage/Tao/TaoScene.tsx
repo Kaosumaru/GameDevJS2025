@@ -1,5 +1,5 @@
 import { Entity3D } from './Components/Entity3D';
-import { JSX, useCallback, useEffect, useState } from 'react';
+import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { Tile } from './Components/Tile';
 import {
   getAffectedTargets,
@@ -22,6 +22,7 @@ import { Dock } from './UiComponents/Dock';
 import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationState } from './Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
+import { Header } from './UiComponents/Header';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -58,6 +59,7 @@ export const TaoScene = ({
   gameRoomClient: GameRoomClient;
   ui: { In: (props: { children: JSX.Element[] }) => null };
 }) => {
+  const audio = useMemo(() => new Audio('/music.mp3'), []);
   const [cameraTargetState, setCameraTargetState] = useState<Vector3 | undefined>(undefined);
   const client = useClient(TaoClient, gameRoomClient);
   const state = useAnimationState(client);
@@ -186,7 +188,8 @@ export const TaoScene = ({
         })}
       </group>
       <ui.In>
-        <Jukebox />
+        <Header audio={audio}/>
+        <Jukebox audio={audio} />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={entities}
