@@ -1,4 +1,12 @@
-import { getEntityField, getField, getFieldNeighbors, getFieldNeighbors9 } from '../board';
+import {
+  getDirection,
+  getEntityField,
+  getField,
+  getFieldInDirection,
+  getFieldNeighbors,
+  getFieldNeighbors9,
+  getPerpendicularDirections,
+} from '../board';
 import { getEntity, hasStatus, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
@@ -14,7 +22,7 @@ export interface TargetContext {
 
 export type TargetReducer = (ctx: TargetContext) => void;
 
-export function reduceTargets(ctx: TargetContext, reducers: TargetReducer[]): TargetContext {
+export function reduceTargets<T extends TargetContext>(ctx: T, reducers: ((ctx: T) => void)[]): T {
   for (const reducer of reducers) {
     reducer(ctx);
   }
@@ -113,8 +121,8 @@ export function fieldsInRange(ctx: TargetContext): TargetContext {
 export function inMoveDistance(rangeModifier: number = 0) {
   return (ctx: TargetContext) => {
     let speed = (ctx.entity?.speed ?? 0) + rangeModifier;
-    if (ctx.entity && hasStatus(ctx.entity, 'speed+2')) {
-      speed += 2;
+    if (ctx.entity && hasStatus(ctx.entity, 'speed+3')) {
+      speed += 3;
     }
     ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
   };
@@ -175,4 +183,36 @@ function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolea
     const fieldEntity = getEntity(ctx.state, field.entityUUID);
     return fieldEntity && filter(fieldEntity);
   });
+}
+
+export function fieldsInFront(width: number, height: number) {
+  return (ctx: TargetContext) => {
+    if (!ctx.entity) {
+      throw new Error('Entity is undefined');
+    }
+    const entityField = getEntityField(ctx.state, ctx.entity);
+    const results: Field[] = [];
+    for (const field of ctx.fields) {
+      const direction = getDirection(entityField.position, field.position);
+      const perpendicularDirections = getPerpendicularDirections(direction);
+
+      for (let h = 0; h <= height; h++) {
+        const heightField = getFieldInDirection(ctx.state, field, direction, h);
+        if (!heightField) {
+          break;
+        }
+        results.push(heightField);
+
+        for (let i = 1; i <= width; i++) {
+          for (const perpendicularDirection of perpendicularDirections) {
+            const newField = getFieldInDirection(ctx.state, heightField, perpendicularDirection, i);
+            if (newField) {
+              results.push(newField);
+            }
+          }
+        }
+      }
+    }
+    ctx.fields = results;
+  };
 }

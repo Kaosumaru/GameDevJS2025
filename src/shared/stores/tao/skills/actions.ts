@@ -1,9 +1,11 @@
+import { RandomGenerator } from 'pureboard/shared/interface';
 import { getEntityField, getEntityInField, getField } from '../board';
+import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
-import { entitiesAfterBalanceChange } from '../entityInfo';
+import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
-import { SkillContext, SkillInstance } from '../skills';
+import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
@@ -18,6 +20,32 @@ export function attack(modifier: number = 0, type: DamageType = 'standard') {
     const amount = (ctx.entity?.attack ?? 0) + modifier;
     addStandardDamageEvent(ctx, amount, type);
   };
+}
+
+export function setResources(actions: number, moves: number) {
+  return (ctx: TargetContext) => {
+    for (const field of ctx.fields) {
+      const entity = getEntityInField(ctx.state, field);
+      ctx.state = addEvent(ctx.state, {
+        type: 'changeResources',
+        entityId: entity.id,
+        actions: { from: entity.actionPoints.current, to: actions },
+        moves: { from: entity.movePoints.current, to: moves },
+      });
+    }
+  };
+}
+
+export function refreshResources(ctx: TargetContext) {
+  for (const field of ctx.fields) {
+    const entity = getEntityInField(ctx.state, field);
+    ctx.state = addEvent(ctx.state, {
+      type: 'changeResources',
+      entityId: entity.id,
+      actions: { from: entity.actionPoints.current, to: entity.actionPoints.max },
+      moves: { from: entity.movePoints.current, to: entity.movePoints.max },
+    });
+  }
 }
 
 function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
@@ -101,8 +129,8 @@ export function move(ctx: TargetContext) {
 
 export function balance(amount: number) {
   return (ctx: TargetContext) => {
-    const from = ctx.state.balance;
-    const to = clamp(ctx.state.balance + amount, -3, 3);
+    const from = ctx.state.info.balance;
+    const to = clamp(ctx.state.info.balance + amount, -3, 3);
     ctx.state = addEvent(ctx.state, {
       type: 'balance',
       from,
@@ -125,15 +153,30 @@ export function changeSkills(skillInstances: SkillInstance[]) {
   };
 }
 
+export type SpawnInfo = [EntityTypeId, number];
+
+export function spawn(entities: SpawnInfo[]) {
+  return (ctx: ActionTargetContext) => {};
+}
+
+export function spawnFrom(entities: SpawnInfo[][]) {
+  return (ctx: ActionTargetContext) => {
+    const index = ctx.random.int(entities.length);
+    const randomEntry = entities[index];
+    return spawn(randomEntry)(ctx);
+  };
+}
+
 export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
 
-export function actions(reducers: TargetReducer[]) {
-  return (state: StoreData, ctx: SkillContext): StoreData => {
-    const context: TargetContext = {
+export function actions(reducers: TargetActionReducer[]) {
+  return (state: StoreData, ctx: SkillActionContext): StoreData => {
+    const context: ActionTargetContext = {
       state,
       skillInstance: ctx.skillInstance,
       entity: ctx.user,
       fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
+      random: ctx.random,
     };
 
     return reduceTargets(context, reducers).state;
@@ -199,8 +242,22 @@ function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
     attackerId: ctx.entity?.id,
     damages,
   });
+
+  if (ctx.entity) {
+    for (const damage of damages) {
+      if (damage.health.from != 0 && damage.health.to === 0) {
+        ctx.state = entityAfterKill(ctx.state, ctx.entity);
+      }
+    }
+  }
 }
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
+
+export interface ActionTargetContext extends TargetContext {
+  random: RandomGenerator;
+}
+
+export type TargetActionReducer = (ctx: ActionTargetContext) => void;

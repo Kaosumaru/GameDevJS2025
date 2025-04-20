@@ -1,11 +1,11 @@
 import { Context, StoreContainer } from 'pureboard/shared/interface';
 import { StandardGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
-import { Entity, Field } from './interface';
+import { Entity, Field, Position } from './interface';
 import { SkillID, useSkill } from './skills';
-import { clearOriginalPositions, getEntity } from './entity';
+import { anyPlayerHasActions, clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';
-import { EventType } from './events/events';
+import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
 import { createLevel0 } from './levels/level0';
 import { entitiesAfterRoundStart } from './entityInfo';
@@ -29,7 +29,12 @@ export interface StoreData {
   board: Field[][];
   entities: Entity[];
   events: EventType[];
-  balance: number;
+  info: {
+    balance: number;
+    perRound: {
+      positionsOfDeaths: Position[];
+    };
+  };
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
@@ -54,7 +59,12 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       gameOver: false,
       entities: [],
       events: [],
-      balance: 0,
+      info: {
+        balance: 0,
+        perRound: {
+          positionsOfDeaths: [],
+        },
+      },
     },
     makeAction
   );
@@ -64,22 +74,12 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
   switch (action.type) {
     case 'endRound': {
       // caching old state for client animations
-      store = {
-        ...store,
-        oldState: {
-          ...store,
-        },
-      };
-      return endOfRound(store);
+      store = cacheOldState(store);
+      return endOfRound(store, ctx.random);
     }
     case 'useSkill': {
       // caching old state for client animations
-      store = {
-        ...store,
-        oldState: {
-          ...store,
-        },
-      };
+      store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
       if (!entity) {
@@ -95,7 +95,12 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       store = { ...store, events: [] };
       store = clearOriginalPositions(store);
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useSkill(store, entity, skillName, targetId);
+      store = useSkill(store, entity, skillName, ctx.random, targetId);
+
+      if (!anyPlayerHasActions(store)) {
+        store = endOfRound(store, ctx.random);
+      }
+      return store;
     }
 
     case 'newGame': {
@@ -106,14 +111,36 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         gameOver: false,
         entities: [],
         events: [],
-        balance: 0,
+        info: {
+          balance: 0,
+          perRound: {
+            positionsOfDeaths: [],
+          },
+        },
       };
 
       const level = createLevel0();
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       state = entitiesAfterRoundStart(state);
+      state = addEvent(state, {
+        type: 'balance',
+        from: -3,
+        to: 0,
+      });
+
       return state;
     }
   }
+}
+
+function cacheOldState(state: StoreData): StoreData {
+  return {
+    ...state,
+    oldState: {
+      ...state,
+      board: state.board.map(row => row.map(field => ({ ...field }))),
+      oldState: undefined,
+    },
+  };
 }

@@ -17,7 +17,7 @@ export const entities: EntitiesType = {
     name: 'Lacrimosa',
     kind: 'goth-gf',
 
-    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }],
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
     hp: stat(4),
     ownerId: 0,
   }),
@@ -28,7 +28,7 @@ export const entities: EntitiesType = {
     name: 'Aurora',
     kind: 'sun-princess',
 
-    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }],
+    skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }, { id: 'pass' }],
     hp: stat(4),
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
@@ -40,7 +40,14 @@ export const entities: EntitiesType = {
     name: 'Vacuan',
     kind: 'knight',
 
-    skills: [{ id: 'move' }, { id: 'knightAttack' }, { id: 'knightTaunt' }, { id: 'knightSpeed' }],
+    skills: [
+      { id: 'move' },
+      { id: 'knightAttack' },
+      { id: 'knightTaunt' },
+      { id: 'knightSpeedLight' },
+      { id: 'knightSpeedDark' },
+      { id: 'pass' },
+    ],
     hp: stat(4),
 
     isTank: true,
@@ -123,7 +130,7 @@ const defaultPlayer: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statuses: {},
+  statusesCooldowns: {},
   ownerId: undefined,
 };
 
@@ -141,6 +148,6 @@ const defaultEnemy: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statuses: {},
+  statusesCooldowns: {},
   ownerId: undefined,
 };

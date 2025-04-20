@@ -6,6 +6,7 @@ import { StoreData } from '../taoStore';
 import {
   ApplyStatusEvent,
   ChangeBalanceEvent,
+  ChangeResourcesEvent,
   ChangeSkillsEvent,
   DamageEvent,
   DeathEvent,
@@ -30,6 +31,8 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return reduceBalance(state, event);
     case 'skills':
       return reduceChangeSkills(state, event);
+    case 'changeResources':
+      return changeResources(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -72,9 +75,9 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
     if (status) {
       return {
         ...entity,
-        statuses: {
-          ...entity.statuses,
-          [status.status]: status.amount,
+        statusesCooldowns: {
+          ...entity.statusesCooldowns,
+          [status.status]: status.amount + (entity.statusesCooldowns[status.status] ?? 0),
         },
       };
     }
@@ -86,9 +89,17 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
 function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
   const entity = getEntity(state, event.entityId);
   const field = getEntityField(state, entity);
+
   const newState: StoreData = {
     ...state,
     entities: state.entities.filter(entity => entity.id !== event.entityId),
+    info: {
+      ...state.info,
+      perRound: {
+        ...state.info.perRound,
+        positionsOfDeaths: [...state.info.perRound.positionsOfDeaths, field.position],
+      },
+    },
   };
 
   const newField = getField(newState, field.id);
@@ -99,14 +110,32 @@ function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
 function reduceBalance(state: StoreData, event: ChangeBalanceEvent): StoreData {
   let newState: StoreData = {
     ...state,
-    balance: event.to,
+    info: {
+      ...state.info,
+      balance: event.to,
+    },
   };
 
   newState = entitiesAfterBalanceChange(newState, event.from, event.to);
   return newState;
 }
 function reduceChangeSkills(state: StoreData, event: ChangeSkillsEvent): StoreData {
-  throw modifyEntity(state, event.entityId, entity => {
+  return modifyEntity(state, event.entityId, entity => {
     return { ...entity, skills: event.skills.map(skill => ({ ...skill })) };
+  });
+}
+function changeResources(state: StoreData, event: ChangeResourcesEvent): StoreData {
+  return modifyEntity(state, event.entityId, entity => {
+    return {
+      ...entity,
+      actionPoints: {
+        ...entity.actionPoints,
+        current: Math.max(0, event.actions.to),
+      },
+      movePoints: {
+        ...entity.movePoints,
+        current: Math.max(0, event.moves.to),
+      },
+    };
   });
 }

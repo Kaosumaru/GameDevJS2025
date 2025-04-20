@@ -10,21 +10,23 @@ export const useAnimationMotion = () => {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      if (scheduledMotions.current.length === 0) {
-        await new Promise<void>(resolve => (notifyRef.current = resolve));
-        notifyRef.current = undefined;
-      }
-      console.log('starting motions');
-      ctx.increaseAnimationCount();
-      while (scheduledMotions.current.length > 0) {
-        const motion = scheduledMotions.current.shift();
-        if (motion) {
-          console.log('calling motion callback', motion.name);
-          await motion.callback();
+      while (true) {
+        if (scheduledMotions.current.length === 0) {
+          await new Promise<void>(resolve => (notifyRef.current = resolve));
+          notifyRef.current = undefined;
         }
+        console.log('starting motions');
+        ctx.increaseAnimationCount();
+        while (scheduledMotions.current.length > 0) {
+          const motion = scheduledMotions.current.shift();
+          if (motion) {
+            console.log('calling motion callback', motion.name);
+            await motion.callback();
+          }
+        }
+        console.log('finished motions');
+        ctx.decreaseAnimationCount();
       }
-      console.log('finished motions');
-      ctx.decreaseAnimationCount();
     };
     void asyncFunc();
 

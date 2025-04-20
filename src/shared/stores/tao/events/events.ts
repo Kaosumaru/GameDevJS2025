@@ -66,7 +66,21 @@ export interface ChangeSkillsEvent {
   skills: SkillInstance[];
 }
 
+export interface ChangeResourcesData {
+  entityId: string;
+  actionPoints: Delta<number>;
+  movePoints: Delta<number>;
+}
+
+export interface ChangeResourcesEvent {
+  type: 'changeResources';
+  entityId: string;
+  actions: Delta<number>;
+  moves: Delta<number>;
+}
+
 export type EventType =
+  | ChangeResourcesEvent
   | MoveEvent
   | DeathEvent
   | ApplyStatusEvent

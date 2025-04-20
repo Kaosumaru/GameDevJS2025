@@ -28,22 +28,6 @@ export function modifyAllEntities(state: StoreData, modifier: EntityReducer): St
   return newState;
 }
 
-function payForSkillReducer(skill: Skill): EntityReducer {
-  return (entity: Entity) => ({
-    ...entity,
-    actionPoints: { ...entity.actionPoints, current: Math.max(0, entity.actionPoints.current - skill.actionCost) },
-    movePoints: { ...entity.movePoints, current: Math.max(0, entity.movePoints.current - skill.moveCost) },
-  });
-}
-
-function refreshActionsAndMovesReducer(entity: Entity): Entity {
-  return {
-    ...entity,
-    actionPoints: { ...entity.actionPoints, current: entity.actionPoints.max },
-    movePoints: { ...entity.movePoints, current: entity.movePoints.max },
-  };
-}
-
 function clearOriginalPositionReducer(entity: Entity): Entity {
   return {
     ...entity,
@@ -52,7 +36,7 @@ function clearOriginalPositionReducer(entity: Entity): Entity {
 }
 
 export function getStatusAmount(entity: Entity, status: StatusEffect): number {
-  const amount = entity.statuses[status] ?? 0;
+  const amount = entity.statusesCooldowns[status] ?? 0;
   return amount;
 }
 
@@ -61,16 +45,28 @@ export function hasStatus(entity: Entity, status: StatusEffect): boolean {
   return result;
 }
 
-export function payForSkillEntity(state: StoreData, entityID: string, skill: Skill): StoreData {
-  return modifyEntity(state, entityID, payForSkillReducer(skill));
-}
+export function payForSkillEntity(state: StoreData, entity: Entity, skill: Skill): StoreData {
+  state = addEvent(state, {
+    type: 'changeResources',
+    entityId: entity.id,
+    actions: { from: entity.actionPoints.current, to: Math.max(0, entity.actionPoints.current - skill.actionCost) },
+    moves: { from: entity.movePoints.current, to: Math.max(0, entity.movePoints.current - skill.moveCost) },
+  });
 
-export function refreshActionPointsEntity(state: StoreData, entityID: string): StoreData {
-  return modifyEntity(state, entityID, refreshActionsAndMovesReducer);
-}
+  if (skill.cooldown) {
+    state = addEvent(state, {
+      type: 'applyStatus',
+      statuses: [
+        {
+          entityId: entity.id,
+          status: skill.id,
+          amount: skill.cooldown + 1,
+        },
+      ],
+    });
+  }
 
-export function refreshAllActionPoints(state: StoreData): StoreData {
-  return modifyAllEntities(state, refreshActionsAndMovesReducer);
+  return state;
 }
 
 export function clearOriginalPositions(state: StoreData): StoreData {
@@ -105,4 +101,12 @@ export function filterDeadEntities(state: StoreData): StoreData {
   }
 
   return state;
+}
+
+export function entityHasActions(entity: Entity): boolean {
+  return entity.actionPoints.current > 0 || entity.movePoints.current > 0;
+}
+
+export function anyPlayerHasActions(state: StoreData): boolean {
+  return state.entities.some(entity => entity.type === 'player' && entity.hp.current > 0 && entityHasActions(entity));
 }

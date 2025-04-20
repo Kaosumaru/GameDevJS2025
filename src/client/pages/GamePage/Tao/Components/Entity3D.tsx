@@ -5,25 +5,32 @@ import { easeBounceOut } from 'd3-ease';
 
 import { animate } from 'motion';
 import { Stats } from './Stats';
-import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { Entity } from '@shared/stores/tao/interface';
+import { useAnimationMotion } from '../Animation/useAnimationMotion';
+import { usePrevious } from '../Hooks/usePrevious';
+import { entities } from '@shared/stores/tao/entities/entities';
+
+const INITIAL_SCALE = [0, 0, 0] as const;
 
 const Entity3DComponent = ({
   entity,
   isSelected,
+  // playNext: parentPlayNext,
   onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
   entity: Entity;
+  // playNext: (label: string, callback: () => Promise<void>) => void;
+  onClick: () => void;
 }) => {
   const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
   const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.kind}.png`]);
   const imageRatio = colorMap.image.width / colorMap.image.height;
-
+  const previousHp = usePrevious(entity.hp);
   const playNext = useAnimationMotion();
 
   useEffect(() => {
@@ -34,17 +41,17 @@ const Entity3DComponent = ({
         const obj = refs.current['container']!;
         await animate([
           'start',
-          [obj.position, { x, y: 3, z: y }, { duration: 0, at: 'start' }],
-          [obj.position, { x, y: 3, z: y }, { duration: 0, delay: 1 }],
-          [obj.position, { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
+          [obj.position, { x, y: 1, z: y }, { delay: 0.1, duration: 0, at: 'start' }],
+          [obj.position, { x, y: 0, z: y }, { duration: 0.2, ease: easeBounceOut }],
           [obj.scale, { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
-          [obj.scale, { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
-          [obj.scale, { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
+          [obj.scale, { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0.1 }],
+          [obj.scale, { x: 1, y: 1, z: 1 }, { duration: 0.1, ease: 'easeOut' }],
         ]);
       });
     } else {
       playNext('move', async () => {
         const obj = refs.current['container']!;
+        console.log('move', entity.position.x, entity.position.y);
         await animate([
           'start',
           [obj.position, { x, z: y }, { duration: 0.5 }],
@@ -55,6 +62,29 @@ const Entity3DComponent = ({
       });
     }
   }, [playNext, entity.position.x, entity.position.y]);
+
+  useEffect(() => {
+    if (!previousHp) return;
+    if (previousHp.current === entity.hp.current) return;
+
+    playNext('receive-dmg', async () => {
+      const obj = refs.current['avatar']!;
+      const healthbar = refs.current['healthbar']!;
+      await animate([
+        [obj.material!, { flash: 1 }, { duration: 0.1 }],
+        [obj.material!, { flash: 0 }, { duration: 0.1, delay: 0.1 }],
+        [healthbar.material!, { hp: entity.hp.current, shield: entity.shield }, { duration: 0.2 }],
+      ]);
+    });
+  }, [playNext, previousHp, entity.hp, entity.shield]);
+
+  useEffect(() => {
+    playNext('set-hp', async () => {
+      const healthbar = refs.current['healthbar']!;
+      await animate([[healthbar.material!, { hp: entity.hp.current, shield: entity.shield }, { duration: 0.2 }]]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playNext, entity.hp.current, entity.shield]);
 
   const refs = useRef<{
     container: Group | null;
@@ -80,6 +110,7 @@ const Entity3DComponent = ({
         refs.current['container'] = r;
       }}
       {...rest}
+      scale={INITIAL_SCALE}
       dispose={null}
     >
       <group
@@ -102,7 +133,13 @@ const Entity3DComponent = ({
         </mesh>
         <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
           <planeGeometry args={[0.6, 0.08]} />
-          <healthBar hp={entity.hp.current} maxHp={entity.hp.max} shield={entity.shield} />
+          <healthBar
+            ref={(r: object) => {
+              refs.current['healthbar'] = {
+                material: r,
+              };
+            }}
+          />
         </mesh>
         <Stats entity={entity} position={[0, 1.16, 0]} />
       </group>
@@ -121,3 +158,7 @@ const Entity3DComponent = ({
 };
 
 export const Entity3D = memo(Entity3DComponent);
+
+useLoader.preload(TextureLoader, [`/avatars/player.png`]);
+useLoader.preload(TextureLoader, [`/avatars/enemy.png`]);
+useLoader.preload(TextureLoader, [`/avatars/neutral.png`]);

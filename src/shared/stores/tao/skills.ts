@@ -14,12 +14,22 @@ import { deepCopy2DArray } from './utils';
 import { clericDisarm } from './skills/cleric/clericDisarm';
 import { mageBlind } from './skills/mage/mageBlind';
 import { clericCritical } from './skills/cleric/clericCritical';
-import { knightSpeed } from './skills/knight/knightSpeed';
+import { knightSpeedLight } from './skills/knight/knightSpeedLight';
 import { mageSickle } from './skills/mage/mageSickle';
+import { knightDarkWide } from './skills/knight/knightDarkWide';
+import { knightLightStun } from './skills/knight/knightLightStun';
+import { clericLightAllHeal } from './skills/cleric/clericLightAllHeal';
+import { mageDarkFireball } from './skills/mage/mageDarkFireball';
+import { mageLightFireball } from './skills/mage/mageLightFireball';
+import { knightSpeedDark } from './skills/knight/knightSpeedDark';
+import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
+import { pass } from './skills/pass';
+import { testSpawner } from './skills/spawnSkills/testSpawner';
+import { RandomGenerator } from 'pureboard/shared/interface';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
-export type SkillReducer = (state: StoreData, ctx: SkillContext) => StoreData;
+export type SkillReducer = (state: StoreData, ctx: SkillActionContext) => StoreData;
 export type SkillTargetsReducer = (state: StoreData, ctx: SkillContext) => Field[];
 
 export interface Skill {
@@ -29,6 +39,7 @@ export interface Skill {
   description: string;
   actionCost: number;
   moveCost: number;
+  cooldown?: number;
   reducer: SkillReducer;
   getRange: SkillTargetsReducer;
   getPossibleTargets: SkillTargetsReducer;
@@ -45,23 +56,38 @@ export interface SkillContext {
   targetId?: string;
 }
 
+export interface SkillActionContext extends SkillContext {
+  random: RandomGenerator;
+}
+
 const skills = {
   move: moveSkill,
   attack: attackSkill,
   stun: stunSkill,
   shield: shieldSkill,
 
+  pass,
+  testSpawner,
+
   clericHeal,
+  clericLightAllHeal,
+  clericDarkHeal,
   clericDisarm,
   clericCritical,
 
   knightTaunt,
   knightAttack,
-  knightSpeed,
+  knightLightStun,
+  knightSpeedLight,
+  knightSpeedDark,
 
   mageFireball,
+  mageDarkFireball,
+  mageLightFireball,
   mageBlind,
   mageSickle,
+
+  knightDarkWide,
 };
 
 export type SkillID = Extract<keyof typeof skills, string>;
@@ -74,7 +100,13 @@ export function skillFromID(id: SkillID): Skill {
   return skills[id];
 }
 
-export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targetId?: string): StoreData {
+export function useSkill(
+  state: StoreData,
+  user: Entity,
+  skillId: SkillID,
+  random: RandomGenerator,
+  targetId?: string
+): StoreData {
   const skill = skillFromID(skillId);
   const skillInstance = getSkillInstance(user, skillId);
 
@@ -87,10 +119,10 @@ export function useSkill(state: StoreData, user: Entity, skillId: SkillID, targe
     throw new Error(`Not enough resources to use skill ${skillId}`);
   }
 
-  state = payForSkillEntity(state, user.id, skill);
+  state = payForSkillEntity(state, user, skill);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
-  state = skill.reducer(state, { user, skillInstance, targetId });
+  state = skill.reducer(state, { user, skillInstance, targetId, random });
   state = filterDeadEntities(state);
 
   return state;
@@ -139,6 +171,11 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
     if (skill.type === 'attack') {
       return false;
     }
+  }
+
+  // cooldown
+  if (hasStatus(user, skillInstance.id)) {
+    return false;
   }
   return (
     user.actionPoints.current >= skillFromInstance(skillInstance).actionCost &&

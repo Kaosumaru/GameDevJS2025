@@ -1,3 +1,4 @@
+import { RandomGenerator } from 'pureboard/shared/interface';
 import { findFieldByPosition, getField } from './board';
 import { getEntity, hasStatus } from './entity';
 import { Entity, Field } from './interface';
@@ -13,16 +14,16 @@ import {
 } from './skills';
 import { StoreData } from './taoStore';
 
-export function monstersAi(state: StoreData): StoreData {
+export function monstersAi(state: StoreData, random: RandomGenerator): StoreData {
   state = { ...state };
   const monsters = state.entities.filter(entity => entity.type === 'enemy');
   for (const monster of monsters) {
-    state = monsterAI(state, monster.id);
+    state = monsterAI(state, monster.id, random);
   }
   return state;
 }
 
-function monsterAI(state: StoreData, entityID: string): StoreData {
+function monsterAI(state: StoreData, entityID: string, random: RandomGenerator): StoreData {
   for (;;) {
     const entity = getEntity(state, entityID);
     if (!entity) {
@@ -35,7 +36,7 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
       const bestTarget = bestTargetsForMovement(state, entity, skillId);
       if (bestTarget) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        state = useSkill(state, entity, skillId, bestTarget.id);
+        state = useSkill(state, entity, skillId, random, bestTarget.id);
         continue;
       }
     }
@@ -44,7 +45,7 @@ function monsterAI(state: StoreData, entityID: string): StoreData {
     if (attackSkills.length != 0) {
       const skillId = attackSkills[0];
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      state = useSkillOnFirstTarget(state, entity, skillId);
+      state = useSkillOnFirstTarget(state, entity, skillId, random);
       continue;
     }
     break;
@@ -65,7 +66,7 @@ function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: Skill
   return closestField;
 }
 
-function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID): StoreData {
+function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID, random: RandomGenerator): StoreData {
   const skillInstance = getSkillInstance(entity, skillId);
   const targets = getPossibleTargets(state, entity, skillInstance);
   // TODO
@@ -76,7 +77,7 @@ function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillI
 
   const targetId = targets[0];
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useSkill(state, entity, skillId, targetId);
+  return useSkill(state, entity, skillId, random, targetId);
 }
 
 function getUseableAttackSkills(state: StoreData, entity: Entity): SkillID[] {

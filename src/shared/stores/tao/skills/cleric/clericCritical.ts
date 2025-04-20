@@ -1,11 +1,11 @@
 import { Skill } from '../../skills';
 import { actions, status } from '../actions';
-import { area, fieldsInRange, targets, withAlly, withEnemy } from '../targetReducers';
+import { area, fieldsInRange, targets, withAlly } from '../targetReducers';
 
 export const clericCritical: Skill = {
   id: 'clericCritical',
   name: 'Shine',
-  description: 'Critical',
+  description: '<p>Support</p> <br> <p>dmg <b>x2</b></p>',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,

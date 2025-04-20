@@ -1,5 +1,5 @@
 import { EntityTypeId as EntityKindId } from './entities/entities';
-import { SkillInstance } from './skills';
+import { SkillID, SkillInstance } from './skills';
 
 export interface Stat {
   current: number;
@@ -13,7 +13,15 @@ export interface Position {
 
 export type EntityType = 'player' | 'enemy';
 
-export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned' | 'taunted' | 'critical' | 'speed+2';
+export type StatusEffect =
+  | 'stunned'
+  | 'disarmed'
+  | 'poisoned'
+  | 'poisoned+2'
+  | 'taunted'
+  | 'critical'
+  | 'speed+3'
+  | SkillID;
 
 export type Statuses = { [key in StatusEffect]?: number };
 
@@ -32,7 +40,7 @@ export interface Entity {
   actionPoints: Stat;
   position: Position;
   originalPosition?: Position;
-  statuses: Statuses;
+  statusesCooldowns: Statuses;
   isTank?: boolean;
 }
 

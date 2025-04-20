@@ -16,12 +16,17 @@ export const useAnimationState = (client: TaoClient) => {
     }
     console.log('scheduling state update');
     const events = baseState.events;
-    const oldState = baseState.oldState;
-    ctx.scheduleFunctionAfterAnimation(() => {
-      console.log('useAnimationState scheduleFunctionAfterAnimation', events, oldState);
-      const newState = events.reduce(reduceEvent, oldState);
-      setState(newState);
-    });
+    let oldState = baseState.oldState;
+
+    ctx.scheduleFunctionAfterAnimation(
+      events.map(event => {
+        return () => {
+          console.log('useAnimationState scheduleFunctionAfterAnimation', event.type);
+          oldState = reduceEvent(oldState, event);
+          setState(oldState);
+        };
+      })
+    );
 
     return () => {
       console.log('useAnimationState unmount');

@@ -8,8 +8,11 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
   const checkAndCall = useCallback(() => {
     if (animationCount.current === 0) {
       console.log('Executing scheduled functions', scheduledFunctions.current);
-      scheduledFunctions.current.forEach(fn => fn());
-      scheduledFunctions.current = [];
+      const fn = scheduledFunctions.current.shift();
+      if (fn) {
+        console.log('Calling scheduled function');
+        fn();
+      }
     }
   }, []);
 
@@ -23,9 +26,15 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
           animationCount.current--;
           checkAndCall();
         },
-        scheduleFunctionAfterAnimation: (callback: () => void) => {
-          scheduledFunctions.current.push(callback);
-          checkAndCall();
+        scheduleFunctionAfterAnimation: callbacks => {
+          if (callbacks.length >= 1) {
+            const fn = callbacks.shift();
+            if (fn) {
+              console.log('Calling scheduled function');
+              fn();
+            }
+          }
+          scheduledFunctions.current.push(...callbacks);
         },
       }}
     >
