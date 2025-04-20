@@ -1,13 +1,13 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
-import { getEntityField, getEntityInField, getField } from '../board';
+import { addEntity, getEntityField, getEntityInField, getField } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
-import { Entity, StatusEffect } from '../interface';
+import { Entity, Field, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
-import { reduceTargets, TargetContext, TargetReducer } from './targetReducers';
+import { empty, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
@@ -155,8 +155,24 @@ export function changeSkills(skillInstances: SkillInstance[]) {
 
 export type SpawnInfo = [EntityTypeId, number];
 
-export function spawn(entities: SpawnInfo[]) {
-  return (ctx: ActionTargetContext) => {};
+export function spawn(spawnInfo: SpawnInfo[]) {
+  return (ctx: ActionTargetContext) => {
+    const emptyCtx: TargetContext = {
+      ...ctx,
+    };
+    empty(emptyCtx);
+    const fields = emptyCtx.fields;
+
+    for (const [typeId, amount] of spawnInfo) {
+      for (let i = 0; i < amount; i++) {
+        const field = removeRandomField(fields, ctx.random);
+        if (!field) {
+          break;
+        }
+        ctx.state = addEntity(ctx.state, typeId, field.position);
+      }
+    }
+  };
 }
 
 export function spawnFrom(entities: SpawnInfo[][]) {
@@ -254,6 +270,16 @@ function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+function removeRandomField(fields: Field[], random: RandomGenerator): Field | undefined {
+  if (fields.length === 0) {
+    return undefined;
+  }
+  const index = random.int(fields.length);
+  const field = fields[index];
+  fields.splice(index, 1);
+  return field;
 }
 
 export interface ActionTargetContext extends TargetContext {

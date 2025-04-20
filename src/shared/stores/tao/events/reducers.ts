@@ -1,7 +1,8 @@
-import { getEntityField, getField } from '../board';
+import { findFieldByPosition, getEntityField, getField } from '../board';
 import { getEntity, modifyEntity } from '../entity';
 import { entitiesAfterBalanceChange } from '../entityInfo';
-import { moveEntityTo, placeEntity } from '../movement';
+import { Entity } from '../interface';
+import { moveEntityTo } from '../movement';
 import { StoreData } from '../taoStore';
 import {
   ApplyStatusEvent,
@@ -138,4 +139,23 @@ function changeResources(state: StoreData, event: ChangeResourcesEvent): StoreDa
       },
     };
   });
+}
+
+function placeEntity(state: StoreData, entity: Entity): StoreData {
+  const position = entity.position;
+  const id = state.info.entities;
+  entity.id = `entity-${id}`;
+  const field = findFieldByPosition(state, position);
+  if (!field) {
+    throw new Error(`Field not found at position (${position.x}, ${position.y})`);
+  }
+  if (field.entityUUID) {
+    throw new Error(
+      `Field at position (${position.x}, ${position.y}) is already occupied by entity ${field.entityUUID}`
+    );
+  }
+  const newState: StoreData = { ...state, info: { ...state.info, entities: id + 1 } };
+  field.entityUUID = entity.id;
+  newState.entities = [...newState.entities, entity];
+  return newState;
 }

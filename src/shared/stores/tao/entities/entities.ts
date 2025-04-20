@@ -10,9 +10,8 @@ export type EntityTypeId =
   | 'voidbug';
 
 export const entities: EntitiesType = {
-  'goth-gf': (id, position) => ({
+  'goth-gf': position => ({
     ...defaultPlayer,
-    id,
     position,
     name: 'Lacrimosa',
     kind: 'goth-gf',
@@ -21,9 +20,8 @@ export const entities: EntitiesType = {
     hp: stat(4),
     ownerId: 0,
   }),
-  'sun-princess': (id, position) => ({
+  'sun-princess': position => ({
     ...defaultPlayer,
-    id,
     position,
     name: 'Aurora',
     kind: 'sun-princess',
@@ -33,9 +31,8 @@ export const entities: EntitiesType = {
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
   }),
-  knight: (id, position) => ({
+  knight: position => ({
     ...defaultPlayer,
-    id,
     position,
     name: 'Vacuan',
     kind: 'knight',
@@ -53,9 +50,8 @@ export const entities: EntitiesType = {
     isTank: true,
     ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
-  'mushroom-bomb': (id, position) => ({
+  'mushroom-bomb': position => ({
     ...defaultEnemy,
-    id,
     position,
 
     name: 'Mushroom Bomb',
@@ -68,9 +64,8 @@ export const entities: EntitiesType = {
     speed: 6,
   }),
 
-  skullwyrm: (id, position) => ({
+  skullwyrm: position => ({
     ...defaultEnemy,
-    id,
     position,
 
     name: 'Skullwyrm',
@@ -83,9 +78,8 @@ export const entities: EntitiesType = {
     speed: 3,
   }),
 
-  voidling: (id, position) => ({
+  voidling: position => ({
     ...defaultEnemy,
-    id,
     position,
 
     name: 'Voidling',
@@ -98,9 +92,8 @@ export const entities: EntitiesType = {
     speed: 6,
   }),
 
-  voidbug: (id, position) => ({
+  voidbug: position => ({
     ...defaultEnemy,
-    id,
     position,
 
     name: 'Voidbug',
@@ -114,7 +107,7 @@ export const entities: EntitiesType = {
   }),
 };
 
-type EntitiesType = { [key in EntityTypeId]: (id: string, position: Position) => Entity };
+type EntitiesType = { [key in EntityTypeId]: (position: Position) => Entity };
 
 const defaultPlayer: Entity = {
   id: '',

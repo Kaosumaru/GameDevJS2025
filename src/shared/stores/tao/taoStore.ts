@@ -31,6 +31,7 @@ export interface StoreData {
   events: EventType[];
   info: {
     balance: number;
+    entities: number;
     perRound: {
       positionsOfDeaths: Position[];
     };
@@ -61,6 +62,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       events: [],
       info: {
         balance: 0,
+        entities: 0,
         perRound: {
           positionsOfDeaths: [],
         },
@@ -113,6 +115,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         events: [],
         info: {
           balance: 0,
+          entities: 0,
           perRound: {
             positionsOfDeaths: [],
           },
