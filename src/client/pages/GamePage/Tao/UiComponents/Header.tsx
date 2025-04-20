@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { AnimationProps, motion } from 'motion/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { easeBounceOut } from 'd3-ease';
 
 type Animation = AnimationProps['animate'];
@@ -28,6 +28,15 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
 
   const [forceSequenceIndex, setForceSequenceIndex] = useState<number>(0);
   const forceSequence = ['balance', 'yin', 'balance', 'yang'] as const;
+
+  const play = useCallback(() => {
+    const isPlaying =
+      audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
+
+    if (!isPlaying) {
+      audio.play();
+    }
+  }, [audio]);
 
   return (
     <Box
@@ -76,7 +85,7 @@ export const Header = ({ audio }: { audio: HTMLAudioElement }) => {
             audio.src = '/balance-loop.mp3';
           }
           audio.loop = true;
-          audio.play();
+          play();
 
           setForceSequenceIndex(nextIndex);
         }}
