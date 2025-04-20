@@ -74,7 +74,7 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
         ...entity,
         statuses: {
           ...entity.statuses,
-          [status.status]: status.amount,
+          [status.status]: status.amount + (entity.statuses[status.status] ?? 0),
         },
       };
     }
@@ -86,9 +86,17 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
 function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
   const entity = getEntity(state, event.entityId);
   const field = getEntityField(state, entity);
+
   const newState: StoreData = {
     ...state,
     entities: state.entities.filter(entity => entity.id !== event.entityId),
+    info: {
+      ...state.info,
+      perRound: {
+        ...state.info.perRound,
+        positionsOfDeaths: [...state.info.perRound.positionsOfDeaths, field.position],
+      },
+    },
   };
 
   const newField = getField(newState, field.id);
@@ -99,14 +107,17 @@ function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
 function reduceBalance(state: StoreData, event: ChangeBalanceEvent): StoreData {
   let newState: StoreData = {
     ...state,
-    balance: event.to,
+    info: {
+      ...state.info,
+      balance: event.to,
+    },
   };
 
   newState = entitiesAfterBalanceChange(newState, event.from, event.to);
   return newState;
 }
 function reduceChangeSkills(state: StoreData, event: ChangeSkillsEvent): StoreData {
-  throw modifyEntity(state, event.entityId, entity => {
+  return modifyEntity(state, event.entityId, entity => {
     return { ...entity, skills: event.skills.map(skill => ({ ...skill })) };
   });
 }

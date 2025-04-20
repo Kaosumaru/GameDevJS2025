@@ -94,3 +94,44 @@ export function getFieldsInRange(state: StoreData, field: Field, range: number):
   }
   return fieldsInRange;
 }
+
+export enum Direction {
+  Up = 0,
+  Right = 1,
+  Down = 2,
+  Left = 3,
+}
+
+const directionOffset = {
+  [Direction.Up]: { x: 0, y: -1 },
+  [Direction.Right]: { x: 1, y: 0 },
+  [Direction.Down]: { x: 0, y: 1 },
+  [Direction.Left]: { x: -1, y: 0 },
+};
+
+export function getDirection(from: Position, to: Position): Direction {
+  if (from.x === to.x) {
+    return from.y < to.y ? Direction.Down : Direction.Up;
+  } else if (from.y === to.y) {
+    return from.x < to.x ? Direction.Right : Direction.Left;
+  } else {
+    throw new Error(`Invalid direction from ${from} to ${to}`);
+  }
+}
+
+export function getFieldInDirection(
+  state: StoreData,
+  field: Field,
+  direction: Direction,
+  distance = 1
+): Field | undefined {
+  const offset = directionOffset[direction];
+  return findFieldByPosition(state, {
+    x: field.position.x + offset.x * distance,
+    y: field.position.y + offset.y * distance,
+  });
+}
+
+export function getPerpendicularDirections(direction: Direction): [Direction, Direction] {
+  return [(direction + 1) % 4, (direction + 3) % 4];
+}

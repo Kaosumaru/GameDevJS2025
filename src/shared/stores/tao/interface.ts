@@ -13,7 +13,7 @@ export interface Position {
 
 export type EntityType = 'player' | 'enemy';
 
-export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned' | 'taunted' | 'critical' | 'speed+2';
+export type StatusEffect = 'stunned' | 'disarmed' | 'poisoned' | 'poisoned+2' | 'taunted' | 'critical' | 'speed+3';
 
 export type Statuses = { [key in StatusEffect]?: number };
 

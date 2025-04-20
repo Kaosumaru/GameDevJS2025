@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, damage, status } from '../actions';
-import { fieldsInRange, neighborsExcluding, targets, withEnemy } from '../targetReducers';
+import { area, fieldsInRange, targets, withEnemy } from '../targetReducers';
 
 export const mageBlind: Skill = {
   id: 'mageBlind',
@@ -9,7 +9,7 @@ export const mageBlind: Skill = {
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([status('disarmed', 1), damage(3)]),
+  reducer: actions([status('stunned', 1), damage(2), status('poisoned', 999)]),
   getPossibleTargets: targets([fieldsInRange, withEnemy]),
-  getRange: targets([neighborsExcluding]),
+  getRange: targets([area(6)]),
 };

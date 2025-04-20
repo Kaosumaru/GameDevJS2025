@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, gainShield, status } from '../actions';
-import { targets, self, affected, area, affectedFields, withEnemy, fieldsInRange } from '../targetReducers';
+import { targets, self, area, withEnemy, fieldsInRange } from '../targetReducers';
 
 export const knightTaunt: Skill = {
   id: 'knightTaunt',

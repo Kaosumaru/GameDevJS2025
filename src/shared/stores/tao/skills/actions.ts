@@ -1,6 +1,6 @@
 import { getEntityField, getEntityInField, getField } from '../board';
 import { hasStatus } from '../entity';
-import { entitiesAfterBalanceChange } from '../entityInfo';
+import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, StatusEffect } from '../interface';
 import { SkillContext, SkillInstance } from '../skills';
@@ -101,8 +101,8 @@ export function move(ctx: TargetContext) {
 
 export function balance(amount: number) {
   return (ctx: TargetContext) => {
-    const from = ctx.state.balance;
-    const to = clamp(ctx.state.balance + amount, -3, 3);
+    const from = ctx.state.info.balance;
+    const to = clamp(ctx.state.info.balance + amount, -3, 3);
     ctx.state = addEvent(ctx.state, {
       type: 'balance',
       from,
@@ -199,6 +199,14 @@ function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
     attackerId: ctx.entity?.id,
     damages,
   });
+
+  if (ctx.entity) {
+    for (const damage of damages) {
+      if (damage.health.from != 0 && damage.health.to === 0) {
+        ctx.state = entityAfterKill(ctx.state, ctx.entity);
+      }
+    }
+  }
 }
 
 function clamp(value: number, min: number, max: number): number {

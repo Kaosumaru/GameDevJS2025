@@ -1,5 +1,5 @@
 import { Skill } from '../skills';
-import { actions, attack, damage } from './actions';
+import { actions, attack } from './actions';
 import { neighborsExcluding, targets, withEnemy } from './targetReducers';
 
 export const attackSkill: Skill = {

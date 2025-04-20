@@ -62,6 +62,7 @@ export const TaoScene = ({
   const board = client.store(state => state.board);
   const entities = client.store(state => state.entities);
   const events = client.store(state => state.events);
+  const balance = client.store(state => state.info.balance);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction | null>(null);
   const [affectedFields, setAffectedFields] = useState<string[]>([]);
@@ -220,6 +221,7 @@ export const TaoScene = ({
             setAffectedFields([]);
             setSelectedEntityId(null);
           }}
+          balance={balance}
         />
       </ui.In>
     </group>
