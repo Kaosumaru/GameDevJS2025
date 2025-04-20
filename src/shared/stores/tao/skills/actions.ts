@@ -1,4 +1,5 @@
 import { getEntityField, getEntityInField, getField } from '../board';
+import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
@@ -148,6 +149,28 @@ export function changeSkills(skillInstances: SkillInstance[]) {
       entityId: ctx.entity.id,
       skills: skillInstances.map(skill => ({ ...skill })),
     });
+  };
+}
+
+export type SpawnInfo = [EntityTypeId, number];
+
+export function spawn(_entities: SpawnInfo[]) {
+  return (_ctx: TargetContext) => {
+    /*
+    ctx.state = addEvent(ctx.state, {
+      type: 'spawn',
+      entities: entities.map(entity => ({ ...entity })),
+    });*/
+  };
+}
+
+export function spawnFrom(entities: SpawnInfo[][]) {
+  return (_ctx: TargetContext) => {
+    /*
+    ctx.state = addEvent(ctx.state, {
+      type: 'spawn',
+      entities: entities.map(entity => ({ ...entity })),
+    });*/
   };
 }
 

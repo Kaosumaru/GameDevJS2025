@@ -24,6 +24,7 @@ import { mageLightFireball } from './skills/mage/mageLightFireball';
 import { knightSpeedDark } from './skills/knight/knightSpeedDark';
 import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
 import { pass } from './skills/pass';
+import { testSpawner } from './skills/spawnSkills/testSpawner';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 
@@ -61,6 +62,7 @@ const skills = {
   shield: shieldSkill,
 
   pass,
+  testSpawner,
 
   clericHeal,
   clericLightAllHeal,
