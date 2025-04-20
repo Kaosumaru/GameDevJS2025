@@ -30,10 +30,12 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
 
   state = {
     ...state,
-    oldState: {
-      ...state,
-    },
     board,
+  };
+
+  state.oldState = {
+    ...state,
+    board: state.board.map(row => row.map(field => ({ ...field }))),
   };
 
   const infos: [EntityTypeId, Position][] = [];

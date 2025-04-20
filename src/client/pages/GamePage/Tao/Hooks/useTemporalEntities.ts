@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { EventType } from '@shared/stores/tao/events/events';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { AnimatedEntities, AnimatedEntity } from '../TaoTypes';
-import { easeBounceOut } from 'd3-ease';
 import { Vector2 } from 'three';
 import { v4 as uuid } from 'uuid';
 
@@ -14,7 +13,6 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
   switch (event.type) {
     case 'spawn': {
       return event.entities.reduce((state, entity) => {
-        const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
         return {
           ...state,
           [entity.id]: {
@@ -25,20 +23,7 @@ const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities
             shield: entity.shield,
             kind: entity.kind,
             position: entity.position,
-            events: [
-              'start',
-              ['container.position', { x, y: 3, z: y }, { duration: 0, at: 'start' }],
-              ['container.position', { x, y: 3, z: y }, { duration: 0, delay: 1 }],
-              ['container.position', { x, y: 0, z: y }, { duration: 1, ease: easeBounceOut }],
-              ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 0, at: 'start' }],
-              ['container.scale', { x: 0, y: 0, z: 0 }, { duration: 0, delay: 1 }],
-              ['container.scale', { x: 1, y: 1, z: 1 }, { duration: 0.2, ease: 'easeOut' }],
-              [
-                'healthbar.material',
-                { hp: entity.hp.current, maxHp: entity.hp.max, shield: entity.shield },
-                { duration: 0 },
-              ],
-            ],
+            events: [],
           },
         };
       }, acc);

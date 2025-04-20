@@ -1,7 +1,6 @@
 import { alpha, createTheme, darken, getContrastRatio, ThemeProvider } from '@mui/material';
 import './index.css';
 import '@fontsource/roboto/400.css';
-import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -51,39 +50,37 @@ const darkTheme = createTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <CookiesProvider defaultSetOptions={{ path: '/' }}>
-      <ThemeProvider theme={darkTheme}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/joinGame/:id/:password"
-              element={
-                <LoginPage>
-                  <JoinGamePage />
-                </LoginPage>
-              }
-            />
-            <Route path="/logout" element={<LogoutPage />} />
-            <Route
-              path="/:levelId"
-              element={
-                <LoginPage>
-                  <CreateGamePage />
-                </LoginPage>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <LoginPage>
-                  <CreateGamePage />
-                </LoginPage>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </CookiesProvider>
-  </React.StrictMode>
+  <CookiesProvider defaultSetOptions={{ path: '/' }}>
+    <ThemeProvider theme={darkTheme}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/joinGame/:id/:password"
+            element={
+              <LoginPage>
+                <JoinGamePage />
+              </LoginPage>
+            }
+          />
+          <Route path="/logout" element={<LogoutPage />} />
+          <Route
+            path="/:levelId"
+            element={
+              <LoginPage>
+                <CreateGamePage />
+              </LoginPage>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <LoginPage>
+                <CreateGamePage />
+              </LoginPage>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  </CookiesProvider>
 );
