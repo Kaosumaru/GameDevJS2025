@@ -66,6 +66,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             />
             <Route path="/logout" element={<LogoutPage />} />
             <Route
+              path="/:levelId"
+              element={
+                <LoginPage>
+                  <CreateGamePage />
+                </LoginPage>
+              }
+            />
+            <Route
               path="/"
               element={
                 <LoginPage>
