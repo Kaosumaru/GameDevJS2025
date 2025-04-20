@@ -3,11 +3,15 @@ import { JSX, useEffect, useState } from 'react';
 import GamePage from './GamePage';
 import { useLoginContext } from '../LoginPage/useLoginContext';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
+import { useParams } from 'react-router-dom';
+import { TaoOptions } from '@shared/stores/tao/taoStore';
 
 function CreateGamePage(): JSX.Element {
+  const params = useParams<{ levelId?: string }>();
   const context = useLoginContext();
   const [gameClient, setGameClient] = useState<GameRoomClient | undefined>(undefined);
   const loginContext = useLoginContext();
+  const levelID: number = Number(params.levelId) || 0; // Default to level 0 if not provided
 
   useEffect(() => {
     let cancelled = false;
@@ -25,7 +29,11 @@ function CreateGamePage(): JSX.Element {
 
         const game = 'tao';
 
-        const [id, password] = await client.createRoom(game, { players: 3 });
+        const options: TaoOptions = {
+          level: levelID,
+          players: 3,
+        };
+        const [id, password] = await client.createRoom(game, options);
         await client.takeAvailableSeat();
         const url = password ? `/joinGame/${id}/${password}` : `/game/${id}`;
         window.history.replaceState(null, 'Game', url);

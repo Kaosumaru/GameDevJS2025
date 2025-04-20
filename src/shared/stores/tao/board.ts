@@ -1,4 +1,6 @@
+import { entities, EntityTypeId } from './entities/entities';
 import { getEntity } from './entity';
+import { addEvent } from './events/events';
 import { Entity, Field, Position } from './interface';
 import { StoreData } from './taoStore';
 
@@ -134,4 +136,13 @@ export function getFieldInDirection(
 
 export function getPerpendicularDirections(direction: Direction): [Direction, Direction] {
   return [(direction + 1) % 4, (direction + 3) % 4];
+}
+
+export function addEntity(state: StoreData, id: EntityTypeId, position: Position): StoreData {
+  const entityCreator = entities[id];
+  const entity = entityCreator(position);
+  return addEvent(state, {
+    type: 'spawn',
+    entities: [entity],
+  });
 }

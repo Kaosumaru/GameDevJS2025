@@ -1,24 +1,7 @@
 import { findFieldByPosition } from './board';
 import { modifyEntity } from './entity';
-import { Entity, Position } from './interface';
+import { Position } from './interface';
 import { StoreData } from './taoStore';
-
-export function placeEntity(state: StoreData, entity: Entity): StoreData {
-  const position = entity.position;
-  const field = findFieldByPosition(state, position);
-  if (!field) {
-    throw new Error(`Field not found at position (${position.x}, ${position.y})`);
-  }
-  if (field.entityUUID) {
-    throw new Error(
-      `Field at position (${position.x}, ${position.y}) is already occupied by entity ${field.entityUUID}`
-    );
-  }
-  const newState = { ...state };
-  field.entityUUID = entity.id;
-  newState.entities = [...newState.entities, entity];
-  return newState;
-}
 
 export function moveEntityTo(state: StoreData, entityID: string, position: Position): StoreData {
   const field = findFieldByPosition(state, position);

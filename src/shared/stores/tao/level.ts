@@ -1,5 +1,5 @@
-import { entities, EntityTypeId } from './entities/entities';
-import { addEvent } from './events/events';
+import { addEntity } from './board';
+import { EntityTypeId } from './entities/entities';
 import { StoreData } from './taoStore';
 
 interface TileInfo {
@@ -27,7 +27,6 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     })
   );
 
-  let entityId = 0;
   state = {
     ...state,
     board,
@@ -43,12 +42,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
       const entityName = level.tileToEntity[tile];
       if (!entityName) return;
 
-      const entityCreator = entities[entityName];
-      const entity = entityCreator(`entity-${entityId++}`, { x, y });
-      state = addEvent(state, {
-        type: 'spawn',
-        entities: [entity],
-      });
+      state = addEntity(state, entityName, board[y][x].position);
     });
   });
 

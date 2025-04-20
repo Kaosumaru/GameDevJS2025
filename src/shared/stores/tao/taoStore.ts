@@ -1,5 +1,5 @@
 import { Context, StoreContainer } from 'pureboard/shared/interface';
-import { StandardGameAction } from 'pureboard/shared/standardActions';
+import { GameOptions, NewGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
 import { Entity, Field, Position } from './interface';
 import { SkillID, useSkill } from './skills';
@@ -7,8 +7,8 @@ import { anyPlayerHasActions, clearOriginalPositions, getEntity } from './entity
 import { fillState } from './level';
 import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
-import { createLevel0 } from './levels/level0';
 import { entitiesAfterRoundStart } from './entityInfo';
+import { createLevel } from './levels/lvl';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -21,7 +21,16 @@ export interface EndRoundAction {
   type: 'endRound';
 }
 
-export type Action = UseSkillAction | EndRoundAction;
+export interface TaoOptions extends GameOptions {
+  level?: number;
+}
+
+export interface TaoNewGameAction extends NewGameAction {
+  type: 'newGame';
+  options: TaoOptions;
+}
+
+export type Action = UseSkillAction | EndRoundAction | TaoNewGameAction;
 
 export interface StoreData {
   oldState?: StoreData;
@@ -31,6 +40,7 @@ export interface StoreData {
   events: EventType[];
   info: {
     balance: number;
+    entities: number;
     perRound: {
       positionsOfDeaths: Position[];
     };
@@ -61,6 +71,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       events: [],
       info: {
         balance: 0,
+        entities: 0,
         perRound: {
           positionsOfDeaths: [],
         },
@@ -70,7 +81,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
   );
 }
 
-function makeAction(ctx: Context, store: StoreData, action: Action | StandardGameAction): StoreData {
+function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'endRound': {
       // caching old state for client animations
@@ -113,13 +124,14 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
         events: [],
         info: {
           balance: 0,
+          entities: 0,
           perRound: {
             positionsOfDeaths: [],
           },
         },
       };
 
-      const level = createLevel0();
+      const level = createLevel(action.options.level ?? 0);
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       state = entitiesAfterRoundStart(state);
