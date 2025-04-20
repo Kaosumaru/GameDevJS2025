@@ -17,7 +17,7 @@ export const entities: EntitiesType = {
     kind: 'goth-gf',
 
     skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
-    hp: stat(4),
+    hp: stat(3),
     ownerId: 0,
   }),
   'sun-princess': position => ({
@@ -45,7 +45,7 @@ export const entities: EntitiesType = {
       { id: 'knightSpeedDark' },
       { id: 'pass' },
     ],
-    hp: stat(4),
+    hp: stat(6),
 
     isTank: true,
     ownerId: 2, // Assuming ownerId is 0 for player entities
@@ -101,9 +101,9 @@ export const entities: EntitiesType = {
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
-    hp: stat(6),
-    attack: 3,
-    speed: 3,
+    hp: stat(4),
+    attack: 2,
+    speed: 4,
   }),
 };
 

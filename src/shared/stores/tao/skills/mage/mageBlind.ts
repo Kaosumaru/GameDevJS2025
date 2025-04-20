@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withEnemy } from '../targetReducers';
 export const mageBlind: Skill = {
   id: 'mageBlind',
   name: 'Moonlight',
-  description: '<p>Attack</p> <br> <p>Stun - 2 turns</p> <br> <p><b>2</b> dmg and 1 dmg every turn until death</p> <br> <p>[Skill in progress]</p>',
+  description: '<p>Attack</p> <br> <p>Stun - <b>2</b> turns</p> <br> <p><b>2</b> dmg and 1 dmg every turn until death</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,

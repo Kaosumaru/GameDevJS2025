@@ -4,7 +4,7 @@ import { affected, area, neighbors9, targets } from '../targetReducers';
 
 export const mageLightFireball: Skill = {
   id: 'mageLightFireball',
-  name: 'Horror of the Moon [Area DMG]',
+  name: 'Moon`s cold',
   description: 'Cast a fireball',
   type: 'attack',
   actionCost: 1,

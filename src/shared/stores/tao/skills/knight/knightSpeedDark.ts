@@ -5,8 +5,8 @@ import { targets, allAllies } from '../targetReducers';
 // not implemented yet
 export const knightSpeedDark: Skill = {
   id: 'knightSpeedDark',
-  name: 'Balancing Act [Speed] Dark+1',
-  description: 'Speed',
+  name: 'Litany of Anger',
+  description: '<p>Support</p> <br> <p>+1 Dark</p> <br> <p>+3 movement for each character</p>',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,
