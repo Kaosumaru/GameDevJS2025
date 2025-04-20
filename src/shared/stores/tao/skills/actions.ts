@@ -208,7 +208,7 @@ export function branch(reducers: TargetActionReducer[]) {
       ...ctx,
       fields: [...ctx.fields],
     };
-    reduceTargets(context, reducers);
+    ctx.state = reduceTargets(context, reducers).state;
   };
 }
 
