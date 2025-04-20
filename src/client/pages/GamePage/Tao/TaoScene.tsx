@@ -18,9 +18,10 @@ import { TaoClient } from './TaoClient';
 import { Seat } from './UiComponents/Seat';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Environment } from './Components/Environment';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, PositionalAudio } from '@react-three/drei';
 import { Dock } from './UiComponents/Dock';
 import { Entity } from '@shared/stores/tao/interface';
+import { Jukebox } from './UiComponents/Jukebox';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -185,6 +186,7 @@ export const TaoScene = ({
         })}
       </group>
       <ui.In>
+        <Jukebox />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={entities}
