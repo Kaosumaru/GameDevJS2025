@@ -1,39 +1,27 @@
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 import { Box, Checkbox, FormControlLabel, FormGroup, Slider, Stack } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useTaoAudio } from '../Components/Audio/useTaoAudio';
+import { TAO_DEFAULT_VOLUME, TaoChannel } from '../Components/Audio/TaoAudioData';
 
-export const Jukebox = ({ audio }: { audio: HTMLAudioElement }) => {
-  const [checked, setChecked] = useState(false);
-  const [volume, setVolume] = useState(0);
+export const Jukebox = () => {
+  const [volumeByChannel, setVolumeByChannel] = useState<Record<TaoChannel, number>>({
+    music: TAO_DEFAULT_VOLUME.music * 100,
+    sfx: TAO_DEFAULT_VOLUME.sfx * 100,
+  });
 
-  const handleChange = useCallback(() => {
-    setChecked(prev => !prev);
-  }, []);
+  const { play, stop, setVolume, getChannels } = useTaoAudio();
 
-  const handleVolumeChange = useCallback(
-    (event: Event, newValue: number | number[]) => {
-      if (Array.isArray(newValue)) return;
-      setVolume(newValue);
-      audio.volume = newValue / 100;
+  const handleChange = useCallback(
+    (_, checked: boolean) => {
+      if (checked) {
+        play('music');
+      } else {
+        stop('music');
+      }
     },
-    [audio]
+    [play, stop]
   );
-
-  useEffect(() => {
-    if (checked) {
-      audio.play();
-      setVolume(50);
-      audio.volume = 0.5;
-    } else {
-      setVolume(0);
-      audio.volume = 0;
-      audio.pause();
-    }
-    return () => {
-      audio.pause();
-      audio.currentTime = 0;
-    };
-  }, [checked, audio]);
 
   return (
     <Box
@@ -46,15 +34,30 @@ export const Jukebox = ({ audio }: { audio: HTMLAudioElement }) => {
       <FormGroup>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexDirection: 'column' }}>
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            label="Music"
+            control={<Checkbox onChange={handleChange} />}
+            label="Click here for audio"
             sx={{ color: 'white' }}
           />
-          <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1, minWidth: '10rem' }}>
-            <VolumeDown sx={{ color: 'white' }} />
-            <Slider aria-label="Volume" value={volume} onChange={handleVolumeChange} min={0} max={100} />
-            <VolumeUp sx={{ color: 'white' }} />
-          </Stack>
+          {getChannels().map(channel => (
+            <Stack key={channel} spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1, minWidth: '12rem' }}>
+              <Box sx={{ color: 'white', width: '3rem' }}>{channel}:</Box>
+              <VolumeDown sx={{ color: 'white' }} />
+              <Slider
+                aria-label="Music Volume"
+                value={volumeByChannel[channel]}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onChange={(_event: unknown, newValue: any) => {
+                  if (Array.isArray(newValue)) return;
+                  setVolumeByChannel(prev => ({ ...prev, [channel]: newValue }));
+                  setVolume(channel, newValue / 100);
+                }}
+                sx={{ width: '4rem' }}
+                min={0}
+                max={100}
+              />
+              <VolumeUp sx={{ color: 'white' }} />
+            </Stack>
+          ))}
         </Box>
       </FormGroup>
     </Box>
