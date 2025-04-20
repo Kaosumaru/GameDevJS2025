@@ -156,6 +156,7 @@ export const defaultPlayer: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
 };
 
 export const defaultEnemy: Entity = {
@@ -174,4 +175,5 @@ export const defaultEnemy: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
 };

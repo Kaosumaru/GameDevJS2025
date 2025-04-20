@@ -50,6 +50,12 @@ function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
         shield: damage.shield.to,
       };
     }
+    if (entity.id === event.attackerId) {
+      return {
+        ...entity,
+        totalAttacksCount: entity.totalAttacksCount + 1,
+      };
+    }
     return entity;
   });
   return newState;

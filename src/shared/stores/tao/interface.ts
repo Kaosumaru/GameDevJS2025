@@ -43,6 +43,7 @@ export interface Entity {
   originalPosition?: Position;
   statusesCooldowns: Statuses;
   isTank?: boolean;
+  totalAttacksCount: number;
 }
 
 export interface Field {
