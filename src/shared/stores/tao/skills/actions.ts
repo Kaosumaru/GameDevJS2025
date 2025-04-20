@@ -202,6 +202,16 @@ export function actions(reducers: TargetActionReducer[]) {
   };
 }
 
+export function branch(reducers: TargetActionReducer[]) {
+  return (ctx: ActionTargetContext) => {
+    const context: ActionTargetContext = {
+      ...ctx,
+      fields: [...ctx.fields],
+    };
+    reduceTargets(context, reducers);
+  };
+}
+
 export function rule(reducers: TargetReducer[]) {
   return (state: StoreData): StoreData => {
     const context: TargetContext = {

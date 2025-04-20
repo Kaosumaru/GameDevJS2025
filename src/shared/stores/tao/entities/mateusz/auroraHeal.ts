@@ -1,26 +1,12 @@
-import { stat } from '../../interface';
 import { Skill } from '../../skills';
 import { actions, branch, damage, heal } from '../../skills/actions';
 import { area, fieldsInRange, targets, withAlly, withEnemy, withEntity } from '../../skills/targetReducers';
-import { defaultPlayer, EntityConstructor } from '../entities';
-
-export const auroraMateusz: EntityConstructor = position => ({
-  ...defaultPlayer,
-  position,
-  name: 'Aurora',
-  avatar: 'sun-princess',
-
-  skills: [{ id: 'move' }, { id: 'auroraMateuszHeal' }, { id: 'pass' }],
-  hp: stat(4),
-
-  ownerId: 1, // Assuming ownerId is 0 for player entities
-});
 
 export const auroraMateuszHeal: Skill = {
   id: 'auroraMateuszHeal',
   name: 'Goddess` Touch',
   description: '<p>Heal <b>2</b> or Damage <b>2</b></p>',
-  type: 'defense',
+  type: 'attack',
   actionCost: 1,
   moveCost: 0,
   reducer: actions([branch([withAlly, heal(2)]), branch([withEnemy, damage(2)])]),

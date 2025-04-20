@@ -1,30 +1,9 @@
 import { getEntityIdInFieldId, getField } from './board';
 import { filterDeadEntities, hasStatus, payForSkillEntity } from './entity';
 import { Entity, Field } from './interface';
-import { attackSkill } from './skills/attack';
-import { mageFireball } from './skills/mage/mageFireball';
-import { clericHeal } from './skills/cleric/clericHeal';
-import { knightAttack } from './skills/knight/knightAttack';
-import { moveSkill } from './skills/move';
-import { shieldSkill } from './skills/shield';
-import { stunSkill } from './skills/stun';
-import { knightTaunt } from './skills/knight/knightTaunt';
+import { skillsList } from './skills/_list';
 import { StoreData } from './taoStore';
 import { deepCopy2DArray } from './utils';
-import { clericDisarm } from './skills/cleric/clericDisarm';
-import { mageBlind } from './skills/mage/mageBlind';
-import { clericCritical } from './skills/cleric/clericCritical';
-import { knightSpeedLight } from './skills/knight/knightSpeedLight';
-import { mageSickle } from './skills/mage/mageSickle';
-import { knightDarkWide } from './skills/knight/knightDarkWide';
-import { knightLightStun } from './skills/knight/knightLightStun';
-import { clericLightAllHeal } from './skills/cleric/clericLightAllHeal';
-import { mageDarkFireball } from './skills/mage/mageDarkFireball';
-import { mageLightFireball } from './skills/mage/mageLightFireball';
-import { knightSpeedDark } from './skills/knight/knightSpeedDark';
-import { clericDarkHeal } from './skills/cleric/clericDarkHeal';
-import { pass } from './skills/pass';
-import { testSpawner } from './skills/spawnSkills/testSpawner';
 import { RandomGenerator } from 'pureboard/shared/interface';
 
 export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
@@ -60,44 +39,14 @@ export interface SkillActionContext extends SkillContext {
   random: RandomGenerator;
 }
 
-const skills = {
-  move: moveSkill,
-  attack: attackSkill,
-  stun: stunSkill,
-  shield: shieldSkill,
-
-  pass,
-  testSpawner,
-
-  clericHeal,
-  clericLightAllHeal,
-  clericDarkHeal,
-  clericDisarm,
-  clericCritical,
-
-  knightTaunt,
-  knightAttack,
-  knightLightStun,
-  knightSpeedLight,
-  knightSpeedDark,
-
-  mageFireball,
-  mageDarkFireball,
-  mageLightFireball,
-  mageBlind,
-  mageSickle,
-
-  knightDarkWide,
-};
-
-export type SkillID = Extract<keyof typeof skills, string>;
+export type SkillID = Extract<keyof typeof skillsList, string>;
 
 export function skillFromInstance(skillInstance: SkillInstance): Skill {
-  return skills[skillInstance.id];
+  return skillsList[skillInstance.id];
 }
 
 export function skillFromID(id: SkillID): Skill {
-  return skills[id];
+  return skillsList[id];
 }
 
 export function useSkill(
