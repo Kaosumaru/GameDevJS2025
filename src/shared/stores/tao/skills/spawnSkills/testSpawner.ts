@@ -3,11 +3,21 @@ import { actions, spawnFrom as spawnRandomFrom } from '../actions';
 import { area, targets, self, fieldsInRange } from '../targetReducers';
 
 const spawnAction = spawnRandomFrom([
+  [['voidling', 9]],
   [
-    ['mushroom-bomb', 2],
-    ['skullwyrm', 2],
+    ['skullwyrm', 1],
+    ['voidbug', 2],
+    ['voidling', 3],
   ],
-  [['mushroom-bomb', 4]],
+  [
+    ['voidbug', 3],
+    ['voidling', 3],
+  ],
+  [
+    ['skullwyrm', 3],
+    ['voidbug', 1],
+    ['voidling', 1],
+  ],
 ]);
 
 export const testSpawner: Skill = {

@@ -137,7 +137,7 @@ export function withAlly(ctx: TargetContext) {
 }
 
 export function empty(ctx: TargetContext) {
-  ctx.fields = ctx.fields.filter(field => field.entityUUID === undefined);
+  ctx.fields = ctx.fields.filter(field => field.entityUUID === undefined && field.blocking === false);
 }
 
 export function withEntity(ctx: TargetContext) {
