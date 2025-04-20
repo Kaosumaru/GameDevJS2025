@@ -1,11 +1,10 @@
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 import { Box, Checkbox, FormControlLabel, FormGroup, Slider, Stack } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-export const Jukebox = () => {
+export const Jukebox = ({ audio }: { audio: HTMLAudioElement }) => {
   const [checked, setChecked] = useState(false);
   const [volume, setVolume] = useState(0);
-  const audio = useMemo(() => new Audio('/music.mp3'), []);
 
   const handleChange = useCallback(() => {
     setChecked(prev => !prev);
