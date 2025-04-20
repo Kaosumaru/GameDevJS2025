@@ -3,7 +3,7 @@ import { Entity, stat } from '../interface';
 export const defaultPlayer: Entity = {
   id: '',
   name: '',
-  kind: 'goth-gf',
+  avatar: 'goth-gf',
   type: 'player',
   skills: [],
   hp: { current: 0, max: 0 },
@@ -21,7 +21,7 @@ export const defaultPlayer: Entity = {
 export const defaultEnemy: Entity = {
   id: '',
   name: '',
-  kind: 'goth-gf',
+  avatar: 'goth-gf',
   type: 'enemy',
   skills: [],
   hp: { current: 0, max: 0 },

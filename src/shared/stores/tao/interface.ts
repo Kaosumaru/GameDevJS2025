@@ -28,7 +28,8 @@ export type Statuses = { [key in StatusEffect]?: number };
 export interface Entity {
   id: string;
   name: string;
-  kind: EntityKindId;
+  avatar: EntityKindId;
+  passiveId?: EntityKindId;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];

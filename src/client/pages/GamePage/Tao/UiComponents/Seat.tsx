@@ -24,7 +24,7 @@ export const Seat = ({
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);
 
-        const avatarSrc = entity ? `/avatars/${entity.kind}-circle.png` : '/avatars/unknown.png';
+        const avatarSrc = entity ? `/avatars/${entity.avatar}-circle.png` : '/avatars/unknown.png';
 
         return (
           <Box key={'seat-' + index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

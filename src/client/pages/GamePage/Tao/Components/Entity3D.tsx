@@ -28,7 +28,7 @@ const Entity3DComponent = ({
   const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
-  const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.kind}.png`]);
+  const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.avatar}.png`]);
   const imageRatio = colorMap.image.width / colorMap.image.height;
   const previousHp = usePrevious(entity.hp);
   const playNext = useAnimationMotion();
@@ -155,5 +155,5 @@ export const Entity3D = memo(Entity3DComponent);
 Object.values(entities)
   .map(entity => entity({ x: 0, y: 0 }))
   .forEach(entity => {
-    useLoader.preload(TextureLoader, [`/avatars/${entity.kind}.png`]);
+    useLoader.preload(TextureLoader, [`/avatars/${entity.avatar}.png`]);
   });

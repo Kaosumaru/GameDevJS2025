@@ -88,7 +88,11 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
 };
 
 export function infoFromEntity(entity: Entity): EntityInfo {
-  const info = entityInfos[entity.kind];
+  if (!entity.passiveId) {
+    return {};
+  }
+
+  const info = entityInfos[entity.passiveId];
   if (!info) {
     return {};
   }
