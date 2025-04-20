@@ -74,22 +74,12 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
   switch (action.type) {
     case 'endRound': {
       // caching old state for client animations
-      store = {
-        ...store,
-        oldState: {
-          ...store,
-        },
-      };
+      store = cacheOldState(store);
       return endOfRound(store, ctx.random);
     }
     case 'useSkill': {
       // caching old state for client animations
-      store = {
-        ...store,
-        oldState: {
-          ...store,
-        },
-      };
+      store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
       if (!entity) {
@@ -142,4 +132,15 @@ function makeAction(ctx: Context, store: StoreData, action: Action | StandardGam
       return state;
     }
   }
+}
+
+function cacheOldState(state: StoreData): StoreData {
+  return {
+    ...state,
+    oldState: {
+      ...state,
+      board: state.board.map(row => row.map(field => ({ ...field }))),
+      oldState: undefined,
+    },
+  };
 }
