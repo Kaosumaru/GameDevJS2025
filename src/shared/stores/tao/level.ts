@@ -1,5 +1,6 @@
-import { addEntity } from './board';
+import { addEntities } from './board';
 import { EntityTypeId } from './entities/entities';
+import { Position } from './interface';
 import { StoreData } from './taoStore';
 
 interface TileInfo {
@@ -34,14 +35,18 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     },
     board,
   };
+
+  const infos: [EntityTypeId, Position][] = [];
   level.tiles.forEach((row, y) => {
     row.forEach((tile, x) => {
       const entityName = level.tileToEntity[tile];
       if (!entityName) return;
 
-      state = addEntity(state, entityName, board[y][x].position);
+      infos.push([entityName, { x, y }]);
     });
   });
+
+  state = addEntities(state, infos);
 
   return state;
 }

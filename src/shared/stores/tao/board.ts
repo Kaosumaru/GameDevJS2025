@@ -146,3 +146,14 @@ export function addEntity(state: StoreData, id: EntityTypeId, position: Position
     entities: [entity],
   });
 }
+
+export function addEntities(state: StoreData, infos: [EntityTypeId, Position][]): StoreData {
+  return addEvent(state, {
+    type: 'spawn',
+    entities: infos.map(([id, position]) => {
+      const entityCreator = entities[id];
+      const entity = entityCreator(position);
+      return entity;
+    }),
+  });
+}
