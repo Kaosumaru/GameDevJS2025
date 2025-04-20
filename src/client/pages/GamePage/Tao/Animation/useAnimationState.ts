@@ -1,0 +1,38 @@
+import { useContext, useEffect, useState } from 'react';
+import { AnimationContext } from './AnimationContext';
+import { TaoClient } from '../TaoClient';
+import { reduceEvent } from '@shared/stores/tao/events/reducers';
+import { StoreData } from '@shared/stores/tao/taoStore';
+
+export const useAnimationState = (client: TaoClient) => {
+  const ctx = useContext(AnimationContext);
+  const baseState = client.store(s => s);
+  const [state, setState] = useState<StoreData | null>(null);
+
+  useEffect(() => {
+    if (baseState.oldState === undefined) {
+      return;
+    }
+    const events = baseState.events;
+    let oldState = baseState.oldState;
+
+    ctx.scheduleFunctionAfterAnimation(
+      events.map(event => {
+        return () => {
+          oldState = reduceEvent(oldState, event);
+          setState(oldState);
+        };
+      })
+    );
+
+    return () => {
+      setState(null);
+    };
+  }, [ctx, client, baseState]);
+
+  useEffect(() => {
+    ctx.notify();
+  }, [ctx, state]);
+
+  return state;
+};
