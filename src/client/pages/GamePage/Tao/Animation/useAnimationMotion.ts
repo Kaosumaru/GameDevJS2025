@@ -15,31 +15,22 @@ export const useAnimationMotion = () => {
           await new Promise<void>(resolve => (notifyRef.current = resolve));
           notifyRef.current = undefined;
         }
-        console.log('starting motions');
         ctx.increaseAnimationCount();
         while (scheduledMotions.current.length > 0) {
           const motion = scheduledMotions.current.shift();
           if (motion) {
-            console.log('calling motion callback', motion.name);
             await motion.callback();
           }
         }
-        console.log('finished motions');
         ctx.decreaseAnimationCount();
       }
     };
     void asyncFunc();
-
-    return () => {
-      console.log('useAnimationMotion unmount');
-    };
   }, [ctx]);
 
   const playNext = useCallback((name: string, callback: CallbackType) => {
-    console.log('scheduling playNext', name);
     scheduledMotions.current.push({ name, callback });
     if (notifyRef.current) {
-      console.log('calling notifyRef', name);
       notifyRef.current();
     }
   }, []);

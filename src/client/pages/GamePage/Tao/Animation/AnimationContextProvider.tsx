@@ -7,10 +7,8 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
 
   const checkAndCall = useCallback(() => {
     if (animationCount.current === 0) {
-      console.log('Executing scheduled functions', scheduledFunctions.current);
       const fn = scheduledFunctions.current.shift();
       if (fn) {
-        console.log('Calling scheduled function');
         fn();
       }
     }
@@ -19,6 +17,9 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
   return (
     <AnimationContext.Provider
       value={{
+        notify: () => {
+          checkAndCall();
+        },
         increaseAnimationCount: () => {
           animationCount.current++;
         },
@@ -30,7 +31,6 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
           if (callbacks.length >= 1) {
             const fn = callbacks.shift();
             if (fn) {
-              console.log('Calling scheduled function');
               fn();
             }
           }

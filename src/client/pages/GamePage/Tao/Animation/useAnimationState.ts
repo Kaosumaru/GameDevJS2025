@@ -10,18 +10,15 @@ export const useAnimationState = (client: TaoClient) => {
   const [state, setState] = useState<StoreData | null>(null);
 
   useEffect(() => {
-    console.log('useAnimationState useEffect', baseState);
     if (baseState.oldState === undefined) {
       return;
     }
-    console.log('scheduling state update');
     const events = baseState.events;
     let oldState = baseState.oldState;
 
     ctx.scheduleFunctionAfterAnimation(
       events.map(event => {
         return () => {
-          console.log('useAnimationState scheduleFunctionAfterAnimation', event.type);
           oldState = reduceEvent(oldState, event);
           setState(oldState);
         };
@@ -29,11 +26,13 @@ export const useAnimationState = (client: TaoClient) => {
     );
 
     return () => {
-      console.log('useAnimationState unmount');
       setState(null);
     };
   }, [ctx, client, baseState]);
 
-  console.log('useAnimationState state', state);
+  useEffect(() => {
+    ctx.notify();
+  }, [ctx, state]);
+
   return state;
 };

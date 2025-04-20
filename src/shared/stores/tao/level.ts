@@ -33,6 +33,11 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     board,
   };
 
+  state.oldState = {
+    ...state,
+    board: state.board.map(row => row.map(field => ({ ...field }))),
+  };
+
   const infos: [EntityTypeId, Position][] = [];
   level.tiles.forEach((row, y) => {
     row.forEach((tile, x) => {

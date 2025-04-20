@@ -69,22 +69,12 @@ const Entity3DComponent = ({
 
     playNext('receive-dmg', async () => {
       const obj = refs.current['avatar']!;
-      const healthbar = refs.current['healthbar']!;
       await animate([
         [obj.material!, { flash: 1 }, { duration: 0.1 }],
         [obj.material!, { flash: 0 }, { duration: 0.1, delay: 0.1 }],
-        [healthbar.material!, { hp: entity.hp.current, shield: entity.shield }, { duration: 0.2 }],
       ]);
     });
   }, [playNext, previousHp, entity.hp, entity.shield]);
-
-  useEffect(() => {
-    playNext('set-hp', async () => {
-      const healthbar = refs.current['healthbar']!;
-      await animate([[healthbar.material!, { hp: entity.hp.current, shield: entity.shield }, { duration: 0.2 }]]);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playNext, entity.hp.current, entity.shield]);
 
   const refs = useRef<{
     container: Group | null;
@@ -139,6 +129,9 @@ const Entity3DComponent = ({
                 material: r,
               };
             }}
+            hp={entity.hp.current}
+            shield={entity.shield}
+            maxHp={entity.hp.max}
           />
         </mesh>
         <Stats entity={entity} position={[0, 1.16, 0]} />
