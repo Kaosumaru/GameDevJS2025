@@ -23,6 +23,7 @@ import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationState } from './Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
+import { SkyBox } from './Components/SkyBox';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -112,6 +113,7 @@ export const TaoScene = ({
   return (
     <group>
       <color attach="background" args={['black']} />
+      <SkyBox />
       <Environment />
       <OrbitControls makeDefault target={cameraTargetState} />
       <group>
@@ -187,7 +189,7 @@ export const TaoScene = ({
         })}
       </group>
       <ui.In>
-        <Header balance={state?.info.balance ?? 0}/>
+        <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
         <Seat
           gameRoomClient={gameRoomClient}
