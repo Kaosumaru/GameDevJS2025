@@ -11,7 +11,7 @@ import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { useTaoAudio } from './Audio/useTaoAudio';
-import { getRandomMoveSound } from './Audio/TaoAudioData';
+import { getRandomMoveSound, getRandomSwordHitSound } from './Audio/TaoAudioData';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
@@ -32,6 +32,7 @@ const Entity3DComponent = ({
   const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.avatar}.png`]);
   const imageRatio = colorMap.image.width / colorMap.image.height;
   const previousHp = usePrevious(entity.hp);
+  const previusAttackCount = usePrevious(entity.totalAttacksCount);
   const playNext = useAnimationMotion();
 
   useEffect(() => {
@@ -77,6 +78,25 @@ const Entity3DComponent = ({
       ]);
     });
   }, [playNext, previousHp, entity.hp, entity.shield]);
+
+  useEffect(() => {
+    if (previusAttackCount === undefined) return;
+    if (previusAttackCount === entity.totalAttacksCount) return;
+
+    const { x } = boardPositionToUiPosition(entity.position.x, entity.position.y);
+
+    const obj = refs.current['container']!;
+    playNext('attack', async () => {
+      play('sfx', getRandomSwordHitSound());
+      await animate([
+        [obj.position, { x: x + 0.2 }, { duration: 0.1 }],
+        [obj.position, { x: x - 0.2 }, { duration: 0.1 }],
+        [obj.position, { x: x + 0.2 }, { duration: 0.1 }],
+        [obj.position, { x: x - 0.2 }, { duration: 0.1 }],
+        [obj.position, { x }, { duration: 0.2 }],
+      ]);
+    });
+  }, [playNext, play, entity, previusAttackCount, entity.totalAttacksCount]);
 
   const refs = useRef<{
     container: Group | null;
