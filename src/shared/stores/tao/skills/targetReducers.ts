@@ -185,7 +185,7 @@ function fieldsWithEntity(ctx: TargetContext, filter: (entity: Entity) => boolea
   });
 }
 
-export function fieldsInFront(width: number, height: number) {
+export function fieldsInFront(width: number, height: number, yOffset = 0) {
   return (ctx: TargetContext) => {
     if (!ctx.entity) {
       throw new Error('Entity is undefined');
@@ -197,7 +197,7 @@ export function fieldsInFront(width: number, height: number) {
       const perpendicularDirections = getPerpendicularDirections(direction);
 
       for (let h = 0; h <= height; h++) {
-        const heightField = getFieldInDirection(ctx.state, field, direction, h);
+        const heightField = getFieldInDirection(ctx.state, field, direction, h + yOffset);
         if (!heightField) {
           break;
         }

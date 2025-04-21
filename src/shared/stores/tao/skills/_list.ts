@@ -21,6 +21,7 @@ import { clericDarkHeal } from './cleric/clericDarkHeal';
 import { pass } from './pass';
 import { testSpawner } from './spawnSkills/testSpawner';
 import { auroraMateuszHeal } from '../entities/mateusz/auroraHeal';
+import { auroraMove } from '../entities/mateusz/auroraMove';
 
 export const skillsList = {
   move: moveSkill,
@@ -51,5 +52,6 @@ export const skillsList = {
 
   knightDarkWide,
 
+  auroraMove,
   auroraMateuszHeal,
 };

@@ -7,8 +7,9 @@ export const auroraMateusz: EntityConstructor = position => ({
   name: 'Aurora',
   avatar: 'sun-princess',
 
-  skills: [{ id: 'move' }, { id: 'auroraMateuszHeal' }, { id: 'pass' }],
+  skills: [{ id: 'auroraMove' }, { id: 'auroraMateuszHeal' }, { id: 'pass' }],
   hp: stat(4),
+  actionPoints: stat(2),
 
   ownerId: 1, // Assuming ownerId is 0 for player entities
 });

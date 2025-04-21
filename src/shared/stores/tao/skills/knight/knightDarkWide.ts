@@ -18,7 +18,7 @@ export const knightDarkWide: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([affectedFields, withEnemy, damage(3)]),
-  getAffectedFields: affected([fieldsInFront(2, 1)]),
+  getAffectedFields: affected([fieldsInFront(1, 1, -1)]),
   getPossibleTargets: targets([fieldsInRange]),
   getRange: targets([neighborsExcluding]),
 };
