@@ -129,8 +129,14 @@ export function inMoveDistance(rangeModifier: number = 0) {
   };
 }
 
+function isTargetableEnemy(entity: Entity): boolean {
+  return entity && entity.hp.current > 0 && !hasStatus(entity, 'invisible');
+}
+
 export function withEnemy(ctx: TargetContext) {
-  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isEnemy(ctx.entity, entity) : false));
+  ctx.fields = fieldsWithEntity(ctx, entity =>
+    ctx.entity ? isEnemy(ctx.entity, entity) && isTargetableEnemy(entity) : false
+  );
 }
 
 export function withDeadEntity(ctx: TargetContext) {

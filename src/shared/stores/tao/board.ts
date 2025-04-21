@@ -28,9 +28,24 @@ export function getEntityIdInFieldId(state: StoreData, id: string): string {
   return field.entityUUID;
 }
 
+export function tryGetEntityIdInFieldId(state: StoreData, id: string): string | undefined {
+  const field = getField(state, id);
+  if (field.entityUUID === undefined) {
+    return undefined;
+  }
+  return field.entityUUID;
+}
+
 export function getEntityInField(state: StoreData, field: Field): Entity {
   if (field.entityUUID === undefined) {
     throw new Error(`Field ${field.id} has no entityUUID`);
+  }
+  return getEntity(state, field.entityUUID);
+}
+
+export function tryGetEntityInField(state: StoreData, field: Field): Entity | undefined {
+  if (field.entityUUID === undefined) {
+    return undefined;
   }
   return getEntity(state, field.entityUUID);
 }

@@ -12,10 +12,6 @@ export function getEntity(state: StoreData, id: string): Entity {
   return entity;
 }
 
-export function tryGetEntity(state: StoreData, id: string): Entity | undefined {
-  return state.entities.find(entity => entity.id === id);
-}
-
 export type EntityReducer = (entity: Entity) => Entity;
 
 export function modifyEntity(state: StoreData, entityID: string, modifier: EntityReducer): StoreData {

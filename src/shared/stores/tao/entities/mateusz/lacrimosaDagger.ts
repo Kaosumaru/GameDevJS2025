@@ -5,7 +5,7 @@ import { neighborsExcluding, targets, withEnemy } from '../../skills/targetReduc
 
 export const lacrimosaDagger: Skill = {
   id: 'lacrimosaDagger',
-  name: 'Attack',
+  name: 'Shadow Dagger',
   description: 'Attack a target entity for 6',
   type: 'attack',
   actionCost: 1,

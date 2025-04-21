@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, swap, status } from '../../skills/actions';
-import { allEntities, targets, withEntity } from '../../skills/targetReducers';
+import { allEntities, targets } from '../../skills/targetReducers';
 
 export const lacrimosaSwap: Skill = {
   id: 'lacrimosaSwap',
