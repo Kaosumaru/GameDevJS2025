@@ -3,7 +3,7 @@ import { SpecificGameProps } from '../GamePage';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
 import './Materials/HealthBar/HealthBar';
 import tunnel from 'tunnel-rat';
-import { AnimationContextProvider } from './Animation/AnimationContextProvider';
+import { AnimationContextProvider } from './Components/Animation/AnimationContextProvider';
 import { TaoScene } from './TaoScene';
 import { TaoAudioContextProvider } from './Components/Audio/TaoAudioContextProvider';
 

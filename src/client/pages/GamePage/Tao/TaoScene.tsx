@@ -20,7 +20,7 @@ import { Environment } from './Components/Environment';
 import { OrbitControls } from '@react-three/drei';
 import { Dock } from './UiComponents/Dock';
 import { Entity } from '@shared/stores/tao/interface';
-import { useAnimationState } from './Animation/useAnimationState';
+import { useAnimationState } from './Components/Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';

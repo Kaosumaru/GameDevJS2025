@@ -6,7 +6,7 @@ import { easeBounceOut } from 'd3-ease';
 import { animate } from 'motion';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { Entity } from '@shared/stores/tao/interface';
-import { useAnimationMotion } from '../Animation/useAnimationMotion';
+import { useAnimationMotion } from './Animation/useAnimationMotion';
 import { usePrevious } from '../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { useTaoAudio } from './Audio/useTaoAudio';
