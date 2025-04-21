@@ -175,7 +175,6 @@ export const TaoScene = ({
               key={entity.id}
               isSelected={entity.id === selectedEntityId}
               entity={entity}
-              // audio={audioSFXChannel}
               onClick={() => {
                 const e = entities.find(e => e.id === entity.id);
                 if (e === undefined) {
@@ -206,6 +205,7 @@ export const TaoScene = ({
           }}
         />
         <Dock
+          state={state}
           entity={selectedEntity}
           isActionable={client.haveSeat(selectedEntity?.ownerId ?? -1)}
           selectedSkillId={skill?.id ?? null}

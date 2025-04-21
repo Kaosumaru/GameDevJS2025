@@ -1,6 +1,6 @@
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
-import { Box, Checkbox, FormControlLabel, FormGroup, Slider, Stack } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { Box, FormGroup, Slider, Stack } from '@mui/material';
+import { useState } from 'react';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 import { TAO_DEFAULT_VOLUME, TaoChannel } from '../Components/Audio/TaoAudioData';
 
@@ -10,18 +10,7 @@ export const Jukebox = () => {
     sfx: TAO_DEFAULT_VOLUME.sfx * 100,
   });
 
-  const { play, stop, setVolume, getChannels } = useTaoAudio();
-
-  const handleChange = useCallback(
-    (_, checked: boolean) => {
-      if (checked) {
-        play('music');
-      } else {
-        stop('music');
-      }
-    },
-    [play, stop]
-  );
+  const { setVolume, getChannels } = useTaoAudio();
 
   return (
     <Box
@@ -33,11 +22,6 @@ export const Jukebox = () => {
     >
       <FormGroup>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexDirection: 'column' }}>
-          <FormControlLabel
-            control={<Checkbox onChange={handleChange} />}
-            label="Click here for audio"
-            sx={{ color: 'white' }}
-          />
           {getChannels().map(channel => (
             <Stack key={channel} spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1, minWidth: '12rem' }}>
               <Box sx={{ color: 'white', width: '3rem' }}>{channel}:</Box>

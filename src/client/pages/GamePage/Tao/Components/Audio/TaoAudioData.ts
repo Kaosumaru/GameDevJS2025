@@ -34,3 +34,8 @@ export const TAO_DEFAULT_LOOPING: Record<TaoChannel, boolean> = {
   music: true,
   sfx: false,
 };
+
+export const TAO_DEFAULT_AUTO_PLAY: Record<TaoChannel, boolean> = {
+  music: true,
+  sfx: false,
+};
