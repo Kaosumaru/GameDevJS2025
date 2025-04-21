@@ -1,4 +1,4 @@
-import { Entity3D } from './Components/Entity3D';
+import { Entity3D } from './Components/Entity/Entity3D';
 import { JSX, useCallback, useEffect, useState } from 'react';
 import { Tile } from './Components/Tile';
 import {
