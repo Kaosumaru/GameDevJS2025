@@ -7,6 +7,7 @@ export const STATUS_DATA = {
   stunned: '/status/stun-status.png',
   action: '/status/action-status.png',
   move: '/status/move-status.png',
+  critical: '/status/critical-status.png',
 };
 
 export type StatusesType = keyof typeof STATUS_DATA;
@@ -14,17 +15,16 @@ export type StatusesType = keyof typeof STATUS_DATA;
 export const debuffStatuses: StatusesType[] = [
   'disarmed',
   'poisoned',
-  // 'poisoned+2',
   'stunned',
+  // 'poisoned+2',
   //'taunted',
-  //'critical',
+  'critical',
   //'speed+3',
 ] as const;
-
-export const buffStatuses: StatusesType[] = ['action', 'move'] as const;
 
 useLoader.preload(TextureLoader, [STATUS_DATA.disarmed]);
 useLoader.preload(TextureLoader, [STATUS_DATA.poisoned]);
 useLoader.preload(TextureLoader, [STATUS_DATA.stunned]);
+useLoader.preload(TextureLoader, [STATUS_DATA.critical]);
 useLoader.preload(TextureLoader, [STATUS_DATA.action]);
 useLoader.preload(TextureLoader, [STATUS_DATA.move]);

@@ -21,5 +21,5 @@ export const getActiveBuffStatuseses = (entity: Entity): StatusesType[] => {
   const movements = Array.from({ length: entity.movePoints.current }).map(() => 'move') as 'move'[];
   const actions = Array.from({ length: entity.actionPoints.current }).map(() => 'action') as 'action'[];
 
-  return [...actions, ...movements];
+  return [...actions, ...movements, ...(entity.statusesCooldowns.critical ? ['critical' as const] : [])];
 };
