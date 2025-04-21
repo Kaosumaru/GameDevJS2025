@@ -73,6 +73,15 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
       document.removeEventListener('click', musicActivate);
     };
     document.addEventListener('click', musicActivate);
+
+    return () => {
+      Object.values(channelsRef.current).forEach(audio => {
+        if (audio) {
+          audio.stop();
+          audio.disconnect();
+        }
+      });
+    };
   }, []);
 
   const API: TaoAudioContextType = useMemo(
