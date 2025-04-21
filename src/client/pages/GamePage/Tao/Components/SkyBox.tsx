@@ -1,4 +1,5 @@
 import { useLoader, useThree } from '@react-three/fiber';
+import { memo } from 'react';
 import { CubeTextureLoader } from 'three';
 
 const SkyBoxData = {
@@ -10,7 +11,7 @@ const SkyBoxData = {
   '6': '/skybox/6.jpg',
 };
 
-export const SkyBox = () => {
+export const SkyBox = memo(() => {
   const { scene } = useThree();
   const loader = new CubeTextureLoader();
   const texture = loader.load([
@@ -24,7 +25,7 @@ export const SkyBox = () => {
 
   scene.background = texture;
   return null;
-};
+});
 
 useLoader.preload(CubeTextureLoader, SkyBoxData['1']);
 useLoader.preload(CubeTextureLoader, SkyBoxData['2']);
