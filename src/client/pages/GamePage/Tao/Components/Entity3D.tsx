@@ -12,6 +12,7 @@ import { usePrevious } from '../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { useTaoAudio } from './Audio/useTaoAudio';
 import { getRandomMoveSound, getRandomSwordHitSound } from './Audio/TaoAudioData';
+import { Statuses } from './Statuses/Statuses';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
@@ -156,6 +157,7 @@ const Entity3DComponent = ({
             maxHp={entity.hp.max}
           />
         </mesh>
+        <Statuses position={[0.7, 1.2, 0]} statusesCooldowns={entity.statusesCooldowns} />
         <Stats entity={entity} position={[0, 1.16, 0]} />
       </group>
 
