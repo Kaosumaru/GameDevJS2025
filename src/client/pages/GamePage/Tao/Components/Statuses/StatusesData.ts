@@ -8,6 +8,7 @@ export const STATUS_DATA = {
   action: '/status/action-status.png',
   move: '/status/move-status.png',
   critical: '/status/critical-status.png',
+  'speed+3': '/status/speed-status.png',
 };
 
 export type StatusesType = keyof typeof STATUS_DATA;
@@ -19,7 +20,7 @@ export const debuffStatuses: StatusesType[] = [
   // 'poisoned+2',
   //'taunted',
   'critical',
-  //'speed+3',
+  'speed+3',
 ] as const;
 
 useLoader.preload(TextureLoader, [STATUS_DATA.disarmed]);
