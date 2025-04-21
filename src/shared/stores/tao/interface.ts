@@ -22,6 +22,7 @@ export type StatusEffect =
   | 'critical'
   | 'speed+3'
   | 'immobilized'
+  | 'invisible'
   | SkillID;
 
 export type Statuses = { [key in StatusEffect]?: number };

@@ -28,6 +28,10 @@ import { vacuenMove } from '../entities/mateusz/vacuenMove';
 import { vacuenSlash } from '../entities/mateusz/vacuenSlash';
 import { vacuenCharge } from '../entities/mateusz/vacuenCharge';
 import { vacuenLunge } from '../entities/mateusz/vacuenLunge';
+import { lacrimosaFireball } from '../entities/mateusz/lacrimosaFireball';
+import { lacrimosaDagger } from '../entities/mateusz/lacrimosaDagger';
+import { lacrimosaMove } from '../entities/mateusz/lacrimosaMove';
+import { lacrimosaSwap } from '../entities/mateusz/lacrimosaSwap';
 
 export const skillsList = {
   move: moveSkill,
@@ -67,4 +71,9 @@ export const skillsList = {
   vacuenSlash,
   vacuenCharge,
   vacuenLunge,
+
+  lacrimosaMove,
+  lacrimosaDagger,
+  lacrimosaFireball,
+  lacrimosaSwap,
 };

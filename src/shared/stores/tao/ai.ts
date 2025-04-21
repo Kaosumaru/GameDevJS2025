@@ -1,6 +1,6 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
 import { findFieldByPosition, getField } from './board';
-import { getEntity, hasStatus } from './entity';
+import { getEntity, hasStatus, tryGetEntity } from './entity';
 import { Entity, Field } from './interface';
 import { getDistancesToPlayers } from './pathfinding';
 import {
@@ -69,13 +69,22 @@ function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: Skill
 function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID, random: RandomGenerator): StoreData {
   const skillInstance = getSkillInstance(entity, skillId);
   const targets = getPossibleTargets(state, entity, skillInstance);
-  // TODO
+  // TODO fix taunt and invisible
   const taunted = hasStatus(entity, 'taunted');
   if (targets.length == 0) {
     return state;
   }
 
-  const targetId = targets[0];
+  const calculatedTargets = targets
+    .map(fieldId => ({ field: fieldId, entity: tryGetEntity(state, fieldId) }))
+    .filter(info => {
+      if (!info.entity) return true;
+      if (hasStatus(info.entity, 'invisible')) return false;
+      if (taunted && !info.entity.isTank) return false;
+      return true;
+    });
+
+  const targetId = calculatedTargets[random.int(calculatedTargets.length)].field;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSkill(state, entity, skillId, random, targetId);
 }

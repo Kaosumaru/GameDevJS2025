@@ -8,15 +8,10 @@ export function moveEntityTo(state: StoreData, entityID: string, position: Posit
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);
   }
-  if (field.entityUUID) {
-    throw new Error(
-      `Field at position (${position.x}, ${position.y}) is already occupied by entity ${field.entityUUID}`
-    );
-  }
 
   state = modifyEntity(state, entityID, e => {
     const oldField = findFieldByPosition(state, e.position);
-    if (oldField) {
+    if (oldField && oldField.entityUUID === e.id) {
       oldField.entityUUID = undefined; // Clear the entity from the old field
     }
     field.entityUUID = e.id;

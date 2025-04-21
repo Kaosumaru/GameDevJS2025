@@ -16,6 +16,7 @@ export const auroraMateusz: EntityConstructor = position => ({
   ],
   hp: stat(4),
   actionPoints: stat(2),
+  speed: 2,
 
   ownerId: 1, // Assuming ownerId is 0 for player entities
 });

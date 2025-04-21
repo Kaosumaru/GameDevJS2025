@@ -1,5 +1,5 @@
 import { findFieldByPosition, getEntityInField, getFieldNeighbors } from './board';
-import { getEntity, isEnemy } from './entity';
+import { getEntity, hasStatus, isEnemy } from './entity';
 import { Entity, EntityType, Field } from './interface';
 import { StoreData } from './taoStore';
 
@@ -58,9 +58,13 @@ export function getEmptyFields(map: Map<Field, number>): Field[] {
   return [...map].filter(([field]) => field.entityUUID === undefined).map(([field]) => field);
 }
 
-export function getDistancesToEntityType(state: StoreData, entityType: EntityType): Map<Field, number> {
+export function getDistancesToEntityType(
+  state: StoreData,
+  entityType: EntityType,
+  additionalFilter?: (entity: Entity) => boolean
+): Map<Field, number> {
   const fieldsWithEntityType = state.entities
-    .filter(e => entityType === e.type)
+    .filter(e => entityType === e.type && !hasStatus(e, 'invisible') && (additionalFilter ? additionalFilter(e) : true))
     .map(e => findFieldByPosition(state, e.position))
     .filter(f => f !== undefined);
 
@@ -69,12 +73,7 @@ export function getDistancesToEntityType(state: StoreData, entityType: EntityTyp
 
 export function getDistancesToPlayers(state: StoreData, taunted: boolean): Map<Field, number> {
   if (taunted) {
-    const fieldsWithEntityType = state.entities
-      .filter(e => 'player' === e.type && e.isTank)
-      .map(e => findFieldByPosition(state, e.position))
-      .filter(f => f !== undefined);
-
-    return getFieldsInDistance(state, fieldsWithEntityType);
+    return getDistancesToEntityType(state, 'player', e => e.isTank ?? false);
   }
   return getDistancesToEntityType(state, 'player');
 }

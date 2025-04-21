@@ -7,7 +7,13 @@ export const lacrimosaMateusz: EntityConstructor = position => ({
   name: 'Lacrimosa',
   avatar: 'goth-gf',
 
-  skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
+  skills: [
+    { id: 'lacrimosaMove' },
+    { id: 'lacrimosaDagger' },
+    { id: 'lacrimosaFireball' },
+    { id: 'lacrimosaSwap' },
+    { id: 'pass' },
+  ],
   hp: stat(3),
   ownerId: 0,
 });

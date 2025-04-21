@@ -151,6 +151,36 @@ export function move(ctx: TargetContext) {
   });
 }
 
+export function swap(ctx: TargetContext) {
+  if (ctx.fields.length === 0) {
+    return;
+  }
+  if (ctx.entity === undefined) {
+    throw new Error('Entity is undefined');
+  }
+  const field = ctx.fields[0];
+  const entity2 = getEntityInField(ctx.state, field);
+  if (entity2 === undefined) {
+    return;
+  }
+
+  ctx.state = addEvent(ctx.state, {
+    type: 'move',
+    moves: [
+      {
+        entityId: ctx.entity.id,
+        from: ctx.entity.position,
+        to: field.position,
+      },
+      {
+        entityId: entity2.id,
+        from: field.position,
+        to: ctx.entity.position,
+      },
+    ],
+  });
+}
+
 export function balance(amount: number) {
   return (ctx: TargetContext) => {
     const from = ctx.state.info.balance;
