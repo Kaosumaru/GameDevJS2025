@@ -39,6 +39,7 @@ const Entity3DComponent = ({
       hasSpawned.current = false;
       playNext('opening', async () => {
         const obj = refs.current['container']!;
+        if (!obj) return;
         await animate([
           'start',
           [obj.position, { x, y: 1, z: y }, { delay: 0.1, duration: 0, at: 'start' }],
@@ -52,7 +53,7 @@ const Entity3DComponent = ({
       playNext('move', async () => {
         play('sfx', getRandomMoveSound());
         const obj = refs.current['container']!;
-
+        if (!obj) return;
         await animate([
           'start',
           [obj.position, { x, z: y }, { duration: 0.5 }],
@@ -71,6 +72,7 @@ const Entity3DComponent = ({
     const { x } = boardPositionToUiPosition(entity.position.x, entity.position.y);
 
     const obj = refs.current['container']!;
+    if (!obj) return;
     playNext('attack', async () => {
       play('sfx', getRandomSwordHitSound());
       await animate([
