@@ -48,12 +48,16 @@ export function refreshResources(ctx: TargetContext) {
   }
 }
 
+function isPiercingDamage(damageType: DamageType): boolean {
+  return damageType === 'piercing' || damageType === 'poison';
+}
+
 function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
   if (ctx.entity && hasStatus(ctx.entity, 'critical')) {
     amount *= 2;
   }
   addDamageEvent(ctx, entity => {
-    const damageToShield = Math.min(entity.shield, amount);
+    const damageToShield = isPiercingDamage(damageType) ? 0 : Math.min(entity.shield, amount);
     const damageToHealth = Math.max(0, amount - damageToShield);
     return {
       health: Math.max(0, entity.hp.current - damageToHealth),

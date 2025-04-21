@@ -21,6 +21,7 @@ export type StatusEffect =
   | 'taunted'
   | 'critical'
   | 'speed+3'
+  | 'immobilized'
   | SkillID;
 
 export type Statuses = { [key in StatusEffect]?: number };

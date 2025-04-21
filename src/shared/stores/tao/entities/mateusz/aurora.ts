@@ -7,7 +7,13 @@ export const auroraMateusz: EntityConstructor = position => ({
   name: 'Aurora',
   avatar: 'sun-princess',
 
-  skills: [{ id: 'auroraMove' }, { id: 'auroraMateuszHeal' }, { id: 'pass' }],
+  skills: [
+    { id: 'auroraMove' },
+    { id: 'auroraMateuszHeal' },
+    { id: 'auroraMateuszImmobilize' },
+    { id: 'auroraExplosion' },
+    { id: 'pass' },
+  ],
   hp: stat(4),
   actionPoints: stat(2),
 

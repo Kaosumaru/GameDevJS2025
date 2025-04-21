@@ -14,7 +14,7 @@ export interface MoveEvent {
   moves: MoveData[];
 }
 
-export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield';
+export type DamageType = 'standard' | 'poison' | 'heal' | 'heal' | 'shield' | 'piercing';
 
 export interface Delta<T> {
   from: T;

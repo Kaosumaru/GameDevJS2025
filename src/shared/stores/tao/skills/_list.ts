@@ -22,6 +22,8 @@ import { pass } from './pass';
 import { testSpawner } from './spawnSkills/testSpawner';
 import { auroraMateuszHeal } from '../entities/mateusz/auroraHeal';
 import { auroraMove } from '../entities/mateusz/auroraMove';
+import { auroraMateuszImmobilize } from '../entities/mateusz/auroraImmobilize';
+import { auroraExplosion } from '../entities/mateusz/auroraExplosion';
 
 export const skillsList = {
   move: moveSkill,
@@ -54,4 +56,6 @@ export const skillsList = {
 
   auroraMove,
   auroraMateuszHeal,
+  auroraMateuszImmobilize,
+  auroraExplosion,
 };

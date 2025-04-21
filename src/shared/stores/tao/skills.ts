@@ -115,11 +115,12 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
   if (hasStatus(user, 'stunned')) {
     return false;
   }
-  if (hasStatus(user, 'disarmed')) {
-    const skill = skillFromInstance(skillInstance);
-    if (skill.type === 'attack') {
-      return false;
-    }
+  const skill = skillFromInstance(skillInstance);
+  if (hasStatus(user, 'disarmed') && skill.type === 'attack') {
+    return false;
+  }
+  if (hasStatus(user, 'immobilized') && skill.type === 'movement') {
+    return false;
   }
 
   // cooldown
