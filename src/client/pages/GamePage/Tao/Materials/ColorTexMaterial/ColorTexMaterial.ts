@@ -5,7 +5,14 @@ import vertexShader from './vertex.glsl?raw';
 import fragmentShader from './fragment.glsl?raw';
 
 export const ColorTexMaterial = shaderMaterial(
-  { color: new Color(1, 1, 1), uTexture: null, flash: 0, flashColor: new Color(1, 1, 1), alpha: 1 },
+  {
+    color: new Color(1, 1, 1),
+    uTexture: null,
+    uTextureDamage: null,
+    flash: 0,
+    flashColor: new Color(1, 1, 1),
+    alpha: 1,
+  },
   vertexShader,
   fragmentShader
 );

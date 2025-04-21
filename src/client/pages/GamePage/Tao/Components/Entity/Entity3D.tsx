@@ -1,18 +1,18 @@
-import { useFrame, useLoader, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { JSX, memo, useEffect, useRef } from 'react';
-import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
+import { Group, Mesh, Object3DEventMap } from 'three';
 import { easeBounceOut } from 'd3-ease';
 
 import { animate } from 'motion';
-import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
+import { boardPositionToUiPosition } from '../../Utils/boardPositionToUiPositon';
 import { Entity } from '@shared/stores/tao/interface';
-import { useAnimationMotion } from './Animation/useAnimationMotion';
-import { usePrevious } from '../Hooks/usePrevious';
-import { entities } from '@shared/stores/tao/entities/entities';
-import { useTaoAudio } from './Audio/useTaoAudio';
-import { getRandomMoveSound, getRandomSwordHitSound } from './Audio/TaoAudioData';
-import { Statuses } from './Statuses/Statuses';
-import { getActiveBuffStatuseses, getActiveDebuffStatuses } from './Statuses/getActive';
+import { useAnimationMotion } from '../Animation/useAnimationMotion';
+import { usePrevious } from '../../Hooks/usePrevious';
+import { useTaoAudio } from '../Audio/useTaoAudio';
+import { getRandomMoveSound, getRandomSwordHitSound } from '../Audio/TaoAudioData';
+import { Statuses } from '../Statuses/Statuses';
+import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
+import { Avatar } from './Avatar';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
@@ -30,9 +30,6 @@ const Entity3DComponent = ({
   const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
-  const [colorMap] = useLoader(TextureLoader, [`/avatars/${entity.avatar}.png`]);
-  const imageRatio = colorMap.image.width / colorMap.image.height;
-  const previousHp = usePrevious(entity.hp);
   const previusAttackCount = usePrevious(entity.totalAttacksCount);
   const playNext = useAnimationMotion();
 
@@ -68,19 +65,6 @@ const Entity3DComponent = ({
   }, [playNext, play, entity.position.x, entity.position.y]);
 
   useEffect(() => {
-    if (!previousHp) return;
-    if (previousHp.current === entity.hp.current) return;
-
-    playNext('receive-dmg', async () => {
-      const obj = refs.current['avatar']!;
-      await animate([
-        [obj.material!, { flash: 1 }, { duration: 0.1 }],
-        [obj.material!, { flash: 0 }, { duration: 0.1, delay: 0.1 }],
-      ]);
-    });
-  }, [playNext, previousHp, entity.hp, entity.shield]);
-
-  useEffect(() => {
     if (previusAttackCount === undefined) return;
     if (previusAttackCount === entity.totalAttacksCount) return;
 
@@ -102,12 +86,10 @@ const Entity3DComponent = ({
   const refs = useRef<{
     container: Group | null;
     character: Group<Object3DEventMap> | null;
-    avatar: { material: object | null };
     healthbar: { material: object | null };
   }>({
     container: null,
     character: null,
-    avatar: { material: null },
     healthbar: { material: null },
   });
 
@@ -131,19 +113,7 @@ const Entity3DComponent = ({
           refs.current['character'] = r;
         }}
       >
-        <mesh position={[0, 0.5, 1]} renderOrder={5}>
-          <planeGeometry args={[1, 1 / imageRatio]} />
-          <colorTexMaterial
-            ref={(r: object) => {
-              refs.current['avatar'] = {
-                material: r,
-              };
-            }}
-            uTexture={colorMap}
-            flashColor={new Color(0xff0000)}
-            transparent
-          />
-        </mesh>
+        <Avatar entity={entity} />
         <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
           <planeGeometry args={[0.6, 0.08]} />
           <healthBar
@@ -185,9 +155,3 @@ const Entity3DComponent = ({
 };
 
 export const Entity3D = memo(Entity3DComponent);
-
-Object.values(entities)
-  .map(entity => entity({ x: 0, y: 0 }))
-  .forEach(entity => {
-    useLoader.preload(TextureLoader, [`/avatars/${entity.avatar}.png`]);
-  });
