@@ -133,6 +133,10 @@ export function withEnemy(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isEnemy(ctx.entity, entity) : false));
 }
 
+export function withDeadEntity(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? entity.hp.current <= 0 : false));
+}
+
 export function withAlly(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? !isEnemy(ctx.entity, entity) : false));
 }
@@ -163,6 +167,10 @@ export function area(range: number) {
 }
 
 export function allEntities(ctx: TargetContext) {
+  ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+}
+
+export function deadEntities(ctx: TargetContext) {
   ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
 }
 

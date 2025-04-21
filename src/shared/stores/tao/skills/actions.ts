@@ -1,7 +1,7 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
 import { addEntities, getDistance, getEntityField, getEntityInField, getField } from '../board';
 import { EntityTypeId } from '../entities/entities';
-import { hasStatus } from '../entity';
+import { getEntity, hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, Field, Position, StatusEffect } from '../interface';
@@ -31,6 +31,26 @@ export function setResources(actions: number, moves: number) {
         entityId: entity.id,
         actions: { from: entity.actionPoints.current, to: actions },
         moves: { from: entity.movePoints.current, to: moves },
+      });
+    }
+  };
+}
+
+export function gainResources(actions: number, moves: number) {
+  return (ctx: TargetContext) => {
+    for (const field of ctx.fields) {
+      const entity = getEntityInField(ctx.state, field);
+      ctx.state = addEvent(ctx.state, {
+        type: 'changeResources',
+        entityId: entity.id,
+        actions: {
+          from: entity.actionPoints.current,
+          to: Math.min(entity.actionPoints.max, entity.actionPoints.current + actions),
+        },
+        moves: {
+          from: entity.movePoints.current,
+          to: Math.min(entity.movePoints.max, entity.movePoints.current + moves),
+        },
       });
     }
   };
@@ -216,7 +236,30 @@ export function branch(reducers: TargetActionReducer[]) {
   };
 }
 
-export function ifDistanceAtLeast(distance: number, reducers: TargetActionReducer[]) {
+export function ifBranch(ifReducer: TargetReducer[], reducers: TargetActionReducer[]) {
+  return (ctx: ActionTargetContext) => {
+    let ifContext: ActionTargetContext = {
+      ...ctx,
+      fields: [...ctx.fields],
+    };
+    ifContext = reduceTargets(ifContext, ifReducer);
+    if (ifContext.fields.length === 0) {
+      return;
+    }
+
+    // TODO hack
+    const entity = getEntity(ctx.state, ctx.entity!.id);
+
+    const context: ActionTargetContext = {
+      ...ctx,
+      entity,
+      fields: [...ctx.fields],
+    };
+    ctx.state = reduceTargets(context, reducers).state;
+  };
+}
+
+export function ifDistanceAtLeast(expectedDistance: number, reducers: TargetActionReducer[]) {
   return (ctx: ActionTargetContext) => {
     if (ctx.fields.length === 0) {
       return;
@@ -224,7 +267,7 @@ export function ifDistanceAtLeast(distance: number, reducers: TargetActionReduce
     const field = ctx.fields[0];
     const entityField = getEntityField(ctx.state, ctx.entity!);
     const distance = getDistance(field, entityField);
-    if (distance < distance) {
+    if (distance < expectedDistance) {
       return;
     }
 
