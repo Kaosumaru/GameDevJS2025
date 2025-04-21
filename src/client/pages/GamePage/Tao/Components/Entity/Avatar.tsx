@@ -27,6 +27,7 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
 
     playNext('receive-dmg', async () => {
       const obj = avatarRef.current!;
+      if (!obj) return;
       await animate([
         [obj, { flash: 0.5 }, { duration: 0.2 }],
         [obj, { flash: 0 }, { duration: 0.2, delay: 0.2 }],
@@ -35,21 +36,19 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
   }, [playNext, previousHp, entity.hp, entity.shield]);
 
   return (
-    <>
-      <mesh position={[0, imageHeight / 2, 1]} renderOrder={5}>
-        <planeGeometry args={[imageWidth, imageHeight]} />
-        <colorTexMaterial
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ref={(r: any) => {
-            avatarRef.current = r;
-          }}
-          uTexture={colorMap}
-          uTextureDamage={colorMapDamage}
-          flashColor={new Color(0xff0000)}
-          transparent
-        />
-      </mesh>
-    </>
+    <mesh position={[0, imageHeight / 2, 1]} renderOrder={5}>
+      <planeGeometry args={[imageWidth, imageHeight]} />
+      <colorTexMaterial
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={(r: any) => {
+          avatarRef.current = r;
+        }}
+        uTexture={colorMap}
+        uTextureDamage={colorMapDamage}
+        flashColor={new Color(0xff0000)}
+        transparent
+      />
+    </mesh>
   );
 };
 
