@@ -24,6 +24,9 @@ import { auroraMateuszHeal } from '../entities/mateusz/auroraHeal';
 import { auroraMove } from '../entities/mateusz/auroraMove';
 import { auroraMateuszImmobilize } from '../entities/mateusz/auroraImmobilize';
 import { auroraExplosion } from '../entities/mateusz/auroraExplosion';
+import { vacuenMove } from '../entities/mateusz/vacuenMove';
+import { vacuenSlash } from '../entities/mateusz/vacuenSlash';
+import { vacuenCharge } from '../entities/mateusz/vacuenCharge';
 
 export const skillsList = {
   move: moveSkill,
@@ -58,4 +61,8 @@ export const skillsList = {
   auroraMateuszHeal,
   auroraMateuszImmobilize,
   auroraExplosion,
+
+  vacuenMove,
+  vacuenSlash,
+  vacuenCharge,
 };

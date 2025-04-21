@@ -104,6 +104,8 @@ export enum Direction {
   Left = 3,
 }
 
+export const allDirections = [Direction.Up, Direction.Right, Direction.Down, Direction.Left];
+
 const directionOffset = {
   [Direction.Up]: { x: 0, y: -1 },
   [Direction.Right]: { x: 1, y: 0 },
@@ -156,4 +158,8 @@ export function addEntities(state: StoreData, infos: [EntityTypeId, Position][])
       return entity;
     }),
   });
+}
+
+export function getDistance(fieldA: Field, fieldB: Field): number {
+  return Math.abs(fieldA.position.x - fieldB.position.x) + Math.abs(fieldA.position.y - fieldB.position.y);
 }

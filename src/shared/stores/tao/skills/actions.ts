@@ -1,5 +1,5 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
-import { addEntities, getEntityField, getEntityInField, getField } from '../board';
+import { addEntities, getDistance, getEntityField, getEntityInField, getField } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
@@ -208,6 +208,26 @@ export function actions(reducers: TargetActionReducer[]) {
 
 export function branch(reducers: TargetActionReducer[]) {
   return (ctx: ActionTargetContext) => {
+    const context: ActionTargetContext = {
+      ...ctx,
+      fields: [...ctx.fields],
+    };
+    ctx.state = reduceTargets(context, reducers).state;
+  };
+}
+
+export function ifDistanceAtLeast(distance: number, reducers: TargetActionReducer[]) {
+  return (ctx: ActionTargetContext) => {
+    if (ctx.fields.length === 0) {
+      return;
+    }
+    const field = ctx.fields[0];
+    const entityField = getEntityField(ctx.state, ctx.entity!);
+    const distance = getDistance(field, entityField);
+    if (distance < distance) {
+      return;
+    }
+
     const context: ActionTargetContext = {
       ...ctx,
       fields: [...ctx.fields],

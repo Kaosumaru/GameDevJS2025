@@ -1,4 +1,5 @@
 import {
+  allDirections,
   getDirection,
   getEntityField,
   getField,
@@ -215,4 +216,34 @@ export function fieldsInFront(width: number, height: number, yOffset = 0) {
     }
     ctx.fields = results;
   };
+}
+
+export function farthestEmptyFieldInStraightLine(max: number) {
+  return (ctx: TargetContext) => {
+    const results: Field[] = [];
+    for (const field of ctx.fields) {
+      for (const direction of allDirections) {
+        let lastField: Field | undefined = undefined;
+
+        for (let i = 1; i <= max; i++) {
+          const newField = getFieldInDirection(ctx.state, field, direction, i);
+          if (!newField) {
+            break;
+          }
+          if (isBlocking(newField)) {
+            break;
+          }
+          lastField = newField;
+        }
+        if (lastField) {
+          results.push(lastField);
+        }
+      }
+    }
+    ctx.fields = results;
+  };
+}
+
+function isBlocking(field: Field): boolean {
+  return field.blocking || field.entityUUID !== undefined;
 }
