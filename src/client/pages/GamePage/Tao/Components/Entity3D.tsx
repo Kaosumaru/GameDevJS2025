@@ -4,14 +4,15 @@ import { Color, Group, Mesh, Object3DEventMap, TextureLoader } from 'three';
 import { easeBounceOut } from 'd3-ease';
 
 import { animate } from 'motion';
-import { Stats } from './Stats';
 import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
 import { Entity } from '@shared/stores/tao/interface';
-import { useAnimationMotion } from '../Animation/useAnimationMotion';
+import { useAnimationMotion } from './Animation/useAnimationMotion';
 import { usePrevious } from '../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { useTaoAudio } from './Audio/useTaoAudio';
 import { getRandomMoveSound, getRandomSwordHitSound } from './Audio/TaoAudioData';
+import { Statuses } from './Statuses/Statuses';
+import { getActiveBuffStatuseses, getActiveDebuffStatuses } from './Statuses/getActive';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
@@ -156,7 +157,18 @@ const Entity3DComponent = ({
             maxHp={entity.hp.max}
           />
         </mesh>
-        <Stats entity={entity} position={[0, 1.16, 0]} />
+        <Statuses
+          float={'right'}
+          color="red"
+          selectedStatuses={getActiveDebuffStatuses(entity)}
+          position={[0.7, 1.2, 0]}
+        />
+        <Statuses
+          float={'left'}
+          color={'green'}
+          selectedStatuses={getActiveBuffStatuseses(entity)}
+          position={[-0.2, 1.2, 0]}
+        />
       </group>
 
       <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>

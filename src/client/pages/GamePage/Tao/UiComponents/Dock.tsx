@@ -1,6 +1,7 @@
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { Entity } from '@shared/stores/tao/interface';
-import { skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
+import { haveResourcesAndTargetsForSkill, skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
+import { StoreData } from '@shared/stores/tao/taoStore';
 import { JSX, memo, useRef } from 'react';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 
@@ -21,12 +22,14 @@ const skillDescriptionFromInstance = (skillInstance: SkillInstance): string => {
 };
 
 const DockComponent = ({
+  state,
   entity,
   isActionable,
   selectedSkillId,
   onSkill,
   onEndTurn,
 }: JSX.IntrinsicElements['div'] & {
+  state: StoreData | null;
   entity: Entity | undefined;
   isActionable: boolean;
   selectedSkillId: string | null;
@@ -57,46 +60,51 @@ const DockComponent = ({
             unmountOnExit
           >
             <Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  color: 'white',
-                  bgcolor: 'black',
-                  borderRadius: 2,
-                  maxWidth: isDesktopView ? '30rem' : '10rem',
-                  m: 1,
-                  p: isDesktopView ? 0.5 : 0.1,
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: selectedSkill?.id ? skillDescriptionFromInstance(selectedSkill) : 'Select a skill',
-                }}
-              ></Box>
+              {selectedSkill?.id && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    color: 'white',
+                    bgcolor: 'black',
+                    borderRadius: 2,
+                    maxWidth: isDesktopView ? '30rem' : '10rem',
+                    m: 1,
+                    p: isDesktopView ? 0.5 : 0.1,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: skillDescriptionFromInstance(selectedSkill),
+                  }}
+                />
+              )}
               <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
-                {entity?.skills.map(skill => (
-                  <Button
-                    key={skill.id}
-                    variant="contained"
-                    color={
-                      isActionable
-                        ? selectedSkillId === skill.id
-                          ? 'actionableSelected'
-                          : 'actionable'
-                        : selectedSkillId === skill.id
-                          ? 'nonactionableSelected'
-                          : 'nonactionable'
-                    }
-                    sx={{
-                      px: isDesktopView ? 2 : 0.1,
-                      py: isDesktopView ? 1 : 0.1,
-                    }}
-                    onClick={() => onSkill(skill)}
-                  >
-                    {skillNameFromInstance(skill, isDesktopView)}
-                  </Button>
-                ))}
+                {entity?.skills.map(skill => {
+                  const hasResources = state && haveResourcesAndTargetsForSkill(state, entity, skill);
+                  return (
+                    <Button
+                      key={skill.id}
+                      variant="contained"
+                      color={
+                        isActionable && hasResources
+                          ? selectedSkillId === skill.id
+                            ? 'actionableSelected'
+                            : 'actionable'
+                          : selectedSkillId === skill.id
+                            ? 'nonactionableSelected'
+                            : 'nonactionable'
+                      }
+                      sx={{
+                        px: isDesktopView ? 2 : 0.1,
+                        py: isDesktopView ? 1 : 0.1,
+                      }}
+                      onClick={() => onSkill(skill)}
+                    >
+                      {skillNameFromInstance(skill, isDesktopView)}
+                    </Button>
+                  );
+                })}
               </Box>
             </Box>
           </CSSTransition>
