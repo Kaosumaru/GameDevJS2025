@@ -24,6 +24,7 @@ import { useAnimationState } from './Components/Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
+import { Nebula } from './Components/Vfx/Nebula';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -116,6 +117,8 @@ export const TaoScene = ({
       <SkyBox />
       <Environment />
       <OrbitControls makeDefault target={cameraTargetState} />
+      <Nebula scale={[0.1, 0.1, 0.1]} position={[3, 0, 8]} />
+      <Nebula scale={[0.1, 0.1, 0.1]} position={[9.6, 0, 8]} />
       <group>
         {board.map((row, rowIdx) =>
           row.map((field, colIdx) => {
