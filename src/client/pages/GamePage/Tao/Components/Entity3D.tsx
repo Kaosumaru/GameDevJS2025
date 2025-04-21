@@ -12,7 +12,6 @@ import { entities } from '@shared/stores/tao/entities/entities';
 import { useTaoAudio } from './Audio/useTaoAudio';
 import { getRandomMoveSound, getRandomSwordHitSound } from './Audio/TaoAudioData';
 import { Statuses } from './Statuses/Statuses';
-import { debuffStatuses } from './Statuses/StatusesData';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from './Statuses/getActive';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
@@ -161,7 +160,7 @@ const Entity3DComponent = ({
         <Statuses
           float={'right'}
           color="red"
-          selectedStatuses={getActiveDebuffStatuses(debuffStatuses, entity)}
+          selectedStatuses={getActiveDebuffStatuses(entity)}
           position={[0.7, 1.2, 0]}
         />
         <Statuses

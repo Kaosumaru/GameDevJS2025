@@ -1,20 +1,21 @@
 import type { Entity } from '@shared/stores/tao/interface';
 import { StatusesType } from './StatusesData';
 
-export const getActiveDebuffStatuses = (selectedStatuses: StatusesType[], entity: Entity): StatusesType[] => {
-  const debuffs = selectedStatuses.reduce((acc, key: StatusesType) => {
-    if (key === 'disarmed' && entity.statusesCooldowns.disarmed) {
-      acc.push('disarmed');
-    }
-    if (key === 'poisoned' && entity.statusesCooldowns.poisoned) {
-      acc.push('poisoned');
-    }
-    if (key === 'stunned' && entity.statusesCooldowns.stunned) {
-      acc.push('stunned');
-    }
-    return acc;
-  }, [] as StatusesType[]);
-  return debuffs;
+export const getActiveDebuffStatuses = (entity: Entity): StatusesType[] => {
+  const statuses: StatusesType[] = [];
+  if (entity.statusesCooldowns.disarmed) {
+    statuses.push('disarmed');
+  }
+  if (entity.statusesCooldowns.poisoned) {
+    statuses.push('poisoned');
+  }
+  if (entity.statusesCooldowns.stunned) {
+    statuses.push('stunned');
+  }
+  if (entity.statusesCooldowns.taunted) {
+    statuses.push('taunted');
+  }
+  return statuses;
 };
 
 export const getActiveBuffStatuseses = (entity: Entity): StatusesType[] => {
