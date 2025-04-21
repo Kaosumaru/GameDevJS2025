@@ -20,12 +20,12 @@ export const TAO_SWORD_HIT_SEQUENCE = ['sword-hit', 'sword-crit'] as const;
 export const getRandomSwordHitSound = () => {
   const randomIndex = Math.floor(Math.random() * TAO_SWORD_HIT_SEQUENCE.length);
   return TAO_SWORD_HIT_SEQUENCE[randomIndex];
-}
+};
 
 export const TAO_CHANNELS = ['music', 'sfx'] as const;
 export type TaoChannel = (typeof TAO_CHANNELS)[number];
 
 export const TAO_DEFAULT_VOLUME: Record<TaoChannel, number> = {
   music: 0.3,
-  sfx: 1,
+  sfx: 0.5,
 };
