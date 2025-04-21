@@ -29,3 +29,8 @@ export const TAO_DEFAULT_VOLUME: Record<TaoChannel, number> = {
   music: 0.3,
   sfx: 0.5,
 };
+
+export const TAO_DEFAULT_LOOPING: Record<TaoChannel, boolean> = {
+  music: true,
+  sfx: false,
+};

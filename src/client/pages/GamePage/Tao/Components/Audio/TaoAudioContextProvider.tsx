@@ -1,7 +1,14 @@
 import { TaoAudioContext, TaoAudioContextType } from './TaoAudioContext';
 import { useEffect, useMemo, useRef } from 'react';
 import { AudioListener, AudioLoader, Audio } from 'three';
-import { TAO_AUDIO_DATA, TaoAudioTrack, TaoChannel, TAO_CHANNELS, TAO_DEFAULT_VOLUME } from './TaoAudioData';
+import {
+  TAO_AUDIO_DATA,
+  TaoAudioTrack,
+  TaoChannel,
+  TAO_CHANNELS,
+  TAO_DEFAULT_VOLUME,
+  TAO_DEFAULT_LOOPING,
+} from './TaoAudioData';
 
 export const TaoAudioContextProvider = ({ children }: { children: React.ReactNode }) => {
   // const { camera } = useThree();
@@ -12,6 +19,8 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'darkness-loop': null,
     'balance-loop': null,
     'light-loop': null,
+    'sword-hit': null,
+    'sword-crit': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -27,6 +36,9 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
       const audio = new Audio(listener);
       const defaultVolume = TAO_DEFAULT_VOLUME[channel];
       audio.setVolume(defaultVolume);
+      if (TAO_DEFAULT_LOOPING[channel]) {
+        audio.setLoop(true);
+      }
       channelsRef.current[channel] = audio;
     });
 
