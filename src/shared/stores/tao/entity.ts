@@ -12,6 +12,11 @@ export function getEntity(state: StoreData, id: string): Entity {
   return entity;
 }
 
+export function tryGetEntity(state: StoreData, id: string): Entity | undefined {
+  const entity = state.entities.find(entity => entity.id === id);
+  return entity;
+}
+
 export function isDead(entity: Entity): boolean {
   return entity.hp.current <= 0 && entity.traits.canBeKilled;
 }
