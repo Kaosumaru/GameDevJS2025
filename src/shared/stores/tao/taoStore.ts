@@ -9,6 +9,7 @@ import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
 import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
+import { GoalType } from './goal';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -37,6 +38,7 @@ export interface GameInfo {
   balance: number;
   entities: number;
   round: number;
+  goal: GoalType;
   gameState: GameState;
   perRound: {
     positionsOfDeaths: Position[];
@@ -45,7 +47,6 @@ export interface GameInfo {
 
 export interface StoreData {
   oldState?: StoreData;
-  gameOver: boolean;
   board: Field[][];
   entities: Entity[];
   events: EventType[];
@@ -62,6 +63,7 @@ function createStartingInfo(): GameInfo {
     entities: 0,
     round: 0,
     gameState: 'inProgress',
+    goal: { type: 'none' },
     perRound: {
       positionsOfDeaths: [],
     },
@@ -83,7 +85,6 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
   return createComponentStore(
     {
       board: [],
-      gameOver: false,
       entities: [],
       events: [],
       info: createStartingInfo(),
@@ -136,7 +137,6 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
       const fieldData = convertNumbersToFieldType(board);
       let state: StoreData = {
         board: fieldData,
-        gameOver: false,
         entities: [],
         events: [],
         info: createStartingInfo(),
