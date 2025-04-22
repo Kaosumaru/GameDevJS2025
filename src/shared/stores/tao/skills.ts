@@ -1,5 +1,6 @@
 import { getEntityIdInFieldId, getField } from './board';
 import { filterDeadEntities, hasStatus, isDead, payForSkillEntity } from './entity';
+import { addEvent } from './events/events';
 import { Entity, Field } from './interface';
 import { skillsList } from './skills/_list';
 import { StoreData } from './taoStore';
@@ -73,6 +74,11 @@ export function useSkill(
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   state = skill.reducer(state, { user, skillInstance, targetId, random });
   state = filterDeadEntities(state);
+
+  state = addEvent(state, {
+    type: 'swapEffects',
+    effects: [],
+  });
 
   return state;
 }

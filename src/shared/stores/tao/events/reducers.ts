@@ -14,6 +14,7 @@ import {
   EventType,
   MoveEvent,
   SpawnEvent,
+  SwapEffectsEvent,
   UseSkillEvent,
 } from './events';
 
@@ -37,6 +38,8 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return changeResources(state, event);
     case 'useSkill':
       return changeSkillEvent(state, event);
+    case 'swapEffects':
+      return swapEffects(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -169,4 +172,10 @@ function changeSkillEvent(state: StoreData, event: UseSkillEvent): StoreData {
   return modifyEntity(state, event.entityId, entity => {
     return { ...entity, lastSkillUsed: event.skillInstance };
   });
+}
+function swapEffects(state: StoreData, event: SwapEffectsEvent): StoreData {
+  return {
+    ...state,
+    effects: event.effects.map(effect => ({ ...effect })),
+  };
 }

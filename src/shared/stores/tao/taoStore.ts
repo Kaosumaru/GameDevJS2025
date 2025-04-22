@@ -10,6 +10,7 @@ import { endOfRound } from './rules';
 import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
+import { Effect } from './effects';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -52,6 +53,7 @@ export interface StoreData {
   board: Field[][];
   entities: Entity[];
   events: EventType[];
+  effects: Effect[];
   info: GameInfo;
 }
 
@@ -91,6 +93,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       board: [],
       entities: [],
       events: [],
+      effects: [],
       info: createStartingInfo(),
     },
     makeAction
@@ -143,6 +146,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         board: fieldData,
         entities: [],
         events: [],
+        effects: [],
         info: createStartingInfo(),
       };
 

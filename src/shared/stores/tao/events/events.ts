@@ -1,3 +1,4 @@
+import { Effect } from '../effects';
 import { Entity, Position, StatusEffect } from '../interface';
 import { SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
@@ -84,6 +85,11 @@ export interface UseSkillEvent {
   skillInstance: SkillInstance;
 }
 
+export interface SwapEffectsEvent {
+  type: 'swapEffects';
+  effects: Effect[];
+}
+
 export type EventType =
   | ChangeResourcesEvent
   | MoveEvent
@@ -93,6 +99,7 @@ export type EventType =
   | SpawnEvent
   | ChangeBalanceEvent
   | UseSkillEvent
+  | SwapEffectsEvent
   | ChangeSkillsEvent;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {
