@@ -78,5 +78,6 @@ export function createBasicLevel(): LevelDescription {
       8: 'goth-gf',
       9: 'mushroom-bomb',
     },
+    goal: { type: 'none' },
   };
 }
