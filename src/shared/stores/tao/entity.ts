@@ -1,7 +1,7 @@
 import { entityBeforeDeath } from './entityInfo';
 import { addEvent } from './events/events';
 import { Entity, StatusEffect } from './interface';
-import { Skill } from './skills';
+import { Skill, SkillInstance } from './skills';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity {
@@ -54,12 +54,23 @@ export function hasStatus(entity: Entity, status: StatusEffect): boolean {
   return result;
 }
 
-export function payForSkillEntity(state: StoreData, entity: Entity, skill: Skill): StoreData {
+export function payForSkillEntity(
+  state: StoreData,
+  entity: Entity,
+  skill: Skill,
+  skillInstance: SkillInstance
+): StoreData {
   state = addEvent(state, {
     type: 'changeResources',
     entityId: entity.id,
     actions: { from: entity.actionPoints.current, to: Math.max(0, entity.actionPoints.current - skill.actionCost) },
     moves: { from: entity.movePoints.current, to: Math.max(0, entity.movePoints.current - skill.moveCost) },
+  });
+
+  state = addEvent(state, {
+    type: 'useSkill',
+    entityId: entity.id,
+    skillInstance,
   });
 
   if (skill.cooldown) {

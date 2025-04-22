@@ -52,6 +52,7 @@ export interface Entity {
   statusesCooldowns: Statuses;
   traits: EntityTraits;
   totalAttacksCount: number;
+  lastSkillUsed?: SkillInstance;
 }
 
 export interface Field {

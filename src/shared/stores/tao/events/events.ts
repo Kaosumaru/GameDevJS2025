@@ -78,6 +78,11 @@ export interface ChangeResourcesEvent {
   actions: Delta<number>;
   moves: Delta<number>;
 }
+export interface UseSkillEvent {
+  type: 'useSkill';
+  entityId: string;
+  skillInstance: SkillInstance;
+}
 
 export type EventType =
   | ChangeResourcesEvent
@@ -87,6 +92,7 @@ export type EventType =
   | DamageEvent
   | SpawnEvent
   | ChangeBalanceEvent
+  | UseSkillEvent
   | ChangeSkillsEvent;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {

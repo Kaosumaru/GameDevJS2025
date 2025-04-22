@@ -14,6 +14,7 @@ import {
   EventType,
   MoveEvent,
   SpawnEvent,
+  UseSkillEvent,
 } from './events';
 
 export function reduceEvent(state: StoreData, event: EventType): StoreData {
@@ -34,6 +35,8 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return reduceChangeSkills(state, event);
     case 'changeResources':
       return changeResources(state, event);
+    case 'useSkill':
+      return useSkillEvent(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -48,12 +51,6 @@ function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
           current: damage.health.to,
         },
         shield: damage.shield.to,
-      };
-    }
-    if (entity.id === event.attackerId) {
-      return {
-        ...entity,
-        totalAttacksCount: entity.totalAttacksCount + 1,
       };
     }
     return entity;
@@ -166,4 +163,10 @@ function placeEntity(state: StoreData, entity: Entity): StoreData {
   field.entityUUID = entity.id;
   newState.entities = [...newState.entities, entity];
   return newState;
+}
+
+function useSkillEvent(state: StoreData, event: UseSkillEvent): StoreData {
+  return modifyEntity(state, event.entityId, entity => {
+    return { ...entity, lastSkillUsed: event.skillInstance };
+  });
 }
