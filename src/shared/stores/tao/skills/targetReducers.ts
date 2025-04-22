@@ -252,6 +252,6 @@ export function farthestEmptyFieldInStraightLine(max: number) {
   };
 }
 
-function isBlocking(field: Field): boolean {
+export function isBlocking(field: Field): boolean {
   return field.blocking || field.entityUUID !== undefined;
 }

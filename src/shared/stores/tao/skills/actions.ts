@@ -1,5 +1,13 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
-import { addEntities, getDistance, getEntityField, getEntityInField, getField } from '../board';
+import {
+  addEntities,
+  Direction,
+  getDistance,
+  getEntityField,
+  getEntityInField,
+  getField,
+  getFieldInDirection,
+} from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
@@ -7,7 +15,8 @@ import { addEvent, DamageData, DamageType } from '../events/events';
 import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
-import { empty, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
+import { empty, isBlocking, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
+import { FieldsetHTMLAttributes } from 'react';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
@@ -72,11 +81,11 @@ function isPiercingDamage(damageType: DamageType): boolean {
   return damageType === 'piercing' || damageType === 'poison';
 }
 
-function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
-  if (ctx.entity && hasStatus(ctx.entity, 'critical')) {
+function standardDamageDataReducer(damageDealer: Entity | undefined, amount: number, damageType: DamageType) {
+  if (damageDealer && hasStatus(damageDealer, 'critical')) {
     amount *= 2;
   }
-  addDamageEvent(ctx, entity => {
+  return (entity: Entity): DamageInfo => {
     const damageToShield = isPiercingDamage(damageType) ? 0 : Math.min(entity.shield, amount);
     const damageToHealth = Math.max(0, amount - damageToShield);
     return {
@@ -84,7 +93,11 @@ function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: 
       shield: entity.shield - damageToShield,
       damageType,
     };
-  });
+  };
+}
+
+function addStandardDamageEvent(ctx: TargetContext, amount: number, damageType: DamageType) {
+  addDamageEvent(ctx, standardDamageDataReducer(ctx.entity, amount, damageType));
 }
 
 export function heal(amount: number) {
@@ -311,42 +324,57 @@ interface DamageInfo {
   damageType: DamageType;
 }
 
-type DamageDataReducer = (entity: Entity, ctx: TargetContext) => DamageInfo;
+type DamageDataReducer = (entity: Entity) => DamageInfo;
 
-function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): DamageData[] {
-  return ctx.fields
+function damageInfoToDamageData(entity: Entity, info: DamageInfo) {
+  return {
+    entityId: entity.id,
+    health: { from: entity.hp.current, to: info.health ?? entity.hp.current },
+    shield: { from: entity.shield, to: info.shield ?? entity.shield },
+    damageType: info.damageType,
+  };
+}
+
+function createDamageData(state: StoreData, fields: Field[], reducer: DamageDataReducer): DamageData[] {
+  return fields
     .filter(f => f.entityUUID !== undefined)
-    .map(field => getEntityInField(ctx.state, field))
+    .map(field => getEntityInField(state, field))
     .filter(entity => entity.traits.canBeDamaged)
     .map(entity => {
-      const info = reducer(entity, ctx);
-      return {
-        entityId: entity.id,
-        health: { from: entity.hp.current, to: info.health ?? entity.hp.current },
-        shield: { from: entity.shield, to: info.shield ?? entity.shield },
-        damageType: info.damageType,
-      };
+      const info = reducer(entity);
+      return damageInfoToDamageData(entity, info);
     });
 }
 
 function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
-  const damages = createDamageData(ctx, reducer);
+  return addDamageEventNoCtx(ctx.state, ctx.entity, ctx.fields, reducer);
+}
+
+function addDamageEventNoCtx(
+  state: StoreData,
+  attacker: Entity | undefined,
+  fields: Field[],
+  reducer: DamageDataReducer
+): StoreData {
+  const damages = createDamageData(state, fields, reducer);
   if (damages.length === 0) {
-    return;
+    return state;
   }
-  ctx.state = addEvent(ctx.state, {
+  state = addEvent(state, {
     type: 'damage',
-    attackerId: ctx.entity?.id,
+    attackerId: attacker?.id,
     damages,
   });
 
-  if (ctx.entity) {
+  if (attacker) {
     for (const damage of damages) {
       if (damage.health.from != 0 && damage.health.to === 0) {
-        ctx.state = entityAfterKill(ctx.state, ctx.entity);
+        state = entityAfterKill(state, attacker);
       }
     }
   }
+
+  return state;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -361,6 +389,74 @@ function removeRandomField(fields: Field[], random: RandomGenerator): Field | un
   const field = fields[index];
   fields.splice(index, 1);
   return field;
+}
+
+interface PushOptions {
+  direction: Direction;
+  distance: number;
+  damageIfBlocked: number;
+  damageToBlocked: boolean;
+  multiplyDamagePerDistanceLeft: boolean;
+}
+
+function push(state: StoreData, field: Field, options: PushOptions): StoreData {
+  const entity = getEntityInField(state, field);
+  if (entity === undefined) {
+    return state;
+  }
+
+  let distanceLeft = options.distance;
+  let fieldToPush: Field | undefined = undefined;
+  let entityHit: Entity | undefined = undefined;
+
+  for (let i = 0; i < options.distance; i++) {
+    const newField = getFieldInDirection(state, field, options.direction, i + 1);
+    if (newField === undefined) {
+      break;
+    }
+    if (isBlocking(newField)) {
+      if (newField.entityUUID !== undefined) {
+        entityHit = getEntityInField(state, newField);
+      }
+      break;
+    }
+
+    fieldToPush = newField;
+    distanceLeft--;
+  }
+
+  if (fieldToPush !== undefined) {
+    state = addEvent(state, {
+      type: 'move',
+      moves: [
+        {
+          entityId: entity.id,
+          from: entity.position,
+          to: fieldToPush.position,
+        },
+      ],
+    });
+  }
+
+  if (distanceLeft === 0) {
+    return state;
+  }
+
+  const fields: Field[] = [];
+  if (options.damageIfBlocked > 0) {
+    fields.push(field);
+  }
+
+  if (options.damageToBlocked && entityHit) {
+    fields.push(getEntityField(state, entityHit));
+  }
+
+  const multiplier = options.multiplyDamagePerDistanceLeft ? distanceLeft : 1;
+  const damageAmount = options.damageIfBlocked * multiplier;
+
+  state = addDamageEventNoCtx(state, undefined, fields, standardDamageDataReducer(undefined, damageAmount, 'standard'));
+
+  return state;
 }
 
 export interface ActionTargetContext extends TargetContext {
