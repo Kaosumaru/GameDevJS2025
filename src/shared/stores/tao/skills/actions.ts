@@ -16,7 +16,7 @@ import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { empty, isBlocking, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
-import { ParticleInPlaceEffect } from '../effects';
+import { MovingParticleEffect, ParticleInPlaceEffect } from '../effects';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
@@ -41,6 +41,34 @@ export function effectsInFields(ids: string[]) {
           type: 'particleInFieldEffect',
           effectType: id,
           inField: field.id,
+        };
+        return effectId;
+      });
+      allEffects.push(...effects);
+    }
+
+    ctx.state = addEvent(ctx.state, {
+      type: 'swapEffects',
+      effects: allEffects,
+    });
+  };
+}
+
+export function effectsToFields(ids: string[]) {
+  return (ctx: TargetContext) => {
+    if (!ctx.entity) {
+      throw new Error('Entity is undefined');
+    }
+    const entityField = getEntityField(ctx.state, ctx.entity);
+    const allEffects: MovingParticleEffect[] = [];
+
+    for (const field of ctx.fields) {
+      const effects = ids.map(id => {
+        const effectId: MovingParticleEffect = {
+          type: 'movingParticleEffect',
+          effectType: id,
+          fromField: entityField.id,
+          toField: field.id,
         };
         return effectId;
       });
