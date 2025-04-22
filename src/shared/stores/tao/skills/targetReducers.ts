@@ -8,7 +8,7 @@ import {
   getFieldNeighbors9,
   getPerpendicularDirections,
 } from '../board';
-import { getEntity, hasStatus, isEnemy } from '../entity';
+import { getEntity, hasStatus, isDead, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
 import { SkillContext, skillFromInstance, SkillInstance } from '../skills';
@@ -134,7 +134,7 @@ export function withEnemy(ctx: TargetContext) {
 }
 
 export function withDeadEntity(ctx: TargetContext) {
-  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? entity.hp.current <= 0 : false));
+  ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isDead(entity) : false));
 }
 
 export function withAlly(ctx: TargetContext) {

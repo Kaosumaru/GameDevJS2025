@@ -1,6 +1,6 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
 import { findFieldByPosition, getField } from './board';
-import { getEntity, hasStatus } from './entity';
+import { getEntity, hasStatus, isDead } from './entity';
 import { Entity, Field } from './interface';
 import { getDistancesToPlayers } from './pathfinding';
 import {
@@ -26,7 +26,7 @@ export function monstersAi(state: StoreData, random: RandomGenerator): StoreData
 function monsterAI(state: StoreData, entityID: string, random: RandomGenerator): StoreData {
   for (;;) {
     const entity = getEntity(state, entityID);
-    if (!entity) {
+    if (!entity || isDead(entity)) {
       break;
     }
 

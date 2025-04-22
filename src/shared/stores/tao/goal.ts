@@ -1,3 +1,4 @@
+import { isDead } from './entity';
 import { GameState, StoreData } from './taoStore';
 
 export interface SurviveGoal {
@@ -34,7 +35,7 @@ function isGoalFulfilled(state: StoreData, goal: GoalType): boolean {
       }
     case 'killAll': {
       const killGoal = goal as KillAllGoal;
-      return state.entities.filter(entity => entity.id === killGoal.entityId).every(entity => entity.hp.current <= 0);
+      return state.entities.filter(entity => entity.id === killGoal.entityId).every(isDead);
     }
 
     case 'none':
@@ -53,7 +54,5 @@ function changeState(state: StoreData, stateState: GameState): StoreData {
 }
 
 function areOwnedPlayersDead(state: StoreData): boolean {
-  return state.entities.every(
-    entity => entity.type === 'player' && entity.hp.current <= 0 && entity.ownerId !== undefined
-  );
+  return state.entities.every(entity => entity.type === 'player' && isDead(entity) && entity.ownerId !== undefined);
 }
