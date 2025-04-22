@@ -317,6 +317,7 @@ function createDamageData(ctx: TargetContext, reducer: DamageDataReducer): Damag
   return ctx.fields
     .filter(f => f.entityUUID !== undefined)
     .map(field => getEntityInField(ctx.state, field))
+    .filter(entity => entity.traits.canBeDamaged)
     .map(entity => {
       const info = reducer(entity, ctx);
       return {

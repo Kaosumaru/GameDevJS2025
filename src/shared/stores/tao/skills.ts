@@ -112,7 +112,7 @@ export function getRange(state: StoreData, user: Entity, skillInstance: SkillIns
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
-  if (isDead(user)) {
+  if (isDead(user) || user.hp.current <= 0) {
     return false;
   }
 

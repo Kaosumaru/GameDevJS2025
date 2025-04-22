@@ -16,6 +16,12 @@ export const defaultPlayer: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
+  traits: {
+    isTank: false,
+    canBeKilled: true,
+    canBeDamaged: true,
+  },
 };
 
 export const defaultEnemy: Entity = {
@@ -34,4 +40,10 @@ export const defaultEnemy: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
+  traits: {
+    isTank: false,
+    canBeKilled: true,
+    canBeDamaged: true,
+  },
 };

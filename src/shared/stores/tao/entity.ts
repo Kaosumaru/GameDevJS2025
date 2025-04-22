@@ -13,7 +13,7 @@ export function getEntity(state: StoreData, id: string): Entity {
 }
 
 export function isDead(entity: Entity): boolean {
-  return entity.hp.current <= 0;
+  return entity.hp.current <= 0 && entity.traits.canBeKilled;
 }
 
 export type EntityReducer = (entity: Entity) => Entity;

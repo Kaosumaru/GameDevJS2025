@@ -58,9 +58,13 @@ export function getEmptyFields(map: Map<Field, number>): Field[] {
   return [...map].filter(([field]) => field.entityUUID === undefined).map(([field]) => field);
 }
 
-export function getDistancesToEntityType(state: StoreData, entityType: EntityType): Map<Field, number> {
+export function getDistancesToEntityType(
+  state: StoreData,
+  entityType: EntityType,
+  additionalCheck?: (entity: Entity) => boolean
+): Map<Field, number> {
   const fieldsWithEntityType = state.entities
-    .filter(e => entityType === e.type)
+    .filter(e => entityType === e.type && e.hp.current > 0 && (additionalCheck ? additionalCheck(e) : true))
     .map(e => findFieldByPosition(state, e.position))
     .filter(f => f !== undefined);
 
@@ -69,12 +73,7 @@ export function getDistancesToEntityType(state: StoreData, entityType: EntityTyp
 
 export function getDistancesToPlayers(state: StoreData, taunted: boolean): Map<Field, number> {
   if (taunted) {
-    const fieldsWithEntityType = state.entities
-      .filter(e => 'player' === e.type && e.isTank)
-      .map(e => findFieldByPosition(state, e.position))
-      .filter(f => f !== undefined);
-
-    return getFieldsInDistance(state, fieldsWithEntityType);
+    return getDistancesToEntityType(state, 'player', e => e.traits.isTank ?? false);
   }
   return getDistancesToEntityType(state, 'player');
 }
