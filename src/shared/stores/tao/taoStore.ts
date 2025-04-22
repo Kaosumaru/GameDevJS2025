@@ -31,6 +31,17 @@ export interface TaoNewGameAction extends NewGameAction {
 }
 
 export type Action = UseSkillAction | EndRoundAction | TaoNewGameAction;
+export type GameState = 'inProgress' | 'defeated' | 'victory';
+
+export interface GameInfo {
+  balance: number;
+  entities: number;
+  round: number;
+  gameState: GameState;
+  perRound: {
+    positionsOfDeaths: Position[];
+  };
+}
 
 export interface StoreData {
   oldState?: StoreData;
@@ -38,17 +49,23 @@ export interface StoreData {
   board: Field[][];
   entities: Entity[];
   events: EventType[];
-  info: {
-    balance: number;
-    entities: number;
-    perRound: {
-      positionsOfDeaths: Position[];
-    };
-  };
+  info: GameInfo;
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
   return Array.from({ length: rows }, () => Array<T>(cols).fill(value));
+}
+
+function createStartingInfo(): GameInfo {
+  return {
+    balance: 0,
+    entities: 0,
+    round: 0,
+    gameState: 'inProgress',
+    perRound: {
+      positionsOfDeaths: [],
+    },
+  };
 }
 
 function convertNumbersToFieldType(numbers: number[][]): Field[][] {
@@ -69,13 +86,7 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
       gameOver: false,
       entities: [],
       events: [],
-      info: {
-        balance: 0,
-        entities: 0,
-        perRound: {
-          positionsOfDeaths: [],
-        },
-      },
+      info: createStartingInfo(),
     },
     makeAction
   );
@@ -84,11 +95,17 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'endRound': {
+      if (store.info.gameState !== 'inProgress') {
+        throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
+      }
       // caching old state for client animations
       store = cacheOldState(store);
       return endOfRound(store, ctx.random);
     }
     case 'useSkill': {
+      if (store.info.gameState !== 'inProgress') {
+        throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
+      }
       // caching old state for client animations
       store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
@@ -122,13 +139,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         gameOver: false,
         entities: [],
         events: [],
-        info: {
-          balance: 0,
-          entities: 0,
-          perRound: {
-            positionsOfDeaths: [],
-          },
-        },
+        info: createStartingInfo(),
       };
 
       const level = createLevel(action.options.level ?? 0);

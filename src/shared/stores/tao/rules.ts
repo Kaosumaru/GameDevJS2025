@@ -29,6 +29,7 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
     ...state,
     info: {
       ...state.info,
+      round: state.info.round + 1,
       perRound: {
         positionsOfDeaths: [],
       },
