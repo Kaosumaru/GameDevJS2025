@@ -9,7 +9,7 @@ import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../../Hooks/usePrevious';
 import { useTaoAudio } from '../Audio/useTaoAudio';
-import { getRandomMoveSound, getRandomSwordHitSound } from '../Audio/TaoAudioData';
+import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE } from '../Audio/TaoAudioData';
 import { Statuses } from '../Statuses/Statuses';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
 import { Avatar } from './Avatar';
@@ -28,7 +28,8 @@ const Entity3DComponent = ({
   const hasSpawned = useRef(true);
   const { camera } = useThree();
   const shadowRef = useRef<Mesh>(null);
-  const previusAttackCount = usePrevious(entity.totalAttacksCount);
+  //const previusAttackCount = usePrevious(entity.totalAttacksCount);
+  const previousLastSkillUsed = usePrevious(entity.lastSkillUsed);
   const playNext = useAnimationMotion();
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const Entity3DComponent = ({
       });
     } else {
       playNext('move', async () => {
-        play('sfx', getRandomMoveSound());
+        play('sfx', getRandomSound(TAO_MOVE_SEQUENCE));
         const obj = refs.current['container']!;
         if (!obj) return;
         await animate([
@@ -64,15 +65,16 @@ const Entity3DComponent = ({
   }, [playNext, play, entity.position.x, entity.position.y]);
 
   useEffect(() => {
-    if (previusAttackCount === undefined) return;
-    if (previusAttackCount === entity.totalAttacksCount) return;
+    if (previousLastSkillUsed === entity.lastSkillUsed) return;
+    if (entity.lastSkillUsed === undefined) return;
+    if (entity.lastSkillUsed.id === 'move') return;
 
     const { x } = boardPositionToUiPosition(entity.position.x, entity.position.y);
 
     const obj = refs.current['container']!;
     if (!obj) return;
     playNext('attack', async () => {
-      play('sfx', getRandomSwordHitSound());
+      play('sfx', getRandomSoundForSkill(entity.lastSkillUsed!.id));
       await animate([
         [obj.position, { x: x + 0.2 }, { duration: 0.1 }],
         [obj.position, { x: x - 0.2 }, { duration: 0.1 }],
@@ -81,7 +83,7 @@ const Entity3DComponent = ({
         [obj.position, { x }, { duration: 0.2 }],
       ]);
     });
-  }, [playNext, play, entity, previusAttackCount, entity.totalAttacksCount]);
+  }, [playNext, play, entity, previousLastSkillUsed, entity.lastSkillUsed]);
 
   const refs = useRef<{
     container: Group | null;
