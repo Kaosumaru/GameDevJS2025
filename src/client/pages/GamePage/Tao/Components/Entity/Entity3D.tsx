@@ -19,12 +19,10 @@ const INITIAL_SCALE = [0, 0, 0] as const;
 const Entity3DComponent = ({
   entity,
   isSelected,
-  onClick,
   ...rest
 }: JSX.IntrinsicElements['group'] & {
   isSelected: boolean;
   entity: Entity;
-  onClick: () => void;
 }) => {
   const { play } = useTaoAudio();
   const hasSpawned = useRef(true);
@@ -142,11 +140,6 @@ const Entity3DComponent = ({
           position={[-0.2, 1.2, 0]}
         />
       </group>
-
-      <mesh onClick={onClick} position={[0, -0.1, 0]} renderOrder={4}>
-        <boxGeometry args={[0.99, 0.1, 0.99]} />
-        <meshStandardMaterial transparent opacity={0} />
-      </mesh>
 
       <mesh ref={shadowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]} renderOrder={3}>
         <circleGeometry args={[0.3, 32]} />

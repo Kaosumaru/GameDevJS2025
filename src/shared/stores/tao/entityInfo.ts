@@ -1,5 +1,6 @@
 import { infoFromEntity } from './entities/infos';
-import { Entity } from './interface';
+import { Entity, Field } from './interface';
+import { SkillTargetsReducer } from './skills';
 import { StoreData } from './taoStore';
 
 export type EntityPassive = (state: StoreData, entity: Entity) => StoreData;
@@ -11,6 +12,8 @@ export interface EntityInfo {
   afterDarkness?: EntityPassive;
   afterLight?: EntityPassive;
   afterBalance?: EntityPassive;
+
+  canTargetEntity?: (state: StoreData, entity: Entity) => boolean;
 }
 
 export type BalanceOption = 'darkness' | 'light' | 'balance';

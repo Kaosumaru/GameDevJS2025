@@ -1,5 +1,5 @@
 import { getEntityIdInFieldId, getField } from './board';
-import { filterDeadEntities, hasStatus, payForSkillEntity } from './entity';
+import { filterDeadEntities, hasStatus, isDead, payForSkillEntity } from './entity';
 import { Entity, Field } from './interface';
 import { skillsList } from './skills/_list';
 import { StoreData } from './taoStore';
@@ -106,12 +106,18 @@ export function getAffectedTargets(
 }
 
 export function getRange(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {
-  return skillFromInstance(skillInstance)
-    .getRange(state, { user, skillInstance })
-    .map(field => field.id);
+  return getRangeFields(state, user, skillInstance).map(field => field.id);
+}
+
+export function getRangeFields(state: StoreData, user: Entity, skillInstance: SkillInstance): Field[] {
+  return skillFromInstance(skillInstance).getRange(state, { user, skillInstance });
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {
+  if (isDead(user) || user.hp.current <= 0) {
+    return false;
+  }
+
   if (hasStatus(user, 'stunned')) {
     return false;
   }

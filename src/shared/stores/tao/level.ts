@@ -1,5 +1,6 @@
 import { addEntities } from './board';
 import { EntityTypeId } from './entities/entities';
+import { GoalType } from './goal';
 import { Position } from './interface';
 import { StoreData } from './taoStore';
 
@@ -12,6 +13,8 @@ export interface LevelDescription {
   tiles: number[][];
   tileToField: { [id: number]: TileInfo };
   tileToEntity: { [id: number]: EntityTypeId };
+  winCondition: GoalType;
+  loseCondition: GoalType;
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
@@ -31,6 +34,11 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
   state = {
     ...state,
     board,
+    info: {
+      ...state.info,
+      winCondition: level.winCondition,
+      loseCondition: level.loseCondition,
+    },
   };
 
   state.oldState = {
@@ -72,5 +80,7 @@ export function createBasicLevel(): LevelDescription {
       8: 'goth-gf',
       9: 'mushroom-bomb',
     },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
   };
 }

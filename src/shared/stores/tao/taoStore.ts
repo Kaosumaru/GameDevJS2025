@@ -9,6 +9,7 @@ import { addEvent, EventType } from './events/events';
 import { endOfRound } from './rules';
 import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
+import { GoalType } from './goal';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -31,24 +32,46 @@ export interface TaoNewGameAction extends NewGameAction {
 }
 
 export type Action = UseSkillAction | EndRoundAction | TaoNewGameAction;
+export type GameState = 'inProgress' | 'defeated' | 'victory';
+
+export interface GameInfo {
+  balance: number;
+  entities: number;
+  round: number;
+  winCondition: GoalType;
+  loseCondition: GoalType;
+  gameState: GameState;
+  perRound: {
+    roundEnded: boolean;
+    diedInRound: Entity[];
+  };
+}
 
 export interface StoreData {
   oldState?: StoreData;
-  gameOver: boolean;
   board: Field[][];
   entities: Entity[];
   events: EventType[];
-  info: {
-    balance: number;
-    entities: number;
-    perRound: {
-      positionsOfDeaths: Position[];
-    };
-  };
+  info: GameInfo;
 }
 
 function create2DArray<T>(rows: number, cols: number, value: T): T[][] {
   return Array.from({ length: rows }, () => Array<T>(cols).fill(value));
+}
+
+function createStartingInfo(): GameInfo {
+  return {
+    balance: 0,
+    entities: 0,
+    round: 0,
+    gameState: 'inProgress',
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
+    perRound: {
+      roundEnded: false,
+      diedInRound: [],
+    },
+  };
 }
 
 function convertNumbersToFieldType(numbers: number[][]): Field[][] {
@@ -66,16 +89,9 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
   return createComponentStore(
     {
       board: [],
-      gameOver: false,
       entities: [],
       events: [],
-      info: {
-        balance: 0,
-        entities: 0,
-        perRound: {
-          positionsOfDeaths: [],
-        },
-      },
+      info: createStartingInfo(),
     },
     makeAction
   );
@@ -84,11 +100,17 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'endRound': {
+      if (store.info.gameState !== 'inProgress') {
+        throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
+      }
       // caching old state for client animations
       store = cacheOldState(store);
       return endOfRound(store, ctx.random);
     }
     case 'useSkill': {
+      if (store.info.gameState !== 'inProgress') {
+        throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
+      }
       // caching old state for client animations
       store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
@@ -119,16 +141,9 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
       const fieldData = convertNumbersToFieldType(board);
       let state: StoreData = {
         board: fieldData,
-        gameOver: false,
         entities: [],
         events: [],
-        info: {
-          balance: 0,
-          entities: 0,
-          perRound: {
-            positionsOfDeaths: [],
-          },
-        },
+        info: createStartingInfo(),
       };
 
       const level = createLevel(action.options.level ?? 0);
@@ -149,10 +164,19 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
 function cacheOldState(state: StoreData): StoreData {
   return {
     ...state,
+    events: [],
     oldState: {
       ...state,
       board: state.board.map(row => row.map(field => ({ ...field }))),
       oldState: undefined,
+    },
+    info: {
+      ...state.info,
+      perRound: {
+        ...state.info.perRound,
+        roundEnded: false,
+        diedInRound: state.info.perRound.roundEnded ? [] : state.info.perRound.diedInRound,
+      },
     },
   };
 }

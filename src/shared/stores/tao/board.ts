@@ -50,6 +50,11 @@ export function tryGetEntityInField(state: StoreData, field: Field): Entity | un
   return getEntity(state, field.entityUUID);
 }
 
+export function getEntityInFieldId(state: StoreData, fieldId: string): Entity | undefined {
+  const field = getField(state, fieldId);
+  return tryGetEntityInField(state, field);
+}
+
 export function getEntityIdInField(state: StoreData, field: Field): string {
   if (field.entityUUID === undefined) {
     throw new Error(`Field ${field.id} has no entityUUID`);

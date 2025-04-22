@@ -7,6 +7,7 @@ import { Entity, StatusEffect, Statuses } from './interface';
 import { damage, loseAllShield, refreshResources, rule } from './skills/actions';
 import { allEntities, withShield, withEntityWithStatus as withStatus } from './skills/targetReducers';
 import { StoreData } from './taoStore';
+import { reduceGoal } from './goal';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poison')]);
@@ -14,7 +15,18 @@ const loseShield = rule([allEntities, withShield, loseAllShield]);
 const refreshEntities = rule([allEntities, refreshResources]);
 
 export function endOfRound(state: StoreData, random: RandomGenerator): StoreData {
-  state = { ...state, events: [] };
+  state = {
+    ...state,
+    info: {
+      ...state.info,
+      round: state.info.round + 1,
+      perRound: {
+        ...state.info.perRound,
+        roundEnded: true,
+      },
+    },
+  };
+
   state = clearOriginalPositions(state);
   state = monstersAi(state, random);
   state = refreshEntities(state);
@@ -25,15 +37,8 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = modifyAllEntities(state, decrementAllStatusesReducer);
   state = filterDeadEntities(state);
   state = entitiesAfterRoundStart(state);
-  state = {
-    ...state,
-    info: {
-      ...state.info,
-      perRound: {
-        positionsOfDeaths: [],
-      },
-    },
-  };
+
+  state = reduceGoal(state);
   return state;
 }
 
@@ -45,7 +50,7 @@ function decrementAllStatusesReducer(entity: Entity): Entity {
 }
 
 function lightIfNotKilled(state: StoreData): StoreData {
-  if (state.info.perRound.positionsOfDeaths.length > 0 || state.info.balance === 3) {
+  if (state.info.perRound.diedInRound.length > 0 || state.info.balance === 3) {
     return state;
   }
   return addEvent(state, {

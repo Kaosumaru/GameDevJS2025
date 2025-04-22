@@ -40,5 +40,7 @@ export function createLevel2(): LevelDescription {
       8: 'lacrimosaMateusz',
       9: 'voidling',
     },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
   };
 }

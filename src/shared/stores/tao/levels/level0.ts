@@ -40,5 +40,7 @@ export function createLevel0(): LevelDescription {
       8: 'goth-gf',
       9: 'voidling',
     },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
   };
 }

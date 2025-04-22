@@ -24,6 +24,7 @@ import { useAnimationState } from './Components/Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
+import { Nebula } from './Components/Vfx/Nebula';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -116,6 +117,8 @@ export const TaoScene = ({
       <SkyBox />
       <Environment />
       <OrbitControls makeDefault target={cameraTargetState} />
+      <Nebula scale={[0.1, 0.1, 0.1]} position={[3, 0, 8]} />
+      <Nebula scale={[0.1, 0.1, 0.1]} position={[9.6, 0, 8]} />
       <group>
         {board.map((row, rowIdx) =>
           row.map((field, colIdx) => {
@@ -145,8 +148,18 @@ export const TaoScene = ({
                     }
                   }}
                   onClick={() => {
-                    if (!selectedEntity) {
-                      console.warn('No entity selected');
+                    const entityAtField = entities.find(
+                      e => e.position.x === field.position.x && e.position.y === field.position.y
+                    );
+                    if (
+                      !selectedEntity ||
+                      (entityAtField && selectedEntity.id !== entityAtField.id && uiAction === null)
+                    ) {
+                      if (entityAtField === undefined) {
+                        console.warn('No entity at field');
+                        return;
+                      }
+                      focusOnEntity(entityAtField, entityAtField.type === 'player', entityAtField.type !== 'player');
                       return;
                     }
 
@@ -170,21 +183,7 @@ export const TaoScene = ({
           })
         )}
         {state?.entities.map(entity => {
-          return (
-            <Entity3D
-              key={entity.id}
-              isSelected={entity.id === selectedEntityId}
-              entity={entity}
-              onClick={() => {
-                const e = entities.find(e => e.id === entity.id);
-                if (e === undefined) {
-                  console.warn('No entity found');
-                  return;
-                }
-                focusOnEntity(e, entity.type === 'player', entity.type !== 'player');
-              }}
-            />
-          );
+          return <Entity3D key={entity.id} isSelected={entity.id === selectedEntityId} entity={entity} />;
         })}
       </group>
       <ui.In>

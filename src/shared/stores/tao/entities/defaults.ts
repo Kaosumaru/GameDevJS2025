@@ -4,6 +4,7 @@ export const defaultPlayer: Entity = {
   id: '',
   name: '',
   avatar: 'goth-gf',
+  kind: 'goth-gf',
   type: 'player',
   skills: [],
   hp: { current: 0, max: 0 },
@@ -16,12 +17,19 @@ export const defaultPlayer: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
+  traits: {
+    isTank: false,
+    canBeKilled: true,
+    canBeDamaged: true,
+  },
 };
 
 export const defaultEnemy: Entity = {
   id: '',
   name: '',
   avatar: 'goth-gf',
+  kind: 'goth-gf',
   type: 'enemy',
   skills: [],
   hp: { current: 0, max: 0 },
@@ -34,4 +42,10 @@ export const defaultEnemy: Entity = {
   originalPosition: undefined,
   statusesCooldowns: {},
   ownerId: undefined,
+  totalAttacksCount: 0,
+  traits: {
+    isTank: false,
+    canBeKilled: true,
+    canBeDamaged: true,
+  },
 };

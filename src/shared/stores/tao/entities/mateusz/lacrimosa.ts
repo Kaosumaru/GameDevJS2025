@@ -1,11 +1,13 @@
 import { stat } from '../../interface';
-import { defaultPlayer, EntityConstructor } from '../entities';
+import { defaultPlayer } from '../defaults';
+import { EntityConstructor } from '../entities';
 
 export const lacrimosaMateusz: EntityConstructor = position => ({
   ...defaultPlayer,
   position,
   name: 'Lacrimosa',
   avatar: 'goth-gf',
+  kind: 'lacrimosaMateusz',
 
   skills: [
     { id: 'lacrimosaMove' },

@@ -88,11 +88,11 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
 };
 
 export function infoFromEntity(entity: Entity): EntityInfo {
-  if (!entity.passiveId) {
+  if (!entity.kind) {
     return {};
   }
 
-  const info = entityInfos[entity.passiveId];
+  const info = entityInfos[entity.kind];
   if (!info) {
     return {};
   }

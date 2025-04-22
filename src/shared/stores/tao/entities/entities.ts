@@ -1,4 +1,5 @@
 import { Entity, Position, stat } from '../interface';
+import { defaultEnemy, defaultPlayer } from './defaults';
 import { auroraMateusz } from './mateusz/aurora';
 import { lacrimosaMateusz } from './mateusz/lacrimosa';
 import { vacuenMateusz } from './mateusz/vacuen';
@@ -12,6 +13,7 @@ export type EntityTypeId =
   | 'voidling'
   | 'voidbug'
   | 'testSpawner'
+  | 'playerCrystal'
   | 'lacrimosaMateusz'
   | 'auroraMateusz'
   | 'vacuenMateusz';
@@ -22,7 +24,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Lacrimosa',
     avatar: 'goth-gf',
-    passiveId: 'goth-gf',
+    kind: 'goth-gf',
 
     skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
     hp: stat(3),
@@ -33,7 +35,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Aurora',
     avatar: 'sun-princess',
-    passiveId: 'sun-princess',
+    kind: 'sun-princess',
 
     skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }, { id: 'pass' }],
     hp: stat(4),
@@ -45,7 +47,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Vacuan',
     avatar: 'knight',
-    passiveId: 'knight',
+    kind: 'knight',
 
     skills: [
       { id: 'move' },
@@ -57,7 +59,11 @@ export const entities: EntitiesType = {
     ],
     hp: stat(6),
 
-    isTank: true,
+    traits: {
+      isTank: true,
+      canBeKilled: true,
+      canBeDamaged: true,
+    },
     ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
 
@@ -71,7 +77,7 @@ export const entities: EntitiesType = {
 
     name: 'Mushroom Bomb',
     avatar: 'mushroom-bomb',
-    passiveId: 'mushroom-bomb',
+    kind: 'mushroom-bomb',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -86,6 +92,7 @@ export const entities: EntitiesType = {
 
     name: 'Skullwyrm',
     avatar: 'skullwyrm',
+    kind: 'skullwyrm',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -100,6 +107,7 @@ export const entities: EntitiesType = {
 
     name: 'Voidling',
     avatar: 'voidling',
+    kind: 'voidling',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -114,6 +122,7 @@ export const entities: EntitiesType = {
 
     name: 'Voidbug',
     avatar: 'voidbug',
+    kind: 'voidbug',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -128,6 +137,7 @@ export const entities: EntitiesType = {
 
     name: 'testSpawner',
     avatar: 'testSpawner',
+    kind: 'testSpawner',
 
     skills: [{ id: 'testSpawner' }],
 
@@ -135,45 +145,19 @@ export const entities: EntitiesType = {
       testSpawner: 2,
     },
   }),
+
+  playerCrystal: position => ({
+    ...defaultEnemy,
+    position,
+
+    name: 'playerCrystal',
+    avatar: 'testSpawner',
+    kind: 'playerCrystal',
+
+    type: 'player',
+    skills: [],
+  }),
 };
 
 export type EntityConstructor = (position: Position) => Entity;
 type EntitiesType = { [key in EntityTypeId]: EntityConstructor };
-
-export const defaultPlayer: Entity = {
-  id: '',
-  name: '',
-  avatar: 'goth-gf',
-  type: 'player',
-  skills: [],
-  hp: { current: 0, max: 0 },
-  shield: 0,
-  attack: 1,
-  speed: 4,
-  actionPoints: stat(1),
-  movePoints: stat(1),
-  position: { x: 0, y: 0 },
-  originalPosition: undefined,
-  statusesCooldowns: {},
-  ownerId: undefined,
-  totalAttacksCount: 0,
-};
-
-export const defaultEnemy: Entity = {
-  id: '',
-  name: '',
-  avatar: 'goth-gf',
-  type: 'enemy',
-  skills: [],
-  hp: { current: 1, max: 1 },
-  shield: 0,
-  attack: 1,
-  speed: 2,
-  actionPoints: stat(1),
-  movePoints: stat(1),
-  position: { x: 0, y: 0 },
-  originalPosition: undefined,
-  statusesCooldowns: {},
-  ownerId: undefined,
-  totalAttacksCount: 0,
-};

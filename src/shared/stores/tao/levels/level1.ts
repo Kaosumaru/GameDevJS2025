@@ -22,5 +22,7 @@ export function createLevel1(): LevelDescription {
       8: 'goth-gf',
       9: 'mushroom-bomb',
     },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
   };
 }

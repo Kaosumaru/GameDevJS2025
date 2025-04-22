@@ -94,23 +94,25 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
 }
 
 function reduceDeath(state: StoreData, event: DeathEvent): StoreData {
-  const entity = getEntity(state, event.entityId);
-  const field = getEntityField(state, entity);
-
+  const deadEntities = state.entities.filter(e => event.entityIds.includes(e.id));
   const newState: StoreData = {
     ...state,
-    entities: state.entities.filter(entity => entity.id !== event.entityId),
+    entities: state.entities.filter(e => !event.entityIds.includes(e.id)),
     info: {
       ...state.info,
       perRound: {
         ...state.info.perRound,
-        positionsOfDeaths: [...state.info.perRound.positionsOfDeaths, field.position],
+        diedInRound: [...state.info.perRound.diedInRound, ...deadEntities],
       },
     },
   };
 
-  const newField = getField(newState, field.id);
-  newField.entityUUID = undefined;
+  for (const entity of deadEntities) {
+    const newField = getEntityField(newState, entity);
+    if (newField.entityUUID === entity.id) {
+      newField.entityUUID = undefined;
+    }
+  }
 
   return newState;
 }

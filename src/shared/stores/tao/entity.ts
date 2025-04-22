@@ -12,6 +12,10 @@ export function getEntity(state: StoreData, id: string): Entity {
   return entity;
 }
 
+export function isDead(entity: Entity): boolean {
+  return entity.hp.current <= 0 && entity.traits.canBeKilled;
+}
+
 export type EntityReducer = (entity: Entity) => Entity;
 
 export function modifyEntity(state: StoreData, entityID: string, modifier: EntityReducer): StoreData {
@@ -92,13 +96,14 @@ export function isEnemy(entityA: Entity, entityB: Entity): boolean {
 }
 
 export function filterDeadEntities(state: StoreData): StoreData {
-  const deadEntities = state.entities.filter(entity => entity.hp.current <= 0);
+  const deadEntities = state.entities.filter(isDead);
   if (deadEntities.length == 0) return state;
 
   for (const entity of deadEntities) {
     state = entityBeforeDeath(state, entity);
-    state = addEvent(state, { type: 'death', entityId: entity.id });
   }
+
+  state = addEvent(state, { type: 'death', entityIds: deadEntities.map(e => e.id) });
 
   return state;
 }

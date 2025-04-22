@@ -27,11 +27,17 @@ export type StatusEffect =
 
 export type Statuses = { [key in StatusEffect]?: number };
 
+export interface EntityTraits {
+  isTank: boolean;
+  canBeKilled: boolean;
+  canBeDamaged: boolean;
+}
+
 export interface Entity {
   id: string;
   name: string;
   avatar: EntityKindId;
-  passiveId?: EntityKindId;
+  kind: EntityKindId;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];
@@ -44,7 +50,7 @@ export interface Entity {
   position: Position;
   originalPosition?: Position;
   statusesCooldowns: Statuses;
-  isTank?: boolean;
+  traits: EntityTraits;
   totalAttacksCount: number;
 }
 
