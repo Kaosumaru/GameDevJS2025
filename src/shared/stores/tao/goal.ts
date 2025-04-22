@@ -12,7 +12,7 @@ export interface NoneGoal {
 export type GoalType = SurviveGoal | NoneGoal;
 
 export function reduceGoal(state: StoreData): StoreData {
-  if (isGoalFulfilled(state, state.info.loseCondition)) {
+  if (areOwnedPlayersDead(state) || isGoalFulfilled(state, state.info.loseCondition)) {
     return changeState(state, 'defeated');
   } else if (isGoalFulfilled(state, state.info.winCondition)) {
     return changeState(state, 'victory');
@@ -40,4 +40,10 @@ function changeState(state: StoreData, stateState: GameState): StoreData {
       gameState: stateState,
     },
   };
+}
+
+function areOwnedPlayersDead(state: StoreData): boolean {
+  return state.entities.every(
+    entity => entity.type === 'player' && entity.hp.current <= 0 && entity.ownerId !== undefined
+  );
 }
