@@ -5,11 +5,16 @@ export interface SurviveGoal {
   turns: number;
 }
 
+export interface KillAllGoal {
+  type: 'killAll';
+  entityId: string;
+}
+
 export interface NoneGoal {
   type: 'none';
 }
 
-export type GoalType = SurviveGoal | NoneGoal;
+export type GoalType = SurviveGoal | KillAllGoal | NoneGoal;
 
 export function reduceGoal(state: StoreData): StoreData {
   if (areOwnedPlayersDead(state) || isGoalFulfilled(state, state.info.loseCondition)) {
@@ -27,6 +32,11 @@ function isGoalFulfilled(state: StoreData, goal: GoalType): boolean {
       if (state.info.round >= goal.turns) {
         return true;
       }
+    case 'killAll': {
+      const killGoal = goal as KillAllGoal;
+      return state.entities.filter(entity => entity.id === killGoal.entityId).every(entity => entity.hp.current <= 0);
+    }
+
     case 'none':
       return false;
   }
