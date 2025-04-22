@@ -15,7 +15,18 @@ const loseShield = rule([allEntities, withShield, loseAllShield]);
 const refreshEntities = rule([allEntities, refreshResources]);
 
 export function endOfRound(state: StoreData, random: RandomGenerator): StoreData {
-  state = { ...state, events: [] };
+  state = {
+    ...state,
+    info: {
+      ...state.info,
+      round: state.info.round + 1,
+      perRound: {
+        ...state.info.perRound,
+        roundEnded: true,
+      },
+    },
+  };
+
   state = clearOriginalPositions(state);
   state = monstersAi(state, random);
   state = refreshEntities(state);
@@ -26,16 +37,7 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = modifyAllEntities(state, decrementAllStatusesReducer);
   state = filterDeadEntities(state);
   state = entitiesAfterRoundStart(state);
-  state = {
-    ...state,
-    info: {
-      ...state.info,
-      round: state.info.round + 1,
-      perRound: {
-        positionsOfDeaths: [],
-      },
-    },
-  };
+
   state = reduceGoal(state);
   return state;
 }
@@ -48,7 +50,7 @@ function decrementAllStatusesReducer(entity: Entity): Entity {
 }
 
 function lightIfNotKilled(state: StoreData): StoreData {
-  if (state.info.perRound.positionsOfDeaths.length > 0 || state.info.balance === 3) {
+  if (state.info.perRound.diedInRound.length > 0 || state.info.balance === 3) {
     return state;
   }
   return addEvent(state, {

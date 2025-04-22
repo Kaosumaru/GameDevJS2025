@@ -42,7 +42,8 @@ export interface GameInfo {
   loseCondition: GoalType;
   gameState: GameState;
   perRound: {
-    positionsOfDeaths: Position[];
+    roundEnded: boolean;
+    diedInRound: Entity[];
   };
 }
 
@@ -67,7 +68,8 @@ function createStartingInfo(): GameInfo {
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
     perRound: {
-      positionsOfDeaths: [],
+      roundEnded: false,
+      diedInRound: [],
     },
   };
 }
@@ -162,10 +164,19 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
 function cacheOldState(state: StoreData): StoreData {
   return {
     ...state,
+    events: [],
     oldState: {
       ...state,
       board: state.board.map(row => row.map(field => ({ ...field }))),
       oldState: undefined,
+    },
+    info: {
+      ...state.info,
+      perRound: {
+        ...state.info.perRound,
+        roundEnded: false,
+        diedInRound: state.info.perRound.roundEnded ? [] : state.info.perRound.diedInRound,
+      },
     },
   };
 }

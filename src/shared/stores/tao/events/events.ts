@@ -35,7 +35,7 @@ export interface DamageEvent {
 
 export interface DeathEvent {
   type: 'death';
-  entityId: string;
+  entityIds: string[];
 }
 
 export interface SpawnEvent {

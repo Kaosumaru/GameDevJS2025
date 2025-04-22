@@ -1,4 +1,5 @@
 import { Entity, Position, stat } from '../interface';
+import { defaultEnemy, defaultPlayer } from './defaults';
 import { auroraMateusz } from './mateusz/aurora';
 import { lacrimosaMateusz } from './mateusz/lacrimosa';
 import { vacuenMateusz } from './mateusz/vacuen';
@@ -57,7 +58,11 @@ export const entities: EntitiesType = {
     ],
     hp: stat(6),
 
-    isTank: true,
+    traits: {
+      isTank: true,
+      canBeKilled: true,
+      canBeDamaged: true,
+    },
     ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
 
@@ -139,41 +144,3 @@ export const entities: EntitiesType = {
 
 export type EntityConstructor = (position: Position) => Entity;
 type EntitiesType = { [key in EntityTypeId]: EntityConstructor };
-
-export const defaultPlayer: Entity = {
-  id: '',
-  name: '',
-  avatar: 'goth-gf',
-  type: 'player',
-  skills: [],
-  hp: { current: 0, max: 0 },
-  shield: 0,
-  attack: 1,
-  speed: 4,
-  actionPoints: stat(1),
-  movePoints: stat(1),
-  position: { x: 0, y: 0 },
-  originalPosition: undefined,
-  statusesCooldowns: {},
-  ownerId: undefined,
-  totalAttacksCount: 0,
-};
-
-export const defaultEnemy: Entity = {
-  id: '',
-  name: '',
-  avatar: 'goth-gf',
-  type: 'enemy',
-  skills: [],
-  hp: { current: 1, max: 1 },
-  shield: 0,
-  attack: 1,
-  speed: 2,
-  actionPoints: stat(1),
-  movePoints: stat(1),
-  position: { x: 0, y: 0 },
-  originalPosition: undefined,
-  statusesCooldowns: {},
-  ownerId: undefined,
-  totalAttacksCount: 0,
-};

@@ -101,8 +101,9 @@ export function filterDeadEntities(state: StoreData): StoreData {
 
   for (const entity of deadEntities) {
     state = entityBeforeDeath(state, entity);
-    state = addEvent(state, { type: 'death', entityId: entity.id });
   }
+
+  state = addEvent(state, { type: 'death', entityIds: deadEntities.map(e => e.id) });
 
   return state;
 }
