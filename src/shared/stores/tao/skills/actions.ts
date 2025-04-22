@@ -377,7 +377,7 @@ function createDamageData(state: StoreData, fields: Field[], reducer: DamageData
 }
 
 function addDamageEvent(ctx: TargetContext, reducer: DamageDataReducer) {
-  return addDamageEventNoCtx(ctx.state, ctx.entity, ctx.fields, reducer);
+  ctx.state = addDamageEventNoCtx(ctx.state, ctx.entity, ctx.fields, reducer);
 }
 
 function addDamageEventNoCtx(

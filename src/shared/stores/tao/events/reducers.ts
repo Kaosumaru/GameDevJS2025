@@ -1,5 +1,5 @@
-import { findFieldByPosition, getEntityField, getField } from '../board';
-import { getEntity, modifyEntity } from '../entity';
+import { findFieldByPosition, getEntityField } from '../board';
+import { modifyEntity } from '../entity';
 import { entitiesAfterBalanceChange } from '../entityInfo';
 import { Entity } from '../interface';
 import { moveEntityTo } from '../movement';
