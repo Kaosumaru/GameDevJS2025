@@ -1,7 +1,7 @@
 import { Context, StoreContainer } from 'pureboard/shared/interface';
 import { GameOptions, NewGameAction } from 'pureboard/shared/standardActions';
 import { createComponentStore } from 'pureboard/shared/store';
-import { Entity, Field, Position } from './interface';
+import { Entity, Field } from './interface';
 import { SkillID, useSkill } from './skills';
 import { anyPlayerHasActions, clearOriginalPositions, getEntity } from './entity';
 import { fillState } from './level';

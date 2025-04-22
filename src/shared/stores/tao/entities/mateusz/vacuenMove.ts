@@ -7,7 +7,7 @@ export const vacuenMove: Skill = {
   name: 'Move',
   description: 'Move to a target position, gain 4 shield if moved 3 or more tiles',
   type: 'movement',
-  actionCost: 1,
+  actionCost: 0,
   moveCost: 1,
   reducer: actions([ifDistanceAtLeast(3, [self, gainShield(4)]), move]),
   getPossibleTargets: targets([inMoveDistance(), empty]),
