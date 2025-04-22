@@ -13,6 +13,7 @@ export type EntityTypeId =
   | 'voidling'
   | 'voidbug'
   | 'testSpawner'
+  | 'playerCrystal'
   | 'lacrimosaMateusz'
   | 'auroraMateusz'
   | 'vacuenMateusz';
@@ -23,7 +24,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Lacrimosa',
     avatar: 'goth-gf',
-    passiveId: 'goth-gf',
+    kind: 'goth-gf',
 
     skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
     hp: stat(3),
@@ -34,7 +35,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Aurora',
     avatar: 'sun-princess',
-    passiveId: 'sun-princess',
+    kind: 'sun-princess',
 
     skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }, { id: 'pass' }],
     hp: stat(4),
@@ -46,7 +47,7 @@ export const entities: EntitiesType = {
     position,
     name: 'Vacuan',
     avatar: 'knight',
-    passiveId: 'knight',
+    kind: 'knight',
 
     skills: [
       { id: 'move' },
@@ -76,7 +77,7 @@ export const entities: EntitiesType = {
 
     name: 'Mushroom Bomb',
     avatar: 'mushroom-bomb',
-    passiveId: 'mushroom-bomb',
+    kind: 'mushroom-bomb',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -91,6 +92,7 @@ export const entities: EntitiesType = {
 
     name: 'Skullwyrm',
     avatar: 'skullwyrm',
+    kind: 'skullwyrm',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -105,6 +107,7 @@ export const entities: EntitiesType = {
 
     name: 'Voidling',
     avatar: 'voidling',
+    kind: 'voidling',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -119,6 +122,7 @@ export const entities: EntitiesType = {
 
     name: 'Voidbug',
     avatar: 'voidbug',
+    kind: 'voidbug',
 
     skills: [{ id: 'move' }, { id: 'attack' }],
 
@@ -133,12 +137,25 @@ export const entities: EntitiesType = {
 
     name: 'testSpawner',
     avatar: 'testSpawner',
+    kind: 'testSpawner',
 
     skills: [{ id: 'testSpawner' }],
 
     statusesCooldowns: {
       testSpawner: 2,
     },
+  }),
+
+  playerCrystal: position => ({
+    ...defaultEnemy,
+    position,
+
+    name: 'playerCrystal',
+    avatar: 'testSpawner',
+    kind: 'playerCrystal',
+
+    type: 'player',
+    skills: [],
   }),
 };
 

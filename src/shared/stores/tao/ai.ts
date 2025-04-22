@@ -13,6 +13,7 @@ import {
   useSkill,
 } from './skills';
 import { StoreData } from './taoStore';
+import { infoFromEntity } from './entities/infos';
 
 interface Result {
   success: boolean;
@@ -35,22 +36,24 @@ function monsterAI(state: StoreData, entityID: string, random: RandomGenerator):
     }
 
     const movementSkills = getUseableMovementSkills(state, entity);
+    const attackSkills = getUseableAttackSkills(state, entity);
+
+    const attackSkillId = attackSkills.length > 0 ? attackSkills[0] : undefined;
+
     if (movementSkills.length != 0) {
-      const skillId = movementSkills[0];
-      const bestTarget = bestTargetsForMovement(state, entity, skillId);
+      const movementSkillId = movementSkills[0];
+      const bestTarget = bestTargetsForMovement(state, entity, movementSkillId, attackSkillId);
       if (bestTarget) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        state = useSkill(state, entity, skillId, random, bestTarget.id);
+        state = useSkill(state, entity, movementSkillId, random, bestTarget.id);
         continue;
       }
     }
 
-    const attackSkills = getUseableAttackSkills(state, entity);
-    if (attackSkills.length != 0) {
-      const skillId = attackSkills[0];
+    if (attackSkillId) {
       const result: Result = { success: false };
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      state = useSkillOnFirstTarget(state, entity, skillId, random, result);
+      state = useSkillOnFirstTarget(state, entity, attackSkillId, random, result);
       if (result.success) {
         continue;
       }
@@ -60,15 +63,19 @@ function monsterAI(state: StoreData, entityID: string, random: RandomGenerator):
   return state;
 }
 
-function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: SkillID): Field | undefined {
-  const skillInstance = getSkillInstance(entity, skillId);
+function bestTargetsForMovement(
+  state: StoreData,
+  entity: Entity,
+  movementSkillId: SkillID,
+  attackSkillId: SkillID | undefined
+): Field | undefined {
+  const skillInstance = getSkillInstance(entity, movementSkillId);
   const possibleTargets = getPossibleTargets(state, entity, skillInstance);
   const fieldsInRange = possibleTargets
     .map(targetId => getField(state, targetId))
     .filter((field): field is Field => field !== undefined);
 
-  const taunted = hasStatus(entity, 'taunted');
-  const distances = getDistancesToPlayers(state, taunted);
+  const distances = getDistancesToPlayers(state, entity, attackSkillId);
   const closestField = getClosestFieldToPlayers(state, fieldsInRange, entity, distances);
   return closestField;
 }
@@ -82,10 +89,14 @@ function useSkillOnFirstTarget(
 ): StoreData {
   const skillInstance = getSkillInstance(entity, skillId);
   let targets = getPossibleTargets(state, entity, skillInstance);
+  const info = infoFromEntity(entity);
 
   targets = targets.filter(targetId => {
     const entity = getEntityInFieldId(state, targetId);
-    // ingore fields with entities without hp
+    if (entity && info.canTargetEntity && !info.canTargetEntity(state, entity)) {
+      return false;
+    }
+    // ignore fields with entities without hp
     return !entity || entity.hp.current > 0;
   });
   // TODO

@@ -106,9 +106,11 @@ export function getAffectedTargets(
 }
 
 export function getRange(state: StoreData, user: Entity, skillInstance: SkillInstance): string[] {
-  return skillFromInstance(skillInstance)
-    .getRange(state, { user, skillInstance })
-    .map(field => field.id);
+  return getRangeFields(state, user, skillInstance).map(field => field.id);
+}
+
+export function getRangeFields(state: StoreData, user: Entity, skillInstance: SkillInstance): Field[] {
+  return skillFromInstance(skillInstance).getRange(state, { user, skillInstance });
 }
 
 export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance): boolean {

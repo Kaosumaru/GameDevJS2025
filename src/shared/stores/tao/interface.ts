@@ -36,7 +36,7 @@ export interface Entity {
   id: string;
   name: string;
   avatar: EntityKindId;
-  passiveId?: EntityKindId;
+  kind: EntityKindId;
   type: EntityType;
   ownerId?: number; // Optional, for player entities
   skills: SkillInstance[];

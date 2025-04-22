@@ -152,7 +152,7 @@ function changeResources(state: StoreData, event: ChangeResourcesEvent): StoreDa
 function placeEntity(state: StoreData, entity: Entity): StoreData {
   const position = entity.position;
   const id = state.info.entities;
-  entity.id = entity.id == '' ? `entity-${id}` : entity.id;
+  entity.id = `entity-${id}`;
   const field = findFieldByPosition(state, position);
   if (!field) {
     throw new Error(`Field not found at position (${position.x}, ${position.y})`);

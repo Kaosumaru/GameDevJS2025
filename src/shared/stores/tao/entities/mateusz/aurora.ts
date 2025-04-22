@@ -7,6 +7,7 @@ export const auroraMateusz: EntityConstructor = position => ({
   position,
   name: 'Aurora',
   avatar: 'sun-princess',
+  kind: 'auroraMateusz',
 
   skills: [
     { id: 'auroraMove' },
