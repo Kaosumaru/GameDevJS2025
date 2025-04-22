@@ -140,6 +140,13 @@ export const entities: EntitiesType = {
     kind: 'testSpawner',
 
     skills: [{ id: 'testSpawner' }],
+    hp: stat(4),
+
+    traits: {
+      isTank: false,
+      canBeKilled: true,
+      canBeDamaged: false,
+    },
 
     statusesCooldowns: {
       testSpawner: 2,
