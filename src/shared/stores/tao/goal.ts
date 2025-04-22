@@ -34,6 +34,7 @@ function isGoalFulfilled(state: StoreData, goal: GoalType): boolean {
       if (state.info.round >= goal.turns) {
         return true;
       }
+      return false;
     case 'killAll': {
       const killGoal = goal as KillAllGoal;
       return state.entities.filter(entity => entity.kind === killGoal.entityType).every(isDead);
