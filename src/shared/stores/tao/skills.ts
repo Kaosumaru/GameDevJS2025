@@ -68,7 +68,7 @@ export function useSkill(
     throw new Error(`Not enough resources to use skill ${skillId}`);
   }
 
-  state = payForSkillEntity(state, user, skill);
+  state = payForSkillEntity(state, user, skill, skillInstance);
 
   state = { ...state, board: deepCopy2DArray(state.board) }; // Shallow copy of the board
   state = skill.reducer(state, { user, skillInstance, targetId, random });

@@ -36,7 +36,7 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
     case 'changeResources':
       return changeResources(state, event);
     case 'useSkill':
-      return useSkillEvent(state, event);
+      return changeSkillEvent(state, event);
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {
@@ -165,7 +165,7 @@ function placeEntity(state: StoreData, entity: Entity): StoreData {
   return newState;
 }
 
-function useSkillEvent(state: StoreData, event: UseSkillEvent): StoreData {
+function changeSkillEvent(state: StoreData, event: UseSkillEvent): StoreData {
   return modifyEntity(state, event.entityId, entity => {
     return { ...entity, lastSkillUsed: event.skillInstance };
   });
