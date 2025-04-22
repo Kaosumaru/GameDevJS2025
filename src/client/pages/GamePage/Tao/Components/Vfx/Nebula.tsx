@@ -51,8 +51,8 @@ const json = {
           type: 'RadialVelocity',
           properties: {
             radius: 10,
-            x: 0,
-            y: 5,
+            x: 5,
+            y: 0,
             z: 0,
             theta: 900,
             isEnabled: true,
@@ -74,8 +74,8 @@ const json = {
           id: '51ca9457-3d8b-11e9-a1e8-4785d9606b75',
           type: 'Color',
           properties: {
-            colorA: '#002a4f',
-            colorB: '#0029FF',
+            colorA: '#ee1010',
+            colorB: '#ff0000',
             life: null,
             easing: 'easeOutCubic',
           },
@@ -95,8 +95,8 @@ const json = {
           type: 'Force',
           properties: {
             fx: 0,
-            fy: 5,
-            fz: 0,
+            fy: 0,
+            fz: 5,
             life: null,
             easing: 'easeLinear',
           },
@@ -157,25 +157,23 @@ const NebulaComponent = (groupProps: JSX.IntrinsicElements['group']) => {
     const asyncFunc = async () => {
       const system = await System.fromJSONAsync(json, THREE, undefined);
       systemRef.current = system;
-      console.log('system loaded', system);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const renderer = new SpriteRenderer(groupRef.current! as any, THREE);
 
       system.addRenderer(renderer).emit({
-        onStart: () => {
-          console.log('start');
-        },
-        onUpdate: () => {
-        },
-        onEnd: () => {
-          console.log('end');
-        },
+        onStart: () => {},
+        onUpdate: () => {},
+        onEnd: () => {},
       });
     };
     void asyncFunc();
   }, []);
 
-  return <group ref={groupRef} {...groupProps} />;
+  return (
+    <group {...groupProps}>
+      <group ref={groupRef} />
+    </group>
+  );
 };
 
 export const Nebula = memo(NebulaComponent);

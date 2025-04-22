@@ -58,7 +58,6 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     });
 
     const musicActivate = () => {
-      console.log('Music activated');
       hasConsentedRef.current = true;
       Object.entries(scheduledAudioRef.current).forEach(([channel, sound]) => {
         const audio = channelsRef.current[channel as TaoChannel];

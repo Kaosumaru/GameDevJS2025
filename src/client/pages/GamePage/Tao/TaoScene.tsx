@@ -1,5 +1,5 @@
 import { Entity3D } from './Components/Entity/Entity3D';
-import { JSX, useCallback, useEffect, useState } from 'react';
+import { JSX, useCallback, useEffect, useRef, useState } from 'react';
 import { Tile } from './Components/Tile';
 import {
   getAffectedTargets,
@@ -11,7 +11,7 @@ import {
 } from '@shared/stores/tao/skills';
 import './Materials/ColorTexMaterial/ColorTexMaterial';
 import { boardPositionToUiPosition } from './Utils/boardPositionToUiPositon';
-import { Color, Vector3 } from 'three';
+import { Color, Group, Vector3 } from 'three';
 import { useClient } from 'pureboard/client/react';
 import { TaoClient } from './TaoClient';
 import { Seat } from './UiComponents/Seat';
@@ -65,16 +65,21 @@ export const TaoScene = ({
   const client = useClient(TaoClient, gameRoomClient);
   const state = useAnimationState(client);
 
-  const board = client.store(state => state.board);
-  const entities = client.store(state => state.entities);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [uiAction, setUiAction] = useState<UiAction | null>(null);
   const [affectedFields, setAffectedFields] = useState<string[]>([]);
+  const fireballRef = useRef<Group>(null);
 
-  const selectedEntity = entities.find(entity => entity.id === selectedEntityId);
+  const selectedEntity = (state?.entities ?? []).find(entity => entity.id === selectedEntityId);
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
+
+  useEffect(() => {
+    if (fireballRef.current) {
+      fireballRef.current.visible = false;
+    }
+  }, [fireballRef]);
 
   const selectSkill = useCallback(
     (selectedEntity: Entity, skill: SkillInstance) => {
@@ -104,12 +109,12 @@ export const TaoScene = ({
 
   useEffect(() => {
     if (cameraTargetState === undefined) {
-      const firstPlayer = entities.find(entity => entity.ownerId === 0);
+      const firstPlayer = (state?.entities ?? []).find(entity => entity.ownerId === 0);
       if (firstPlayer) {
         focusOnEntity(firstPlayer, true, false);
       }
     }
-  }, [entities, cameraTargetState, focusOnEntity]);
+  }, [state?.entities, cameraTargetState, focusOnEntity]);
 
   return (
     <group>
@@ -117,10 +122,9 @@ export const TaoScene = ({
       <SkyBox />
       <Environment />
       <OrbitControls makeDefault target={cameraTargetState} />
-      <Nebula scale={[0.1, 0.1, 0.1]} position={[3, 0, 8]} />
-      <Nebula scale={[0.1, 0.1, 0.1]} position={[9.6, 0, 8]} />
+      <Nebula ref={fireballRef} scale={[0.05, 0.05, 0.05]} position={[5, 0.5, 15]} />
       <group>
-        {board.map((row, rowIdx) =>
+        {(state?.board ?? []).map((row, rowIdx) =>
           row.map((field, colIdx) => {
             const isTarget = targets.includes(field.id);
             const isAffected = affectedFields.includes(field.id);
@@ -148,7 +152,7 @@ export const TaoScene = ({
                     }
                   }}
                   onClick={() => {
-                    const entityAtField = entities.find(
+                    const entityAtField = (state?.entities ?? []).find(
                       e => e.position.x === field.position.x && e.position.y === field.position.y
                     );
                     if (
@@ -191,9 +195,9 @@ export const TaoScene = ({
         <Jukebox />
         <Seat
           gameRoomClient={gameRoomClient}
-          entities={entities}
+          entities={state?.entities ?? []}
           onAvatarSelected={entityId => {
-            const entity = entities.find(entity => entity.id === entityId);
+            const entity = (state?.entities ?? []).find(entity => entity.id === entityId);
             if (entity === undefined) {
               console.warn('No entity found');
               return;
