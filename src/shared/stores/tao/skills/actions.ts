@@ -16,7 +16,6 @@ import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { empty, isBlocking, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
-import { FieldsetHTMLAttributes } from 'react';
 
 export function damage(amount: number, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {

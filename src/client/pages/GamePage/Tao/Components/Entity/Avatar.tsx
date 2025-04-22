@@ -15,8 +15,9 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
     `/avatars/${entity.avatar}-damage.png`,
   ]);
 
-  const imageWidth = colorMap.image.width / 1100;
-  const imageHeight = colorMap.image.height / 1100;
+  const base = 800;
+  const imageWidth = colorMap.image.width / base;
+  const imageHeight = colorMap.image.height / base;
   const previousHp = usePrevious(entity.hp);
 
   const playNext = useAnimationMotion();
