@@ -1,15 +1,7 @@
-import { useEffect, useState } from 'react';
-import { EventType } from '@shared/stores/tao/events/events';
-import { boardPositionToUiPosition } from '../Utils/boardPositionToUiPositon';
-import { AnimatedEntities, AnimatedEntity } from '../TaoTypes';
-import { Vector2 } from 'three';
-import { v4 as uuid } from 'uuid';
+import { AnimatedEntities } from '../TaoTypes';
 
-const createUniqueLabel = (prefix: string) => {
-  return `${prefix}-${uuid()}`;
-};
-
-const eventReducer = (acc: AnimatedEntities, event: EventType): AnimatedEntities => {
+const eventReducer = (acc: AnimatedEntities): AnimatedEntities => {
+  /*
   switch (event.type) {
     case 'spawn': {
       return event.entities.reduce((state, entity) => {
@@ -212,6 +204,6 @@ export const useEntitiesState = (events: EventType[]) => {
       return events.reduce(eventReducer, cleaned);
     });
   }, [events]);
-
-  return entitiesState;
+  */
+  return acc;
 };

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { AnimationContext } from './AnimationContext';
-import { TaoClient } from '../TaoClient';
 import { reduceEvent } from '@shared/stores/tao/events/reducers';
 import { StoreData } from '@shared/stores/tao/taoStore';
+import { TaoClient } from '../../TaoClient';
 
 export const useAnimationState = (client: TaoClient) => {
   const ctx = useContext(AnimationContext);
