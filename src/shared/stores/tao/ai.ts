@@ -1,5 +1,5 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
-import { findFieldByPosition, getField } from './board';
+import { findFieldByPosition, getEntityInFieldId, getField } from './board';
 import { getEntity, hasStatus, isDead } from './entity';
 import { Entity, Field } from './interface';
 import { getDistancesToPlayers } from './pathfinding';
@@ -13,6 +13,10 @@ import {
   useSkill,
 } from './skills';
 import { StoreData } from './taoStore';
+
+interface Result {
+  success: boolean;
+}
 
 export function monstersAi(state: StoreData, random: RandomGenerator): StoreData {
   state = { ...state };
@@ -44,9 +48,12 @@ function monsterAI(state: StoreData, entityID: string, random: RandomGenerator):
     const attackSkills = getUseableAttackSkills(state, entity);
     if (attackSkills.length != 0) {
       const skillId = attackSkills[0];
+      const result: Result = { success: false };
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      state = useSkillOnFirstTarget(state, entity, skillId, random);
-      continue;
+      state = useSkillOnFirstTarget(state, entity, skillId, random, result);
+      if (result.success) {
+        continue;
+      }
     }
     break;
   }
@@ -66,16 +73,30 @@ function bestTargetsForMovement(state: StoreData, entity: Entity, skillId: Skill
   return closestField;
 }
 
-function useSkillOnFirstTarget(state: StoreData, entity: Entity, skillId: SkillID, random: RandomGenerator): StoreData {
+function useSkillOnFirstTarget(
+  state: StoreData,
+  entity: Entity,
+  skillId: SkillID,
+  random: RandomGenerator,
+  result: Result
+): StoreData {
   const skillInstance = getSkillInstance(entity, skillId);
-  const targets = getPossibleTargets(state, entity, skillInstance);
+  let targets = getPossibleTargets(state, entity, skillInstance);
+
+  targets = targets.filter(targetId => {
+    const entity = getEntityInFieldId(state, targetId);
+    // ingore fields with entities without hp
+    return !entity || entity.hp.current > 0;
+  });
   // TODO
   const taunted = hasStatus(entity, 'taunted');
   if (targets.length == 0) {
+    result.success = false;
     return state;
   }
 
-  const targetId = targets[0];
+  result.success = true;
+  const targetId = targets[random.int(targets.length)];
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSkill(state, entity, skillId, random, targetId);
 }

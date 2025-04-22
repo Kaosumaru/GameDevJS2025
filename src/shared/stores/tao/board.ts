@@ -35,6 +35,14 @@ export function getEntityInField(state: StoreData, field: Field): Entity {
   return getEntity(state, field.entityUUID);
 }
 
+export function getEntityInFieldId(state: StoreData, fieldId: string): Entity | undefined {
+  const field = getField(state, fieldId);
+  if (field.entityUUID === undefined) {
+    return undefined;
+  }
+  return getEntity(state, field.entityUUID);
+}
+
 export function getEntityIdInField(state: StoreData, field: Field): string {
   if (field.entityUUID === undefined) {
     throw new Error(`Field ${field.id} has no entityUUID`);
