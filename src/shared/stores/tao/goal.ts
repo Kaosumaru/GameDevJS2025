@@ -1,4 +1,4 @@
-import { StoreData } from './taoStore';
+import { GameState, StoreData } from './taoStore';
 
 export interface SurviveGoal {
   type: 'survive';
@@ -12,24 +12,32 @@ export interface NoneGoal {
 export type GoalType = SurviveGoal | NoneGoal;
 
 export function reduceGoal(state: StoreData): StoreData {
-  switch (state.info.goal.type) {
-    case 'survive':
-      if (state.info.round >= state.info.goal.turns) {
-        return applyVictory(state);
-      }
-    case 'none':
-      break;
+  if (isGoalFulfilled(state, state.info.loseCondition)) {
+    return changeState(state, 'defeated');
+  } else if (isGoalFulfilled(state, state.info.winCondition)) {
+    return changeState(state, 'victory');
   }
 
   return state;
 }
 
-function applyVictory(state: StoreData): StoreData {
+function isGoalFulfilled(state: StoreData, goal: GoalType): boolean {
+  switch (goal.type) {
+    case 'survive':
+      if (state.info.round >= goal.turns) {
+        return true;
+      }
+    case 'none':
+      return false;
+  }
+}
+
+function changeState(state: StoreData, stateState: GameState): StoreData {
   return {
     ...state,
     info: {
       ...state.info,
-      gameState: 'victory',
+      gameState: stateState,
     },
   };
 }

@@ -38,7 +38,8 @@ export interface GameInfo {
   balance: number;
   entities: number;
   round: number;
-  goal: GoalType;
+  winCondition: GoalType;
+  loseCondition: GoalType;
   gameState: GameState;
   perRound: {
     positionsOfDeaths: Position[];
@@ -63,7 +64,8 @@ function createStartingInfo(): GameInfo {
     entities: 0,
     round: 0,
     gameState: 'inProgress',
-    goal: { type: 'none' },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
     perRound: {
       positionsOfDeaths: [],
     },

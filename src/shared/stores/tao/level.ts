@@ -13,7 +13,8 @@ export interface LevelDescription {
   tiles: number[][];
   tileToField: { [id: number]: TileInfo };
   tileToEntity: { [id: number]: EntityTypeId };
-  goal: GoalType;
+  winCondition: GoalType;
+  loseCondition: GoalType;
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
@@ -35,7 +36,8 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     board,
     info: {
       ...state.info,
-      goal: level.goal,
+      winCondition: level.winCondition,
+      loseCondition: level.loseCondition,
     },
   };
 
@@ -78,6 +80,7 @@ export function createBasicLevel(): LevelDescription {
       8: 'goth-gf',
       9: 'mushroom-bomb',
     },
-    goal: { type: 'none' },
+    winCondition: { type: 'none' },
+    loseCondition: { type: 'none' },
   };
 }
