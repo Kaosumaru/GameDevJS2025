@@ -8,6 +8,7 @@ import {
   getField,
   getFieldInDirection,
   tryGetDirection,
+  tryGetEntityInField,
 } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
@@ -53,7 +54,12 @@ export function pushField(options: PushOptions) {
       throw new Error('Entity or fields are undefined');
     }
 
-    const pushData = ctx.fields.map(
+    let fields = ctx.fields;
+    if (ctx.entity !== undefined) {
+      fields = fields.filter(field => field.entityUUID !== ctx.entity?.id);
+    }
+
+    const pushData = fields.map(
       field =>
         ({
           field,
@@ -552,7 +558,7 @@ function push(state: StoreData, push: PushField[], options: PushOptions): StoreD
   const damagePerEntity = new Map<string, number>();
 
   for (const { field, direction } of push) {
-    const entity = getEntityInField(state, field);
+    const entity = tryGetEntityInField(state, field);
     if (entity === undefined) {
       continue;
     }
