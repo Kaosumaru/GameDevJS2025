@@ -50,13 +50,31 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
 
   'goth-gf': {
     afterBalance: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
+      changeSkills([
+        { id: 'mageMove' },
+        { id: 'mageFireball' },
+        { id: 'mageBlind' },
+        { id: 'mageSickle' },
+        { id: 'pass' },
+      ]),
     ]),
     afterDarkness: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageDarkFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
+      changeSkills([
+        { id: 'mageMove' },
+        { id: 'mageDarkFireball' },
+        { id: 'mageBlind' },
+        { id: 'mageSickle' },
+        { id: 'pass' },
+      ]),
     ]),
     afterLight: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageLightFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
+      changeSkills([
+        { id: 'mageMove' },
+        { id: 'mageLightFireball' },
+        { id: 'mageBlind' },
+        { id: 'mageSickle' },
+        { id: 'pass' },
+      ]),
     ]),
     afterKill: passive([balance(-1)]),
   },
