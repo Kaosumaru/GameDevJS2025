@@ -1,6 +1,5 @@
 import { infoFromEntity } from './entities/infos';
-import { Entity, Field } from './interface';
-import { SkillTargetsReducer } from './skills';
+import { Entity } from './interface';
 import { StoreData } from './taoStore';
 
 export type EntityPassive = (state: StoreData, entity: Entity) => StoreData;
