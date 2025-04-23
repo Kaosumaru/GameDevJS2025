@@ -25,6 +25,7 @@ import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
 import { Nebula } from './Components/Vfx/Nebula';
+import { Dialogue } from './UiComponents/Dialogue';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -74,6 +75,7 @@ export const TaoScene = ({
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
+  const dialogue = state?.info.currentDialogue;
 
   useEffect(() => {
     if (fireballRef.current) {
@@ -200,6 +202,7 @@ export const TaoScene = ({
       <ui.In>
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
+        <Dialogue dialogue={dialogue} />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
