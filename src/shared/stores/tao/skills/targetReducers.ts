@@ -139,6 +139,10 @@ export function withEnemy(ctx: TargetContext) {
   );
 }
 
+export function withCrystal(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => entity.kind === 'playerCrystal');
+}
+
 export function withDeadEntity(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isDead(entity) : false));
 }
@@ -176,8 +180,14 @@ export function allEntities(ctx: TargetContext) {
   ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
 }
 
-export function deadEntities(ctx: TargetContext) {
-  ctx.fields = ctx.state.entities.map(entity => getEntityField(ctx.state, entity));
+export function addDeadEntitiesFields(ctx: TargetContext) {
+  ctx.fields = [...ctx.fields, ...ctx.state.info.perRound.diedInRound.map(entity => getEntityField(ctx.state, entity))];
+}
+
+export function addAroundCrystal(ctx: TargetContext) {
+  const fields = fieldsWithEntity(ctx, entity => entity.kind === 'playerCrystal');
+  neighbors9(ctx);
+  ctx.fields = [...ctx.fields, ...fields];
 }
 
 export function allAllies(ctx: TargetContext) {

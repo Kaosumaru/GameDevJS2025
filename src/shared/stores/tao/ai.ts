@@ -100,7 +100,7 @@ function useSkillOnFirstTarget(
     return !entity || entity.hp.current > 0;
   });
   // TODO
-  const taunted = hasStatus(entity, 'taunted');
+  //const taunted = hasStatus(entity, 'taunted');
   if (targets.length == 0) {
     result.success = false;
     return state;

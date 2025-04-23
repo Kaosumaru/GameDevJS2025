@@ -1,5 +1,5 @@
 import { Skill } from '../../skills';
-import { actions, damage, status } from '../actions';
+import { actions, status } from '../actions';
 import {
   affected,
   affectedFields,
@@ -10,14 +10,14 @@ import {
   withEnemy,
 } from '../targetReducers';
 
-export const knightLightStun: Skill = {
-  id: 'knightLightStun',
-  name: 'Blade shine',
-  description: '<p>Area Attack</p> <br> <p><b>3</b> dmg to target</p> <br> <br> <p>Blind <b>2</b> turns on area</p>',
-  type: 'attack',
+export const clericAoeNeutral: Skill = {
+  id: 'clericAoeNeutral',
+  name: 'Sunstroke',
+  description: '<p>Crowd control</p> <br> <p><b>2</b> dmg in the next <b>1</b> turn</p> <br> <p>Stun <b>1</b> turn</p>',
+  type: 'defense',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([damage(3), affectedFields, withEnemy, status('disarmed', 2)]),
+  reducer: actions([affectedFields, withEnemy, status('stunned', 1), status('poisoned+2', 1)]),
   getAffectedFields: affected([fieldsInFront(1, 1, -1)]),
   getPossibleTargets: targets([fieldsInRange]),
   getRange: targets([neighborsExcluding]),

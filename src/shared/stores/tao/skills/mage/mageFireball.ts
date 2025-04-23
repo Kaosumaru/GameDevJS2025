@@ -17,7 +17,7 @@ export const mageFireball: Skill = {
     withEnemy,
     damage(1),
   ]),
-  getPossibleTargets: targets([area(3)]),
+  getPossibleTargets: targets([area(6)]),
   getAffectedFields: affected([neighbors9]),
   getRange: targets([]),
 };

@@ -16,6 +16,6 @@ export const lacrimosaMateusz: EntityConstructor = position => ({
     { id: 'lacrimosaSwap' },
     { id: 'pass' },
   ],
-  hp: stat(3),
+  hp: stat(5),
   ownerId: 0,
 });

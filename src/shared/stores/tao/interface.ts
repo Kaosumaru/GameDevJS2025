@@ -18,6 +18,7 @@ export type StatusEffect =
   | 'disarmed'
   | 'poisoned'
   | 'poisoned+2'
+  | 'poisoned+3'
   | 'taunted'
   | 'critical'
   | 'speed+3'

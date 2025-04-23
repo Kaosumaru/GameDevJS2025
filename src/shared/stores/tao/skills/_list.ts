@@ -32,6 +32,12 @@ import { lacrimosaFireball } from '../entities/mateusz/lacrimosaFireball';
 import { lacrimosaDagger } from '../entities/mateusz/lacrimosaDagger';
 import { lacrimosaMove } from '../entities/mateusz/lacrimosaMove';
 import { lacrimosaSwap } from '../entities/mateusz/lacrimosaSwap';
+import { clericAoeNeutral } from './cleric/clericAoeNeutral';
+import { clericAoeDark } from './cleric/clericAoeDark';
+import { clericAoeLight } from './cleric/clericAoeLight';
+import { mateuszSpawn } from './spawnSkills/mateuszSpawn';
+import { suicide } from './suicide';
+import { mageMove } from './mage/mageMove';
 
 export const skillsList = {
   move: moveSkill,
@@ -41,6 +47,8 @@ export const skillsList = {
 
   pass,
   testSpawner,
+  mateuszSpawn,
+  suicide,
 
   clericHeal,
   clericLightAllHeal,
@@ -59,6 +67,7 @@ export const skillsList = {
   mageLightFireball,
   mageBlind,
   mageSickle,
+  mageMove,
 
   knightDarkWide,
 
@@ -76,4 +85,8 @@ export const skillsList = {
   lacrimosaDagger,
   lacrimosaFireball,
   lacrimosaSwap,
+
+  clericAoeNeutral,
+  clericAoeDark,
+  clericAoeLight,
 };

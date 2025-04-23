@@ -2,6 +2,7 @@ import { Entity, Position, stat } from '../interface';
 import { defaultEnemy, defaultPlayer } from './defaults';
 import { auroraMateusz } from './mateusz/aurora';
 import { lacrimosaMateusz } from './mateusz/lacrimosa';
+import { mobsMateusz } from './mateusz/mobsMateusz';
 import { vacuenMateusz } from './mateusz/vacuen';
 
 export type EntityTypeId =
@@ -16,7 +17,14 @@ export type EntityTypeId =
   | 'playerCrystal'
   | 'lacrimosaMateusz'
   | 'auroraMateusz'
-  | 'vacuenMateusz';
+  | 'vacuenMateusz'
+  | 'mobMateusz'
+  | 'swarmMateusz'
+  | 'armorMateusz'
+  | 'spongeMateusz'
+  | 'shooterMateusz'
+  | 'spawnerMateusz'
+  | 'bombMateusz';
 
 export const entities: EntitiesType = {
   'goth-gf': position => ({
@@ -26,7 +34,7 @@ export const entities: EntitiesType = {
     avatar: 'goth-gf',
     kind: 'goth-gf',
 
-    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }],
     hp: stat(3),
     ownerId: 0,
   }),
@@ -52,7 +60,6 @@ export const entities: EntitiesType = {
     skills: [
       { id: 'move' },
       { id: 'knightAttack' },
-      { id: 'knightTaunt' },
       { id: 'knightSpeedLight' },
       { id: 'knightSpeedDark' },
       { id: 'pass' },
@@ -70,6 +77,7 @@ export const entities: EntitiesType = {
   lacrimosaMateusz,
   vacuenMateusz,
   auroraMateusz,
+  ...mobsMateusz,
 
   'mushroom-bomb': position => ({
     ...defaultEnemy,
@@ -171,3 +179,4 @@ export const entities: EntitiesType = {
 
 export type EntityConstructor = (position: Position) => Entity;
 type EntitiesType = { [key in EntityTypeId]: EntityConstructor };
+export type SomeEntitiesType = { [key in EntityTypeId]?: EntityConstructor };

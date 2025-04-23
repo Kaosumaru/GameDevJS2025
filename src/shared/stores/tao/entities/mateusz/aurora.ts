@@ -16,7 +16,7 @@ export const auroraMateusz: EntityConstructor = position => ({
     { id: 'auroraExplosion' },
     { id: 'pass' },
   ],
-  hp: stat(4),
+  hp: stat(5),
   actionPoints: stat(2),
   speed: 2,
 

@@ -2,7 +2,6 @@ import { RandomGenerator } from 'pureboard/shared/interface';
 import {
   addEntities,
   Direction,
-  getDirection,
   getDistance,
   getEntityField,
   getEntityInField,

@@ -11,6 +11,7 @@ import { reduceGoal } from './goal';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poison')]);
+const applyPoison3 = rule([allEntities, withStatus('poisoned+3'), damage(2, 'poison')]);
 const loseShield = rule([allEntities, withShield, loseAllShield]);
 const refreshEntities = rule([allEntities, refreshResources]);
 
@@ -33,6 +34,7 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = lightIfNotKilled(state);
   state = applyPoison(state);
   state = applyPoison2(state);
+  state = applyPoison3(state);
   state = loseShield(state);
   state = modifyAllEntities(state, decrementAllStatusesReducer);
   state = filterDeadEntities(state);
