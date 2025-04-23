@@ -12,6 +12,7 @@ import {
 } from './TaoAudioData';
 
 export const TaoAudioContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const lastAudioBufferRef = useRef<AudioBuffer | null>(null);
   const hasConsentedRef = useRef(false);
   const scheduledAudioRef = useRef<Record<TaoChannel, string | null>>({
     music: null,
@@ -32,6 +33,9 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'fire-blast-1': null,
     'fire-blast-2': null,
     'fire-flying-1': null,
+    'goth-gf-voice': null,
+    'knight-voice': null,
+    'sun-princess-voice': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -100,10 +104,15 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
         const audio = channelsRef.current[channel];
         if (audio) {
           if (sound && allAudioData.current[sound]) {
-            audio.setBuffer(allAudioData.current[sound]);
+            const sameSound = lastAudioBufferRef.current === allAudioData.current[sound];
+            if (!sameSound) {
+              audio.setBuffer(allAudioData.current[sound]);
+            }
+            lastAudioBufferRef.current = allAudioData.current[sound];
+            audio.stop();
+            audio.offset = 0;
+            audio.play();
           }
-          audio.stop();
-          audio.play();
         } else {
           console.error(`Audio not found for sound: ${sound} in channel: ${channel}`);
         }

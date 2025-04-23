@@ -15,6 +15,9 @@ export const TAO_AUDIO_DATA = {
   'fire-blast-1': '/audio/fire-blast-1.mp3',
   'fire-blast-2': '/audio/fire-blast-2.mp3',
   'fire-flying-1': '/audio/fire-flying-1.mp3',
+  'goth-gf-voice': '/audio/goth-gf-voice.mp3',
+  'knight-voice': '/audio/knight-voice.mp3',
+  'sun-princess-voice': '/audio/sun-princess-voice.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
@@ -71,6 +74,10 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   lacrimosaDagger: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
   lacrimosaFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
   lacrimosaSwap: () => getRandomSound(TAO_BUFF_SEQUENCE),
+
+  clericAoeDark: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  clericAoeLight: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  clericAoeNeutral: () => getRandomSound(TAO_BUFF_SEQUENCE),
 };
 
 export const getRandomSoundForSkill = (skillId: SkillID) => {

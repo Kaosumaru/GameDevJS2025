@@ -1,7 +1,16 @@
-import { JSX, memo, useEffect, useState } from 'react';
+import { JSX, memo, useEffect, useRef, useState } from 'react';
 import { Backdrop, Box, Theme } from '@mui/material';
 import { Dialogue as DialogueType } from '@shared/stores/tao/dialogue';
 import { usePrevious } from '../Hooks/usePrevious';
+import { useTaoAudio } from '../Components/Audio/useTaoAudio';
+import { EntityTypeId } from '@shared/stores/tao/entities/entities';
+import { TaoAudioTrack } from '../Components/Audio/TaoAudioData';
+
+const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
+  'goth-gf': 'goth-gf-voice',
+  knight: 'knight-voice',
+  'sun-princess': 'sun-princess-voice',
+};
 
 const DialogueComponent = ({
   dialogue,
@@ -9,15 +18,34 @@ const DialogueComponent = ({
 }: JSX.IntrinsicElements['div'] & {
   dialogue: DialogueType | undefined;
 }) => {
+  const { play } = useTaoAudio();
   const [side, setSide] = useState<'left' | 'right'>('right');
   const [currentDialogueEntryIndex, setCurrentDialogueEntryIndex] = useState<number>(0);
   const previousDialogue = usePrevious(dialogue);
+  const textRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (dialogue !== previousDialogue) {
       setCurrentDialogueEntryIndex(0);
     }
   }, [dialogue, previousDialogue]);
+
+  useEffect(() => {
+    if (textRef.current === null || dialogue === undefined) {
+      return;
+    }
+    const asyncFunc = async () => {
+      const entry = dialogue.entries[currentDialogueEntryIndex];
+      const text = entry.text;
+      for (let i = 0; i < text.length; i++) {
+        if (textRef.current === null) return;
+        textRef.current.innerText = [...text].slice(0, i).join('');
+        play('sfx', kindToVoice[entry.entity]);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    };
+    void asyncFunc();
+  }, [play, currentDialogueEntryIndex, dialogue]);
 
   if (!dialogue) return null;
   if (currentDialogueEntryIndex >= dialogue.entries.length) return null;
@@ -69,6 +97,7 @@ const DialogueComponent = ({
           }}
         ></img>
         <div
+          ref={textRef}
           style={{
             position: 'absolute',
             maxHeight: '50vw',
