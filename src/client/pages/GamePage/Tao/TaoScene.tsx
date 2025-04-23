@@ -116,6 +116,11 @@ export const TaoScene = ({
     }
   }, [state?.entities, cameraTargetState, focusOnEntity]);
 
+  const entities = [
+    ...(state?.entities.map(entity => ({ entity, isDead: false })) ?? []),
+    ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
+  ];
+
   return (
     <group>
       <color attach="background" args={['black']} />
@@ -186,8 +191,10 @@ export const TaoScene = ({
             );
           })
         )}
-        {state?.entities.map(entity => {
-          return <Entity3D key={entity.id} isSelected={entity.id === selectedEntityId} entity={entity} />;
+        {entities.map(({ entity, isDead }) => {
+          return (
+            <Entity3D key={entity.id} isDead={isDead} isSelected={entity.id === selectedEntityId} entity={entity} />
+          );
         })}
       </group>
       <ui.In>
