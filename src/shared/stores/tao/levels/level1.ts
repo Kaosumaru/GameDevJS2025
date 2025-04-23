@@ -36,6 +36,10 @@ export function createLevel1(): LevelDescription {
           entity: 'knight',
           text: '𓀃𓀄𓀅𓀆!',
         },
+        {
+          entity: 'sun-princess',
+          text: 'Hi!',
+        },
       ],
     },
   };

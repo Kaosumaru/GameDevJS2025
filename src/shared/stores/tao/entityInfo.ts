@@ -1,9 +1,9 @@
+import { getEntityField } from './board';
 import { infoFromEntity } from './entities/infos';
 import { Entity, Field } from './interface';
-import { SkillTargetsReducer } from './skills';
 import { StoreData } from './taoStore';
 
-export type EntityPassive = (state: StoreData, entity: Entity) => StoreData;
+export type EntityPassive = (state: StoreData, entity: Entity, fields: Field[]) => StoreData;
 
 export interface EntityInfo {
   beforeDeath?: EntityPassive;
@@ -22,7 +22,7 @@ export function entitiesAfterRoundStart(state: StoreData): StoreData {
   for (const entity of state.entities) {
     const info = infoFromEntity(entity);
     if (info.afterRoundStart) {
-      state = info.afterRoundStart(state, entity);
+      state = info.afterRoundStart(state, entity, []);
     }
   }
 
@@ -32,15 +32,15 @@ export function entitiesAfterRoundStart(state: StoreData): StoreData {
 export function entityBeforeDeath(state: StoreData, entity: Entity): StoreData {
   const info = infoFromEntity(entity);
   if (info.beforeDeath) {
-    state = info.beforeDeath(state, entity);
+    state = info.beforeDeath(state, entity, []);
   }
   return state;
 }
 
-export function entityAfterKill(state: StoreData, entity: Entity): StoreData {
+export function entityAfterKill(state: StoreData, entity: Entity, killed: Entity): StoreData {
   const info = infoFromEntity(entity);
   if (info.afterKill) {
-    state = info.afterKill(state, entity);
+    state = info.afterKill(state, entity, [getEntityField(state, killed)]);
   }
   return state;
 }
@@ -68,17 +68,17 @@ export function entitiesAfterBalanceChange(state: StoreData, from: number, to: n
     switch (balanceTo) {
       case 'darkness':
         if (info.afterDarkness) {
-          state = info.afterDarkness(state, entity);
+          state = info.afterDarkness(state, entity, []);
         }
         break;
       case 'light':
         if (info.afterLight) {
-          state = info.afterLight(state, entity);
+          state = info.afterLight(state, entity, []);
         }
         break;
       case 'balance':
         if (info.afterBalance) {
-          state = info.afterBalance(state, entity);
+          state = info.afterBalance(state, entity, []);
         }
         break;
     }

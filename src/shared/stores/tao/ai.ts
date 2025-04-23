@@ -1,6 +1,6 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
 import { findFieldByPosition, getEntityInFieldId, getField } from './board';
-import { hasStatus, isDead, tryGetEntity } from './entity';
+import { isDead, tryGetEntity } from './entity';
 import { Entity, Field } from './interface';
 import { getDistancesToPlayers } from './pathfinding';
 import {
