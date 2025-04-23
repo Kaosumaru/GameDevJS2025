@@ -35,6 +35,8 @@ import { lacrimosaSwap } from '../entities/mateusz/lacrimosaSwap';
 import { clericAoeNeutral } from './cleric/clericAoeNeutral';
 import { clericAoeDark } from './cleric/clericAoeDark';
 import { clericAoeLight } from './cleric/clericAoeLight';
+import { mateuszSpawn } from './spawnSkills/mateuszSpawn';
+import { suicide } from './suicide';
 
 export const skillsList = {
   move: moveSkill,
@@ -44,6 +46,8 @@ export const skillsList = {
 
   pass,
   testSpawner,
+  mateuszSpawn,
+  suicide,
 
   clericHeal,
   clericLightAllHeal,

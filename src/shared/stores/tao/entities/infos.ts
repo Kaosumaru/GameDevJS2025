@@ -1,13 +1,22 @@
 import { EntityTypeId } from './entities';
 import { EntityInfo } from '../entityInfo';
 import { Entity } from '../interface';
-import { balance, changeSkills, passive, status } from '../skills/actions';
+import { balance, changeSkills, gainShield, passive, status } from '../skills/actions';
 import { area } from '../skills/targetReducers';
 
 const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
   'mushroom-bomb': {
     beforeDeath: passive([area(3), status('poisoned', 2)]),
   },
+
+  bombMateusz: {
+    beforeDeath: passive([area(3), status('poisoned', 2)]),
+  },
+
+  armorMateusz: {
+    afterRoundStart: passive([gainShield(4)]),
+  },
+
   knight: {
     afterBalance: passive([
       changeSkills([
