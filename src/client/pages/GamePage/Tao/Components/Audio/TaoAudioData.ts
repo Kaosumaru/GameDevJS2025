@@ -18,6 +18,9 @@ export const TAO_AUDIO_DATA = {
   'goth-gf-voice': '/audio/goth-gf-voice.mp3',
   'knight-voice': '/audio/knight-voice.mp3',
   'sun-princess-voice': '/audio/sun-princess-voice.mp3',
+  'spawn-1': '/audio/spawn-1.mp3',
+  'spawn-2': '/audio/spawn-2.mp3',
+  'spawn-3': '/audio/spawn-3.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
@@ -28,6 +31,7 @@ export const TAO_BUFF_SEQUENCE = ['buff-1'] as TaoAudioTrack[];
 export const TAO_AXE_HIT_SEQUENCE = ['axe-hit-1'] as TaoAudioTrack[];
 export const TAO_FIRE_BLAST_SEQUENCE = ['fire-blast-1', 'fire-blast-2'] as TaoAudioTrack[];
 export const TAO_FIRE_FLYING_SEQUENCE = ['fire-flying-1'] as TaoAudioTrack[];
+export const TAO_SPAWN_SEQUENCE = ['spawn-1', 'spawn-2', 'spawn-3'] as TaoAudioTrack[];
 
 export const getRandomSound = (sequence: TaoAudioTrack[]): TaoAudioTrack => {
   const randomIndex = Math.floor(Math.random() * sequence.length);
@@ -78,6 +82,10 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   clericAoeDark: () => getRandomSound(TAO_BUFF_SEQUENCE),
   clericAoeLight: () => getRandomSound(TAO_BUFF_SEQUENCE),
   clericAoeNeutral: () => getRandomSound(TAO_BUFF_SEQUENCE),
+
+  suicide: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  mateuszSpawn: () => getRandomSound(TAO_SPAWN_SEQUENCE),
+  mageMove: () => getRandomSound(TAO_MOVE_SEQUENCE),
 };
 
 export const getRandomSoundForSkill = (skillId: SkillID) => {

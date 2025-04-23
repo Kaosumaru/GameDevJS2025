@@ -36,6 +36,9 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'goth-gf-voice': null,
     'knight-voice': null,
     'sun-princess-voice': null,
+    'spawn-1': null,
+    'spawn-2': null,
+    'spawn-3': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({

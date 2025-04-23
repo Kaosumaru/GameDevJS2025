@@ -8,18 +8,21 @@ type Animation = AnimationProps['animate'];
 
 const showAnimtion: Animation = {
   scale: 1,
+  opacity: 1,
   transition: { duration: 0.5 },
 };
 
 const shiftLeftAnimation: Animation = {
   scale: 1,
   left: '-10rem',
+  opacity: 0,
   transition: { duration: 0.5, ease: easeBounceOut },
 };
 
 const shiftRightAnimation: Animation = {
   scale: 1,
   left: '10rem',
+  opacity: 0,
   transition: { duration: 0.5, ease: easeBounceOut },
 };
 
@@ -30,16 +33,15 @@ export const Header = ({ balance }: { balance: number }) => {
   const [animationYang, setAnimationYang] = useState(showAnimtion);
 
   useEffect(() => {
-    console.log('Header balance', balance);
     if (balance == 0) {
       setAnimationYin(showAnimtion);
       setAnimationYang(showAnimtion);
       play('music', 'balance-loop');
     } else if (balance < 0 && balanceHandledRef.current >= 0) {
-      setAnimationYin(shiftLeftAnimation);
+      setAnimationYang(shiftRightAnimation);
       play('music', 'darkness-loop');
     } else if (balance > 0 && balanceHandledRef.current <= 0) {
-      setAnimationYang(shiftRightAnimation);
+      setAnimationYin(shiftLeftAnimation);
       play('music', 'light-loop');
     }
     balanceHandledRef.current = balance;
@@ -63,28 +65,44 @@ export const Header = ({ balance }: { balance: number }) => {
         style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yin.png'}
       />
+      {balance <= -1 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYin}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '-6rem' }}
+          src={'/yin.png'}
+        />
+      )}
+      {balance <= -2 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYin}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '-12rem' }}
+          src={'/yin.png'}
+        />
+      )}
       <motion.img
         initial={{ scale: 0 }}
         animate={animationYang}
         style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yang.png'}
       />
-      <Box
-        sx={{
-          width: '1rem',
-          height: '1rem',
-          position: 'absolute',
-          top: '6rem',
-          left: '2.5rem',
-          zIndex: 1000,
-          color: 'white',
-          fontSize: '2rem',
-          userSelect: 'none',
-          pointerEvents: 'none',
-        }}
-      >
-        {balance}
-      </Box>
+      {balance >= 1 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYang}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '6rem' }}
+          src={'/yang.png'}
+        />
+      )}
+      {balance >= 2 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYang}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '12rem' }}
+          src={'/yang.png'}
+        />
+      )}
     </Box>
   );
 };

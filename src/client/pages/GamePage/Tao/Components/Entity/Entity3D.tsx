@@ -9,7 +9,7 @@ import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../../Hooks/usePrevious';
 import { useTaoAudio } from '../Audio/useTaoAudio';
-import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE } from '../Audio/TaoAudioData';
+import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE, TAO_SPAWN_SEQUENCE } from '../Audio/TaoAudioData';
 import { Statuses } from '../Statuses/Statuses';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
 import { Avatar } from './Avatar';
@@ -38,6 +38,7 @@ const Entity3DComponent = ({
     const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
     if (hasSpawned.current) {
       hasSpawned.current = false;
+      play('sfx', getRandomSound(TAO_SPAWN_SEQUENCE));
       playNext('opening', async () => {
         const obj = refs.current['container']!;
         if (!obj) return;
@@ -69,8 +70,7 @@ const Entity3DComponent = ({
   useEffect(() => {
     if (previousLastSkillUsed === entity.lastSkillUsed) return;
     if (entity.lastSkillUsed === undefined) return;
-    if (entity.lastSkillUsed.id === 'move') return;
-    if (entity.lastSkillUsed.id === 'mageMove') return;
+    if (entity.lastSkillUsed.id.toLowerCase().includes('move')) return;
 
     const { x } = boardPositionToUiPosition(entity.position.x, entity.position.y);
 
