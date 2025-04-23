@@ -20,15 +20,29 @@ import { StoreData } from '../taoStore';
 import { empty, isBlocking, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 import { MovingParticleEffect, ParticleInPlaceEffect } from '../effects';
 
-export function damage(amount: number, type: DamageType = 'standard') {
+export type BonusFrom = 'light' | 'dark' | 'none';
+
+function getBonus(state: StoreData, type: BonusFrom): number {
+  switch (type) {
+    case 'light':
+      return Math.max(0, state.info.balance);
+    case 'dark':
+      return Math.max(0, -state.info.balance);
+  }
+  return 0;
+}
+
+export function damage(amount: number, type: DamageType = 'standard', balanceBonus: BonusFrom = 'none') {
   return (ctx: TargetContext) => {
-    addStandardDamageEvent(ctx, amount, type);
+    const bonus = getBonus(ctx.state, balanceBonus);
+    addStandardDamageEvent(ctx, amount + bonus, type);
   };
 }
 
-export function attack(modifier: number = 0, type: DamageType = 'standard') {
+export function attack(modifier: number = 0, type: DamageType = 'standard', balanceBonus: BonusFrom = 'none') {
   return (ctx: TargetContext) => {
-    const amount = (ctx.entity?.attack ?? 0) + modifier;
+    const bonus = getBonus(ctx.state, balanceBonus);
+    const amount = (ctx.entity?.attack ?? 0) + modifier + bonus;
     addStandardDamageEvent(ctx, amount, type);
   };
 }
@@ -222,14 +236,15 @@ export function loseAllShield(ctx: TargetContext) {
   });
 }
 
-export function status(status: StatusEffect, amount: number) {
+export function status(status: StatusEffect, amount: number, balanceBonus: BonusFrom = 'none') {
   return (ctx: TargetContext) => {
+    const bonus = getBonus(ctx.state, balanceBonus);
     ctx.state = addEvent(ctx.state, {
       type: 'applyStatus',
       statuses: ctx.fields.map(field => ({
         entityId: field.entityUUID ?? '',
         status,
-        amount,
+        amount: amount + bonus,
       })),
     });
   };
@@ -353,7 +368,7 @@ export function actions(reducers: TargetActionReducer[]) {
     let direction: Direction | undefined;
 
     if (userField && targetField) {
-      direction = getDirection(userField.position, targetField.position);
+      direction = tryGetDirection(userField.position, targetField.position);
     }
 
     const context: ActionTargetContext = {

@@ -4,7 +4,7 @@ export function createLevel1(): LevelDescription {
   return {
     tiles: [
       [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 4, 0],
+      [0, 0, 0, 0, 3, 5, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 1, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
@@ -16,14 +16,16 @@ export function createLevel1(): LevelDescription {
       1: { tileId: 1, blocking: true },
     },
     tileToEntity: {
+      3: 'playerCrystal',
       4: 'testSpawner',
+      5: 'skullwyrm',
       6: 'knight',
       7: 'sun-princess',
       8: 'goth-gf',
       9: 'mushroom-bomb',
     },
-    winCondition: { type: 'none' },
-    loseCondition: { type: 'none' },
+    winCondition: { type: 'survive', turns: 3 },
+    loseCondition: { type: 'killAll', entityType: 'playerCrystal' },
     startingDialogue: {
       entries: [
         {
