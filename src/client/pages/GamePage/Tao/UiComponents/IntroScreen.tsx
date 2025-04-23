@@ -22,7 +22,7 @@ export const IntroScreen = ({ onClick }: { onClick: () => void }) => {
           color: 'white',
         }}
       >
-        Click Her to Start
+        Click here to Start
       </Box>
     </Box>
   );
