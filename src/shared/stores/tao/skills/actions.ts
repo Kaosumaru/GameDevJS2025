@@ -13,7 +13,7 @@ import {
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
-import { addEvent, DamageData, DamageType } from '../events/events';
+import { addEvent, DamageData, DamageType, MoveData } from '../events/events';
 import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
@@ -35,16 +35,19 @@ export function attack(modifier: number = 0, type: DamageType = 'standard') {
 
 export function pushField(options: PushOptions) {
   return (ctx: ActionTargetContext) => {
-    if (ctx.fields.length === 0 || ctx.entity === undefined) {
+    const entity = ctx.entity;
+    if (ctx.fields.length === 0 || entity === undefined) {
       throw new Error('Entity or fields are undefined');
     }
 
-    for (const field of ctx.fields) {
-      const direction = tryGetDirection(ctx.entity.position, field.position) ?? ctx.direction;
-      if (direction !== undefined && field.entityUUID !== undefined) {
-        ctx.state = push(ctx.state, field, direction, options);
-      }
-    }
+    const pushData = ctx.fields.map(
+      field =>
+        ({
+          field,
+          direction: tryGetDirection(entity.position, field.position) ?? ctx.direction ?? 0,
+        }) satisfies PushField
+    );
+    ctx.state = push(ctx.state, pushData, options);
   };
 }
 
@@ -154,6 +157,26 @@ function standardDamageDataReducer(damageDealer: Entity | undefined, amount: num
     amount *= 2;
   }
   return (entity: Entity): DamageInfo => {
+    const damageToShield = isPiercingDamage(damageType) ? 0 : Math.min(entity.shield, amount);
+    const damageToHealth = Math.max(0, amount - damageToShield);
+    return {
+      health: Math.max(0, entity.hp.current - damageToHealth),
+      shield: entity.shield - damageToShield,
+      damageType,
+    };
+  };
+}
+
+function mapDamageDataReducer(
+  damageDealer: Entity | undefined,
+  damageMap: Map<string, number>,
+  damageType: DamageType
+) {
+  return (entity: Entity): DamageInfo => {
+    let amount = damageMap.get(entity.id) ?? 0;
+    if (damageDealer && hasStatus(damageDealer, 'critical')) {
+      amount *= 2;
+    }
     const damageToShield = isPiercingDamage(damageType) ? 0 : Math.min(entity.shield, amount);
     const damageToHealth = Math.max(0, amount - damageToShield);
     return {
@@ -505,68 +528,73 @@ interface PushOptions {
   multiplyDamagePerDistanceLeft?: boolean;
 }
 
-function push(state: StoreData, field: Field, direction: Direction, options: PushOptions): StoreData {
-  const entity = getEntityInField(state, field);
-  if (entity === undefined) {
-    return state;
-  }
+interface PushField {
+  field: Field;
+  direction: Direction;
+}
 
-  let distanceLeft = options.distance;
-  let fieldToPush: Field | undefined = undefined;
-  let entityHit: Entity | undefined = undefined;
+function push(state: StoreData, push: PushField[], options: PushOptions): StoreData {
+  const moveData: MoveData[] = [];
+  const damagePerEntity = new Map<string, number>();
 
-  for (let i = 0; i < options.distance; i++) {
-    const newField = getFieldInDirection(state, field, direction, i + 1);
-    if (newField === undefined) {
-      break;
+  for (const { field, direction } of push) {
+    const entity = getEntityInField(state, field);
+    if (entity === undefined) {
+      continue;
     }
-    if (isBlocking(newField)) {
-      if (newField.entityUUID !== undefined) {
-        entityHit = getEntityInField(state, newField);
+
+    let distanceLeft = options.distance;
+    let fieldToPush: Field | undefined = undefined;
+    let entityHit: Entity | undefined = undefined;
+
+    for (let i = 0; i < options.distance; i++) {
+      const newField = getFieldInDirection(state, field, direction, i + 1);
+      if (newField === undefined) {
+        break;
       }
-      break;
+      if (isBlocking(newField)) {
+        if (newField.entityUUID !== undefined) {
+          entityHit = getEntityInField(state, newField);
+        }
+        break;
+      }
+
+      fieldToPush = newField;
+      distanceLeft--;
     }
 
-    fieldToPush = newField;
-    distanceLeft--;
+    if (fieldToPush !== undefined) {
+      moveData.push({
+        entityId: entity.id,
+        from: entity.position,
+        to: fieldToPush.position,
+      });
+    }
+
+    if (distanceLeft === 0) {
+      continue;
+    }
+
+    const multiplier = options.multiplyDamagePerDistanceLeft ? distanceLeft : 1;
+    const damageAmount = (options.damageIfBlocked ?? 0) * multiplier;
+
+    if (options.damageIfBlocked && options.damageIfBlocked > 0) {
+      damagePerEntity.set(entity.id, damageAmount);
+    }
+
+    if (options.damageToBlocked && entityHit) {
+      damagePerEntity.set(entityHit.id, damageAmount);
+    }
   }
 
-  if (fieldToPush !== undefined) {
-    state = addEvent(state, {
-      type: 'move',
-      moves: [
-        {
-          entityId: entity.id,
-          from: entity.position,
-          to: fieldToPush.position,
-        },
-      ],
-    });
-  }
+  state = addEvent(state, {
+    type: 'move',
+    moves: moveData,
+  });
 
-  if (distanceLeft === 0) {
-    return state;
-  }
-
-  const fields: Field[] = [];
-  if (options.damageIfBlocked && options.damageIfBlocked > 0) {
-    fields.push(field);
-  }
-
-  if (options.damageToBlocked && entityHit) {
-    fields.push(getEntityField(state, entityHit));
-  }
-
-  const multiplier = options.multiplyDamagePerDistanceLeft ? distanceLeft : 1;
-  const damageAmount = (options.damageIfBlocked ?? 0) * multiplier;
-
+  const fields: Field[] = [...damagePerEntity.keys()].map(id => getEntityField(state, getEntity(state, id)));
   if (fields.length > 0) {
-    state = addDamageEventNoCtx(
-      state,
-      undefined,
-      fields,
-      standardDamageDataReducer(undefined, damageAmount, 'standard')
-    );
+    state = addDamageEventNoCtx(state, undefined, fields, mapDamageDataReducer(undefined, damagePerEntity, 'standard'));
   }
 
   return state;
