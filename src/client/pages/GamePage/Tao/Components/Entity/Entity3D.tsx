@@ -70,6 +70,7 @@ const Entity3DComponent = ({
     if (previousLastSkillUsed === entity.lastSkillUsed) return;
     if (entity.lastSkillUsed === undefined) return;
     if (entity.lastSkillUsed.id === 'move') return;
+    if (entity.lastSkillUsed.id === 'mageMove') return;
 
     const { x } = boardPositionToUiPosition(entity.position.x, entity.position.y);
 
