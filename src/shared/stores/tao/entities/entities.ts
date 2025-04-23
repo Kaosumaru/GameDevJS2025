@@ -26,7 +26,7 @@ export const entities: EntitiesType = {
     avatar: 'goth-gf',
     kind: 'goth-gf',
 
-    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }],
+    skills: [{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }],
     hp: stat(3),
     ownerId: 0,
   }),
@@ -52,7 +52,6 @@ export const entities: EntitiesType = {
     skills: [
       { id: 'move' },
       { id: 'knightAttack' },
-      { id: 'knightTaunt' },
       { id: 'knightSpeedLight' },
       { id: 'knightSpeedDark' },
       { id: 'pass' },

@@ -13,7 +13,6 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
       changeSkills([
         { id: 'move' },
         { id: 'knightAttack' },
-        { id: 'knightTaunt' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },
         { id: 'pass' },
@@ -23,7 +22,6 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
       changeSkills([
         { id: 'move' },
         { id: 'knightDarkWide' },
-        { id: 'knightTaunt' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },
         { id: 'pass' },
@@ -33,7 +31,6 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
       changeSkills([
         { id: 'move' },
         { id: 'knightLightStun' },
-        { id: 'knightTaunt' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },
         { id: 'pass' },
@@ -44,13 +41,13 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
 
   'goth-gf': {
     afterBalance: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'pass' }]),
+      changeSkills([{ id: 'move' }, { id: 'mageFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
     ]),
     afterDarkness: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageDarkFireball' }, { id: 'mageBlind' }, { id: 'pass' }]),
+      changeSkills([{ id: 'move' }, { id: 'mageDarkFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
     ]),
     afterLight: passive([
-      changeSkills([{ id: 'move' }, { id: 'mageLightFireball' }, { id: 'mageBlind' }, { id: 'pass' }]),
+      changeSkills([{ id: 'move' }, { id: 'mageLightFireball' }, { id: 'mageBlind' }, { id: 'mageSickle' }, { id: 'pass' }]),
     ]),
     afterKill: passive([balance(-1)]),
   },
