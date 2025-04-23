@@ -25,6 +25,7 @@ import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
 import { Nebula } from './Components/Vfx/Nebula';
+import { Dialogue } from './UiComponents/Dialogue';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -74,6 +75,7 @@ export const TaoScene = ({
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
+  const dialogue = state?.info.currentDialogue;
 
   useEffect(() => {
     if (fireballRef.current) {
@@ -115,6 +117,11 @@ export const TaoScene = ({
       }
     }
   }, [state?.entities, cameraTargetState, focusOnEntity]);
+
+  const entities = [
+    ...(state?.entities.map(entity => ({ entity, isDead: false })) ?? []),
+    ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
+  ];
 
   return (
     <group>
@@ -186,13 +193,16 @@ export const TaoScene = ({
             );
           })
         )}
-        {state?.entities.map(entity => {
-          return <Entity3D key={entity.id} isSelected={entity.id === selectedEntityId} entity={entity} />;
+        {entities.map(({ entity, isDead }) => {
+          return (
+            <Entity3D key={entity.id} isDead={isDead} isSelected={entity.id === selectedEntityId} entity={entity} />
+          );
         })}
       </group>
       <ui.In>
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
+        <Dialogue dialogue={dialogue} />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}

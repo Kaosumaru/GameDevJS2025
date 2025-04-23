@@ -13,7 +13,7 @@ import {
 export const knightLightStun: Skill = {
   id: 'knightLightStun',
   name: 'Blade shine',
-  description: '<p>Area Attack</p> <br> <p><b>2</b> dmg</p> <br> <p>Stun - 2 turns</p>',
+  description: '<p>Area Attack</p> <br> <p><b>3</b> dmg to target</p> <br> <br> <p>Blind <b>2</b> turns on area</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
