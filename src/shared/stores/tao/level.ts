@@ -1,4 +1,5 @@
 import { addEntities } from './board';
+import { Dialogue } from './dialogue';
 import { EntityTypeId } from './entities/entities';
 import { GoalType } from './goal';
 import { Position } from './interface';
@@ -15,6 +16,7 @@ export interface LevelDescription {
   tileToEntity: { [id: number]: EntityTypeId };
   winCondition: GoalType;
   loseCondition: GoalType;
+  startingDialogue?: Dialogue;
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
@@ -36,6 +38,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     board,
     info: {
       ...state.info,
+      currentDialogue: level.startingDialogue,
       winCondition: level.winCondition,
       loseCondition: level.loseCondition,
     },

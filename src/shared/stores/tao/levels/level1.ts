@@ -24,5 +24,17 @@ export function createLevel1(): LevelDescription {
     },
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
+    startingDialogue: {
+      entries: [
+        {
+          entity: 'goth-gf',
+          text: 'Hi!',
+        },
+        {
+          entity: 'knight',
+          text: '𓀃𓀄𓀅𓀆!',
+        },
+      ],
+    },
   };
 }
