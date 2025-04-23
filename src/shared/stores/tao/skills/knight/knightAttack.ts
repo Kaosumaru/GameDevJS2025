@@ -5,11 +5,11 @@ import { fieldsInRange, neighborsExcluding, targets, withEnemy } from '../target
 export const knightAttack: Skill = {
   id: 'knightAttack',
   name: 'Hollow Thrust',
-  description: '<p>Attack</p> <br> <p><b>6</b> dmg</p>',
+  description: '<p>Attack</p> <br> <p><b>8</b> dmg</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([damage(6)]),
+  reducer: actions([damage(8)]),
   getPossibleTargets: targets([fieldsInRange, withEnemy]),
   getRange: targets([neighborsExcluding]),
 };

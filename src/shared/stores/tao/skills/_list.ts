@@ -32,6 +32,9 @@ import { lacrimosaFireball } from '../entities/mateusz/lacrimosaFireball';
 import { lacrimosaDagger } from '../entities/mateusz/lacrimosaDagger';
 import { lacrimosaMove } from '../entities/mateusz/lacrimosaMove';
 import { lacrimosaSwap } from '../entities/mateusz/lacrimosaSwap';
+import { clericAoeNeutral } from './cleric/clericAoeNeutral';
+import { clericAoeDark } from './cleric/clericAoeDark';
+import { clericAoeLight } from './cleric/clericAoeLight';
 
 export const skillsList = {
   move: moveSkill,
@@ -76,4 +79,8 @@ export const skillsList = {
   lacrimosaDagger,
   lacrimosaFireball,
   lacrimosaSwap,
+
+  clericAoeNeutral,
+  clericAoeDark,
+  clericAoeLight,
 };

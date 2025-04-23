@@ -139,6 +139,10 @@ export function withEnemy(ctx: TargetContext) {
   );
 }
 
+export function withCrystal(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => entity.kind === 'playerCrystal');
+}
+
 export function withDeadEntity(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isDead(entity) : false));
 }
