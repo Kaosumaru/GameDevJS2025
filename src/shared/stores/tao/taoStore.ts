@@ -11,6 +11,7 @@ import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
+import { Dialogue } from './dialogue';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -42,6 +43,7 @@ export interface GameInfo {
   winCondition: GoalType;
   loseCondition: GoalType;
   gameState: GameState;
+  currentDialogue?: Dialogue;
   perRound: {
     roundEnded: boolean;
     diedInRound: Entity[];

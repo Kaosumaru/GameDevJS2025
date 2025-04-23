@@ -2,11 +2,13 @@ import { RandomGenerator } from 'pureboard/shared/interface';
 import {
   addEntities,
   Direction,
+  getDirection,
   getDistance,
   getEntityField,
   getEntityInField,
   getField,
   getFieldInDirection,
+  tryGetDirection,
 } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
@@ -28,6 +30,21 @@ export function attack(modifier: number = 0, type: DamageType = 'standard') {
   return (ctx: TargetContext) => {
     const amount = (ctx.entity?.attack ?? 0) + modifier;
     addStandardDamageEvent(ctx, amount, type);
+  };
+}
+
+export function pushField(options: PushOptions) {
+  return (ctx: ActionTargetContext) => {
+    if (ctx.fields.length === 0 || ctx.entity === undefined) {
+      throw new Error('Entity or fields are undefined');
+    }
+
+    for (const field of ctx.fields) {
+      const direction = tryGetDirection(ctx.entity.position, field.position) ?? ctx.direction;
+      if (direction !== undefined && field.entityUUID !== undefined) {
+        ctx.state = push(ctx.state, field, direction, options);
+      }
+    }
   };
 }
 
@@ -308,12 +325,21 @@ export type EntityReducer = (entity: Entity, ctx: TargetContext) => Entity;
 
 export function actions(reducers: TargetActionReducer[]) {
   return (state: StoreData, ctx: SkillActionContext): StoreData => {
+    const targetField = ctx.targetId ? getField(state, ctx.targetId) : undefined;
+    const userField = ctx.user ? getEntityField(state, ctx.user) : undefined;
+    let direction: Direction | undefined;
+
+    if (userField && targetField) {
+      direction = getDirection(userField.position, targetField.position);
+    }
+
     const context: ActionTargetContext = {
       state,
       skillInstance: ctx.skillInstance,
       entity: ctx.user,
-      fields: ctx.targetId ? [getField(state, ctx.targetId)] : [],
+      fields: targetField ? [targetField] : [],
       random: ctx.random,
+      direction,
     };
 
     return reduceTargets(context, reducers).state;
@@ -473,14 +499,13 @@ function removeRandomField(fields: Field[], random: RandomGenerator): Field | un
 }
 
 interface PushOptions {
-  direction: Direction;
   distance: number;
-  damageIfBlocked: number;
-  damageToBlocked: boolean;
-  multiplyDamagePerDistanceLeft: boolean;
+  damageIfBlocked?: number;
+  damageToBlocked?: boolean;
+  multiplyDamagePerDistanceLeft?: boolean;
 }
 
-function push(state: StoreData, field: Field, options: PushOptions): StoreData {
+function push(state: StoreData, field: Field, direction: Direction, options: PushOptions): StoreData {
   const entity = getEntityInField(state, field);
   if (entity === undefined) {
     return state;
@@ -491,7 +516,7 @@ function push(state: StoreData, field: Field, options: PushOptions): StoreData {
   let entityHit: Entity | undefined = undefined;
 
   for (let i = 0; i < options.distance; i++) {
-    const newField = getFieldInDirection(state, field, options.direction, i + 1);
+    const newField = getFieldInDirection(state, field, direction, i + 1);
     if (newField === undefined) {
       break;
     }
@@ -524,7 +549,7 @@ function push(state: StoreData, field: Field, options: PushOptions): StoreData {
   }
 
   const fields: Field[] = [];
-  if (options.damageIfBlocked > 0) {
+  if (options.damageIfBlocked && options.damageIfBlocked > 0) {
     fields.push(field);
   }
 
@@ -533,15 +558,23 @@ function push(state: StoreData, field: Field, options: PushOptions): StoreData {
   }
 
   const multiplier = options.multiplyDamagePerDistanceLeft ? distanceLeft : 1;
-  const damageAmount = options.damageIfBlocked * multiplier;
+  const damageAmount = (options.damageIfBlocked ?? 0) * multiplier;
 
-  state = addDamageEventNoCtx(state, undefined, fields, standardDamageDataReducer(undefined, damageAmount, 'standard'));
+  if (fields.length > 0) {
+    state = addDamageEventNoCtx(
+      state,
+      undefined,
+      fields,
+      standardDamageDataReducer(undefined, damageAmount, 'standard')
+    );
+  }
 
   return state;
 }
 
 export interface ActionTargetContext extends TargetContext {
   random: RandomGenerator;
+  direction?: Direction;
 }
 
 export type TargetActionReducer = (ctx: ActionTargetContext) => void;

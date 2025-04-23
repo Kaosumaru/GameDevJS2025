@@ -134,12 +134,20 @@ const directionOffset = {
 };
 
 export function getDirection(from: Position, to: Position): Direction {
+  const direction = tryGetDirection(from, to);
+  if (direction == undefined) {
+    throw new Error(`Invalid direction from ${from} to ${to}`);
+  }
+  return direction;
+}
+
+export function tryGetDirection(from: Position, to: Position): Direction | undefined {
   if (from.x === to.x) {
     return from.y < to.y ? Direction.Down : Direction.Up;
   } else if (from.y === to.y) {
     return from.x < to.x ? Direction.Right : Direction.Left;
   } else {
-    throw new Error(`Invalid direction from ${from} to ${to}`);
+    return undefined;
   }
 }
 
