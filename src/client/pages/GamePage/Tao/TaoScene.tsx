@@ -180,8 +180,21 @@ export const TaoScene = ({
                     }
 
                     if (isCurrentPlayerInControlOfSelectedEntity === false) {
-                      console.warn('You do not have this seat');
+                      if (entityAtField) {
+                        focusOnEntity(entityAtField, entityAtField.type === 'player', entityAtField.type !== 'player');
+                      }
+                      setUiAction(null);
                       return;
+                    }
+
+                    if (uiAction.targets.length > 0 && !uiAction.targets.includes(field.id)) {
+                      if (entityAtField) {
+                        focusOnEntity(entityAtField, entityAtField.type === 'player', entityAtField.type !== 'player');
+                        return;
+                      } else {
+                        setUiAction(null);
+                        return;
+                      }
                     }
 
                     void client.useSkill(selectedEntity.id, uiAction.skill.id, field.id);

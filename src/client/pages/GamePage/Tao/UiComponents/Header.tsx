@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { AnimationProps, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { easeBounceOut } from 'd3-ease';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 
@@ -24,22 +24,25 @@ const shiftRightAnimation: Animation = {
 };
 
 export const Header = ({ balance }: { balance: number }) => {
+  const balanceHandledRef = useRef(0);
   const { play } = useTaoAudio();
   const [animationYin, setAnimationYin] = useState(showAnimtion);
   const [animationYang, setAnimationYang] = useState(showAnimtion);
 
   useEffect(() => {
+    console.log('Header balance', balance);
     if (balance == 0) {
       setAnimationYin(showAnimtion);
       setAnimationYang(showAnimtion);
       play('music', 'balance-loop');
-    } else if (balance < 0) {
+    } else if (balance < 0 && balanceHandledRef.current >= 0) {
       setAnimationYin(shiftLeftAnimation);
       play('music', 'darkness-loop');
-    } else {
+    } else if (balance > 0 && balanceHandledRef.current <= 0) {
       setAnimationYang(shiftRightAnimation);
       play('music', 'light-loop');
     }
+    balanceHandledRef.current = balance;
   }, [balance, play]);
 
   return (
