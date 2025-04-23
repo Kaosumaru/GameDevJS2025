@@ -37,6 +37,7 @@ import { clericAoeDark } from './cleric/clericAoeDark';
 import { clericAoeLight } from './cleric/clericAoeLight';
 import { mateuszSpawn } from './spawnSkills/mateuszSpawn';
 import { suicide } from './suicide';
+import { mageMove } from './mage/mageMove';
 
 export const skillsList = {
   move: moveSkill,
@@ -66,6 +67,7 @@ export const skillsList = {
   mageLightFireball,
   mageBlind,
   mageSickle,
+  mageMove,
 
   knightDarkWide,
 

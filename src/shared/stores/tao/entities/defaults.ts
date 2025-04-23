@@ -31,7 +31,7 @@ export const defaultEnemy: Entity = {
   avatar: 'goth-gf',
   kind: 'goth-gf',
   type: 'enemy',
-  skills: [],
+  skills: [{ id: 'move' }, { id: 'attack' }],
   hp: { current: 0, max: 0 },
   shield: 0,
   attack: 1,

@@ -10,7 +10,7 @@ export const vacuenMateusz: EntityConstructor = position => ({
   kind: 'vacuenMateusz',
 
   skills: [{ id: 'vacuenMove' }, { id: 'vacuenSlash' }, { id: 'vacuenCharge' }, { id: 'vacuenLunge' }, { id: 'pass' }],
-  hp: stat(6),
+  hp: stat(7),
 
   traits: {
     isTank: true,
