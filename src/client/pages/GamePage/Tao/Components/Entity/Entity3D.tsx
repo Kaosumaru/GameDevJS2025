@@ -88,14 +88,7 @@ const Entity3DComponent = ({
   }, [playNext, play, entity, previousLastSkillUsed, entity.lastSkillUsed]);
 
   useEffect(() => {
-    return () => {
-      console.log('unmounting entity');
-    };
-  }, []);
-
-  useEffect(() => {
     if (isDead) {
-      console.log('playing dead animation');
       const obj = refs.current['container']!;
       if (!obj) return;
       playNext('die', async () => {
@@ -105,7 +98,6 @@ const Entity3DComponent = ({
           [obj.position, { y: -1 }, { duration: 0.5, ease: 'easeIn' }],
           [obj.scale, { x: 0, y: 0, z: 0 }, { delay: 0.5, duration: 0.5, at: 'start', ease: 'easeIn' }],
         ]);
-        console.log('finished playing dead animation');
       });
     }
   }, [playNext, play, isDead]);
