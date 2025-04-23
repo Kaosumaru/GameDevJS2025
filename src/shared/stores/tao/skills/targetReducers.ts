@@ -8,6 +8,7 @@ import {
   getFieldNeighbors9,
   getPerpendicularDirections,
 } from '../board';
+import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus, isDead, isEnemy } from '../entity';
 import { Entity, Field, StatusEffect } from '../interface';
 import { getFieldsInDistance } from '../pathfinding';
@@ -126,6 +127,12 @@ export function inMoveDistance(rangeModifier: number = 0) {
       speed += 3;
     }
     ctx.fields = [...getFieldsInDistance(ctx.state, ctx.fields, ctx.entity, speed).keys()];
+  };
+}
+
+export function withEntityType(type: EntityTypeId) {
+  return (ctx: TargetContext) => {
+    ctx.fields = fieldsWithEntity(ctx, entity => entity.kind === type);
   };
 }
 

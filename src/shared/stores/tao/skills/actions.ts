@@ -12,7 +12,7 @@ import {
 } from '../board';
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
-import { entitiesAfterBalanceChange, entityAfterKill } from '../entityInfo';
+import { entitiesAfterBalanceChange, entityAfterKill as entityAfterKill } from '../entityInfo';
 import { addEvent, DamageData, DamageType, MoveData } from '../events/events';
 import { Entity, Field, Position, StatusEffect } from '../interface';
 import { SkillActionContext, SkillInstance } from '../skills';
@@ -341,6 +341,10 @@ export function spawn(spawnInfo: SpawnInfo[]) {
     empty(emptyCtx);
     const fields = emptyCtx.fields;
 
+    if (!ctx.random) {
+      return;
+    }
+
     const infos: [EntityTypeId, Position][] = [];
     for (const [typeId, amount] of spawnInfo) {
       for (let i = 0; i < amount; i++) {
@@ -358,6 +362,9 @@ export function spawn(spawnInfo: SpawnInfo[]) {
 
 export function spawnFrom(entities: SpawnInfo[][]) {
   return (ctx: ActionTargetContext) => {
+    if (!ctx.random) {
+      return;
+    }
     const index = ctx.random.int(entities.length);
     const randomEntry = entities[index];
     return spawn(randomEntry)(ctx);
@@ -399,16 +406,17 @@ export function branch(reducers: TargetActionReducer[]) {
   };
 }
 
-export function ifBranch(ifReducer: TargetReducer[], reducers: TargetActionReducer[]) {
+export function ifBranch(
+  ifReducer: TargetReducer[],
+  reducers: TargetActionReducer[],
+  reducersElse: TargetActionReducer[] = []
+) {
   return (ctx: ActionTargetContext) => {
     let ifContext: ActionTargetContext = {
       ...ctx,
       fields: [...ctx.fields],
     };
     ifContext = reduceTargets(ifContext, ifReducer);
-    if (ifContext.fields.length === 0) {
-      return;
-    }
 
     // TODO hack
     const entity = getEntity(ctx.state, ctx.entity!.id);
@@ -418,7 +426,7 @@ export function ifBranch(ifReducer: TargetReducer[], reducers: TargetActionReduc
       entity,
       fields: [...ctx.fields],
     };
-    ctx.state = reduceTargets(context, reducers).state;
+    ctx.state = reduceTargets(context, ifContext.fields.length === 0 ? reducersElse : reducers).state;
   };
 }
 
@@ -455,13 +463,13 @@ export function rule(reducers: TargetReducer[]) {
   };
 }
 
-export function passive(reducers: TargetReducer[]) {
-  return (state: StoreData, entity: Entity): StoreData => {
-    const context: TargetContext = {
+export function passive(reducers: TargetActionReducer[]) {
+  return (state: StoreData, entity: Entity, fields: Field[]): StoreData => {
+    const context: ActionTargetContext = {
       state,
       skillInstance: undefined,
       entity: entity,
-      fields: [getEntityField(state, entity)],
+      fields: fields,
     };
 
     return reduceTargets(context, reducers).state;
@@ -519,7 +527,8 @@ function addDamageEventNoCtx(
   if (attacker) {
     for (const damage of damages) {
       if (damage.health.from != 0 && damage.health.to === 0) {
-        state = entityAfterKill(state, attacker);
+        const killed = getEntity(state, damage.entityId);
+        state = entityAfterKill(state, attacker, killed);
       }
     }
   }
@@ -621,7 +630,7 @@ function push(state: StoreData, push: PushField[], options: PushOptions): StoreD
 }
 
 export interface ActionTargetContext extends TargetContext {
-  random: RandomGenerator;
+  random?: RandomGenerator;
   direction?: Direction;
 }
 

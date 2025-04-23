@@ -47,6 +47,8 @@ export const entities: EntitiesType = {
 
     skills: [{ id: 'move' }, { id: 'clericHeal' }, { id: 'clericDisarm' }, { id: 'clericCritical' }, { id: 'pass' }],
     hp: stat(4),
+    actionPoints: stat(2),
+    movePoints: stat(1),
 
     ownerId: 1, // Assuming ownerId is 0 for player entities
   }),

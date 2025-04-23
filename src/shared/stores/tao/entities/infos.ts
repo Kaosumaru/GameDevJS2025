@@ -1,20 +1,22 @@
 import { EntityTypeId } from './entities';
 import { EntityInfo } from '../entityInfo';
 import { Entity } from '../interface';
-import { balance, changeSkills, gainShield, passive, status } from '../skills/actions';
-import { area } from '../skills/targetReducers';
+import { balance, changeSkills, gainShield, ifBranch, passive, status } from '../skills/actions';
+import { area, self, withEntityType } from '../skills/targetReducers';
+
+const gainDark = passive([ifBranch([withEntityType('voidling')], [], [balance(-1)])]);
 
 const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
   'mushroom-bomb': {
-    beforeDeath: passive([area(3), status('poisoned', 2)]),
+    beforeDeath: passive([self, area(3), status('poisoned', 2)]),
   },
 
   bombMateusz: {
-    beforeDeath: passive([area(3), status('poisoned', 2)]),
+    beforeDeath: passive([self, area(3), status('poisoned', 2)]),
   },
 
   armorMateusz: {
-    afterRoundStart: passive([gainShield(4)]),
+    afterRoundStart: passive([self, gainShield(4)]),
   },
 
   knight: {
@@ -45,7 +47,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
         { id: 'pass' },
       ]),
     ]),
-    afterKill: passive([balance(-1)]),
+    afterKill: gainDark,
   },
 
   'goth-gf': {
@@ -76,13 +78,13 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
         { id: 'pass' },
       ]),
     ]),
-    afterKill: passive([balance(-1)]),
+    afterKill: gainDark,
   },
 
   'sun-princess': {
     afterBalance: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'auroraMove' },
         { id: 'clericHeal' },
         { id: 'clericDisarm' },
         { id: 'clericAoeNeutral' },
@@ -91,7 +93,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
     ]),
     afterDarkness: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'auroraMove' },
         { id: 'clericHeal' },
         { id: 'clericDisarm' },
         { id: 'clericAoeDark' },
@@ -100,14 +102,14 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
     ]),
     afterLight: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'auroraMove' },
         { id: 'clericHeal' },
         { id: 'clericDisarm' },
         { id: 'clericAoeLight' },
         { id: 'pass' },
       ]),
     ]),
-    afterKill: passive([balance(-1)]),
+    afterKill: gainDark,
   },
 };
 
