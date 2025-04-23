@@ -13,7 +13,7 @@ import {
 export const knightDarkWide: Skill = {
   id: 'knightDarkWide',
   name: 'Wide Slash',
-  description: '<p>Area Attack</p> <br> <p><b>4</b> dmg</p>',
+  description: '<p>Area Attack</p> <br> <p><b>4</b> dmg to target</p> <br> <br> <p><b>2</b> dmg to area</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,

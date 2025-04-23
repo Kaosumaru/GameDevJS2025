@@ -12,8 +12,8 @@ import {
 
 export const clericAoeNeutral: Skill = {
   id: 'clericAoeNeutral',
-  name: 'Blinding',
-  description: 'Blind - 1 turn [Skill in progress]',
+  name: 'Sunstroke',
+  description: '<p>Crowd control</p> <br> <p><b>2</b> dmg in the next <b>1</b> turn</p> <br> <p>Stun <b>1</b> turn</p>',
   type: 'defense',
   actionCost: 1,
   moveCost: 0,

@@ -6,7 +6,7 @@ export const mageLightFireball: Skill = {
   id: 'mageLightFireball',
   name: 'Moon`s cold',
   description:
-    '<p>Area Attack</p> <br> <p><b>1</b> dmg to a target and stun it</p> <br><p>1 dmg to everyone around it</p>',
+    '<p>Area Attack</p> <br> <p><b>1</b> dmg to a target and stun it for <b>2</b> turns</p> <br><p>1 dmg to everyone around it</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
@@ -18,7 +18,7 @@ export const mageLightFireball: Skill = {
     damage(1),
     status('stun', 2),
   ]),
-  getPossibleTargets: targets([area(3)]),
+  getPossibleTargets: targets([area(4)]),
   getAffectedFields: affected([neighbors9]),
   getRange: targets([]),
 };

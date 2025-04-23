@@ -15,7 +15,7 @@ export const mageSickle: Skill = {
   id: 'mageSickle',
   name: 'Moon`s push',
   description:
-    '<p>Pushback attack</p> <br> <p>Push targets away by <b>4</b> fields</p> <br> <p>If enemies hit a wall or any other obstacles, they get dmg (1 dmg for every impassable field)</p> <br> <p>[Skill in progress]</p>',
+    '<p>Pushback attack</p><br><p>Push targets away by <b>4</b> fields</p><br><p>If enemies hit a wall or any other obstacles, they get dmg (<b>1</b> dmg for every impassable field)</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
