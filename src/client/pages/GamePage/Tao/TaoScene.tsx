@@ -26,6 +26,7 @@ import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
 import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
+import { Goal } from './UiComponents/Goal';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -123,6 +124,8 @@ export const TaoScene = ({
     ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
   ];
 
+  console.log('state', state);
+
   return (
     <group>
       <color attach="background" args={['black']} />
@@ -216,6 +219,7 @@ export const TaoScene = ({
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
         <Dialogue dialogue={dialogue} />
+        <Goal info={state?.info}/>
         <Seat
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
