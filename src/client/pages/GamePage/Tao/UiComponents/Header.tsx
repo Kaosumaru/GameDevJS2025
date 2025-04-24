@@ -81,6 +81,14 @@ export const Header = ({ balance }: { balance: number }) => {
           src={'/yin.png'}
         />
       )}
+      {balance <= -3 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYin}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '-12rem' }}
+          src={'/yin.png'}
+        />
+      )}
       <motion.img
         initial={{ scale: 0 }}
         animate={animationYang}
@@ -96,6 +104,14 @@ export const Header = ({ balance }: { balance: number }) => {
         />
       )}
       {balance >= 2 && (
+        <motion.img
+          initial={{ scale: 0 }}
+          animate={animationYang}
+          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '12rem' }}
+          src={'/yang.png'}
+        />
+      )}
+      {balance >= 3 && (
         <motion.img
           initial={{ scale: 0 }}
           animate={animationYang}

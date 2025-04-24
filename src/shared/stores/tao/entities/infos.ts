@@ -12,7 +12,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
   },
 
   bombMateusz: {
-    beforeDeath: passive([self, area(3), status('poisoned', 2)]),
+    beforeDeath: passive([self, area(2), status('poisoned', 2)]),
   },
 
   armorMateusz: {
