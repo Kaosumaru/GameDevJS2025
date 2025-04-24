@@ -1,6 +1,6 @@
 import { RandomGenerator } from 'pureboard/shared/interface';
 import { monstersAi } from './ai';
-import { clearOriginalPositions, filterDeadEntities, modifyAllEntities } from './entity';
+import { clearOriginalPositions, filterDeadEntities } from './entity';
 import { entitiesAfterRoundStart } from './entityInfo';
 import { addEvent } from './events/events';
 import {

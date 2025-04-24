@@ -134,19 +134,21 @@ const Entity3DComponent = ({
         }}
       >
         <Avatar entity={entity} />
-        <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
-          <planeGeometry args={[0.6, 0.08]} />
-          <healthBar
-            ref={(r: object) => {
-              refs.current['healthbar'] = {
-                material: r,
-              };
-            }}
-            hp={entity.hp.current}
-            shield={entity.shield}
-            maxHp={entity.hp.max}
-          />
-        </mesh>
+        {entity.traits.canBeDamaged && (
+          <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
+            <planeGeometry args={[0.6, 0.08]} />
+            <healthBar
+              ref={(r: object) => {
+                refs.current['healthbar'] = {
+                  material: r,
+                };
+              }}
+              hp={entity.hp.current}
+              shield={entity.shield}
+              maxHp={entity.hp.max}
+            />
+          </mesh>
+        )}
         <Statuses
           float={'right'}
           color="red"
