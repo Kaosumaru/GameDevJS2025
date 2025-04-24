@@ -88,7 +88,7 @@ export const mobsMateusz = {
     },
 
     statusesCooldowns: {
-      mateuszSpawn: 2,
+      mateuszSpawn: 1,
     },
   }),
 } satisfies SomeEntitiesType;

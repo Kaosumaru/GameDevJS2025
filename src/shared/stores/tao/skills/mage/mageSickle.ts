@@ -21,7 +21,7 @@ export const mageSickle: Skill = {
   moveCost: 0,
   reducer: actions([
     affectedFields,
-    pushField({ distance: 4, multiplyDamagePerDistanceLeft: true, damageIfBlocked: 4 }),
+    pushField({ distance: 4, multiplyDamagePerDistanceLeft: true, damageIfBlocked: 1 }),
     withEnemy,
   ]),
   getAffectedFields: affected([fieldsInFront(1, 1, -1)]),

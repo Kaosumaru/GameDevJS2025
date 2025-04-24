@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { AnimationContext } from './AnimationContext';
 
 export const AnimationContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -14,31 +14,30 @@ export const AnimationContextProvider = ({ children }: { children: React.ReactNo
     }
   }, []);
 
-  return (
-    <AnimationContext.Provider
-      value={{
-        notify: () => {
-          checkAndCall();
-        },
-        increaseAnimationCount: () => {
-          animationCount.current++;
-        },
-        decreaseAnimationCount: () => {
-          animationCount.current--;
-          checkAndCall();
-        },
-        scheduleFunctionAfterAnimation: callbacks => {
-          if (callbacks.length >= 1) {
-            const fn = callbacks.shift();
-            if (fn) {
-              fn();
-            }
+  const API: AnimationContext = useMemo(
+    () => ({
+      notify: () => {
+        checkAndCall();
+      },
+      increaseAnimationCount: () => {
+        animationCount.current++;
+      },
+      decreaseAnimationCount: () => {
+        animationCount.current--;
+        checkAndCall();
+      },
+      scheduleFunctionAfterAnimation: callbacks => {
+        if (callbacks.length >= 1) {
+          const fn = callbacks.shift();
+          if (fn) {
+            fn();
           }
-          scheduledFunctions.current.push(...callbacks);
-        },
-      }}
-    >
-      {children}
-    </AnimationContext.Provider>
+        }
+        scheduledFunctions.current.push(...callbacks);
+      },
+    }),
+    [checkAndCall]
   );
+
+  return <AnimationContext.Provider value={API}>{children}</AnimationContext.Provider>;
 };

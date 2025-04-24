@@ -5,11 +5,11 @@ import { area, fieldsInRange, targets, withAlly, withEnemy, withEntity } from '.
 export const auroraMateuszHeal: Skill = {
   id: 'auroraMateuszHeal',
   name: 'Goddess` Touch',
-  description: '<p>Heal <b>2</b> or Damage <b>2</b></p>',
+  description: '<p>Heal <b>3</b> or Damage <b>3</b></p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
   reducer: actions([branch([withAlly, heal(2)]), branch([withEnemy, damage(2)])]),
   getPossibleTargets: targets([fieldsInRange, withEntity]),
-  getRange: targets([area(4)]),
+  getRange: targets([area(6)]),
 };

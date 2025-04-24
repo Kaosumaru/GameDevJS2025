@@ -26,6 +26,7 @@ import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
 import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
+import { Goal } from './UiComponents/Goal';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -123,6 +124,8 @@ export const TaoScene = ({
     ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
   ];
 
+  console.log('state', state);
+
   return (
     <group>
       <color attach="background" args={['black']} />
@@ -180,8 +183,21 @@ export const TaoScene = ({
                     }
 
                     if (isCurrentPlayerInControlOfSelectedEntity === false) {
-                      console.warn('You do not have this seat');
+                      if (entityAtField) {
+                        focusOnEntity(entityAtField, entityAtField.type === 'player', entityAtField.type !== 'player');
+                      }
+                      setUiAction(null);
                       return;
+                    }
+
+                    if (uiAction.targets.length > 0 && !uiAction.targets.includes(field.id)) {
+                      if (entityAtField) {
+                        focusOnEntity(entityAtField, entityAtField.type === 'player', entityAtField.type !== 'player');
+                        return;
+                      } else {
+                        setUiAction(null);
+                        return;
+                      }
                     }
 
                     void client.useSkill(selectedEntity.id, uiAction.skill.id, field.id);
@@ -203,6 +219,7 @@ export const TaoScene = ({
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
         <Dialogue dialogue={dialogue} />
+        <Goal info={state?.info}/>
         <Seat
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
