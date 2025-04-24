@@ -7,6 +7,9 @@ import { usePrevious } from '../../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { animate } from 'motion';
 
+const damageColor = new Color(0xff0000);
+const healColor = new Color(0x00ff00);
+
 export const Avatar = ({ entity }: { entity: Entity }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const avatarRef = useRef<any>(null);
@@ -25,11 +28,13 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
   useEffect(() => {
     if (!previousHp) return;
     if (previousHp.current === entity.hp.current) return;
+    const heal = previousHp.current < entity.hp.current;
 
     playNext('receive-dmg', async () => {
       const obj = avatarRef.current!;
       if (!obj) return;
       await animate([
+        [obj, { flashColor: heal ? healColor : damageColor }, { duration: 0 }],
         [obj, { flash: 0.5 }, { duration: 0.2 }],
         [obj, { flash: 0 }, { duration: 0.2, delay: 0.2 }],
       ]);
