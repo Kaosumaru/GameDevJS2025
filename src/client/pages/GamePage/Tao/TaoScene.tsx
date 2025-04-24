@@ -220,7 +220,7 @@ export const TaoScene = ({
         <Dialogue dialogue={dialogue} />
         <Goal info={state?.info} />
         <EndScreen
-          result="ongoing"
+          result={state?.info.gameState ?? 'inProgress'}
           onPlayAgain={() => {
             console.log('Play again');
           }}
@@ -247,6 +247,11 @@ export const TaoScene = ({
           onSkill={skill => {
             if (selectedEntity == undefined) {
               console.warn('No entity selected');
+              return;
+            }
+            if (skill.id === 'pass') {
+              const field = state?.board[selectedEntity.position.y][selectedEntity.position.x];
+              void client.useSkill(selectedEntity.id, skill.id, field?.id);
               return;
             }
             if (uiAction && uiAction.skill.id === skill.id) {

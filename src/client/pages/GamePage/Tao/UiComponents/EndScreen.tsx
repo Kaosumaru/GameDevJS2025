@@ -2,18 +2,24 @@ import { Box, Button, Typography } from '@mui/material';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 import { useEffect } from 'react';
 
-export const EndScreen = ({ result, onPlayAgain }: { result: 'ongoing' | 'win' | 'lose'; onPlayAgain: () => void }) => {
+export const EndScreen = ({
+  result,
+  onPlayAgain,
+}: {
+  result: 'inProgress' | 'defeated' | 'victory';
+  onPlayAgain: () => void;
+}) => {
   const { play } = useTaoAudio();
 
   useEffect(() => {
-    if (result === 'win') {
+    if (result === 'victory') {
       play('music', 'victory');
-    } else if (result === 'lose') {
+    } else if (result === 'defeated') {
       play('music', 'defeat');
     }
   }, [play, result]);
 
-  if (result === 'ongoing') {
+  if (result === 'inProgress') {
     return null;
   }
 
@@ -62,7 +68,7 @@ export const EndScreen = ({ result, onPlayAgain }: { result: 'ongoing' | 'win' |
           padding: '2rem',
         }}
       >
-        You {result === 'win' ? 'Win!!!' : 'Lose!!!'}
+        You {result === 'victory' ? 'Win!!!' : 'Lose!!!'}
         <Button onClick={onPlayAgain}>Play Again</Button>
       </Box>
       <Box
