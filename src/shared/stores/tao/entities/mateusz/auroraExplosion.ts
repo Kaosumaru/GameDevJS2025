@@ -12,5 +12,5 @@ export const auroraExplosion: Skill = {
   cooldown: 2,
   reducer: actions([fieldsInRange, withEnemy, damage(3, 'piercing')]),
   getPossibleTargets: targets([fieldsInRange]),
-  getRange: targets([area(4)]),
+  getRange: targets([area(5)]),
 };

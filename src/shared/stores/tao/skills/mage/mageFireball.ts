@@ -1,5 +1,5 @@
 import { Skill } from '../../skills';
-import { actions, damage, effectsInFields, effectsToFields } from '../actions';
+import { actions, branch, damage, effectsInFields, effectsToFields } from '../actions';
 import { affected, area, neighbors9, neighbors9Excluding, targets, withEnemy } from '../targetReducers';
 
 export const mageFireball: Skill = {
@@ -10,9 +10,8 @@ export const mageFireball: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([
-    withEnemy,
     effectsToFields(['fireball']),
-    damage(3),
+    branch([withEnemy, damage(3)]),
     effectsInFields(['fire']),
     neighbors9Excluding,
     withEnemy,

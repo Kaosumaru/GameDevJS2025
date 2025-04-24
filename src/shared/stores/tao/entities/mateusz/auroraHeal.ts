@@ -9,7 +9,7 @@ export const auroraMateuszHeal: Skill = {
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([branch([withAlly, heal(2)]), branch([withEnemy, damage(2)])]),
+  reducer: actions([branch([withAlly, heal(3)]), branch([withEnemy, damage(3)])]),
   getPossibleTargets: targets([fieldsInRange, withEntity]),
-  getRange: targets([area(4)]),
+  getRange: targets([area(6)]),
 };
