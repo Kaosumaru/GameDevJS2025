@@ -15,7 +15,8 @@ export const defaultPlayer: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statusesCooldowns: {},
+  statuses: {},
+  cooldowns: {},
   ownerId: undefined,
   totalAttacksCount: 0,
   traits: {
@@ -40,7 +41,8 @@ export const defaultEnemy: Entity = {
   movePoints: stat(1),
   position: { x: 0, y: 0 },
   originalPosition: undefined,
-  statusesCooldowns: {},
+  statuses: {},
+  cooldowns: {},
   ownerId: undefined,
   totalAttacksCount: 0,
   traits: {

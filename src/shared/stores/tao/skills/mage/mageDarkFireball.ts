@@ -11,7 +11,7 @@ export const mageDarkFireball: Skill = {
   moveCost: 0,
   reducer: actions([
     effectsToFields(['fireball']),
-    branch([withEnemy, damage(2)]),
+    branch([withEnemy, damage(4)]),
     effectsInFields(['fire']),
     neighbors9Excluding,
     withEnemy,

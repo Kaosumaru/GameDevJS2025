@@ -36,6 +36,24 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
     });
   }, [playNext, previousHp, entity.hp, entity.shield]);
 
+  if (entity.kind === 'playerCrystal') {
+    return (
+      <mesh position={[0, 1, 0]}>
+        <sphereGeometry args={[0.5, 1, 1]} />
+        <meshStandardMaterial color={'blue'} />
+      </mesh>
+    );
+  }
+
+  if (entity.kind === 'testSpawner' || entity.kind === 'spawnerMateusz') {
+    return (
+      <mesh position={[0, 1, 0]}>
+        <sphereGeometry args={[0.5, 1, 1]} />
+        <meshStandardMaterial color={'red'} />
+      </mesh>
+    );
+  }
+
   return (
     <mesh position={[0, imageHeight / 2, 1]} renderOrder={5}>
       <planeGeometry args={[imageWidth, imageHeight]} />

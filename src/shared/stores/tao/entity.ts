@@ -45,7 +45,7 @@ function clearOriginalPositionReducer(entity: Entity): Entity {
 }
 
 export function getStatusAmount(entity: Entity, status: StatusEffect): number {
-  const amount = entity.statusesCooldowns[status] ?? 0;
+  const amount = entity.statuses[status] ?? 0;
   return amount;
 }
 
@@ -75,12 +75,12 @@ export function payForSkillEntity(
 
   if (skill.cooldown) {
     state = addEvent(state, {
-      type: 'applyStatus',
-      statuses: [
+      type: 'applyCooldown',
+      cooldowns: [
         {
           entityId: entity.id,
-          status: skill.id,
-          amount: skill.cooldown + 1,
+          skillId: skill.id,
+          amount: skill.cooldown,
         },
       ],
     });

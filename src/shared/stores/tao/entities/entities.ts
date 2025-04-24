@@ -158,7 +158,7 @@ export const entities: EntitiesType = {
       canBeDamaged: false,
     },
 
-    statusesCooldowns: {
+    cooldowns: {
       testSpawner: 2,
     },
   }),

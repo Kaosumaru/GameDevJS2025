@@ -16,7 +16,7 @@ export const mageLightFireball: Skill = {
     neighbors9,
     withEnemy,
     damage(1),
-    status('stun', 2),
+    status('stunned', 2),
   ]),
   getPossibleTargets: targets([area(4)]),
   getAffectedFields: affected([neighbors9]),

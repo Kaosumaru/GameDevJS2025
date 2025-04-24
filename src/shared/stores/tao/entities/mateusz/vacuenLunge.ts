@@ -16,7 +16,7 @@ export const vacuenLunge: Skill = {
   description: '<b>4</b> piercing dmg</p>',
   type: 'attack',
   actionCost: 1,
-  cooldown: 2,
+  cooldown: 3,
   moveCost: 0,
   reducer: actions([affectedFields, withEnemy, damage(4, 'piercing')]),
   getAffectedFields: affected([fieldsInFront(0, 3)]),
