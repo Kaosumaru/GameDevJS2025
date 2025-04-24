@@ -11,7 +11,46 @@ import {
   TAO_DEFAULT_AUTO_PLAY,
 } from './TaoAudioData';
 
+const createAudio = (listener: AudioListener, volume: number, loop: boolean, autoplay: boolean) => {
+  const audio = new Audio(listener);
+  audio.setVolume(volume);
+  audio.setLoop(loop);
+  audio.autoplay = autoplay;
+  return audio;
+};
+
+const audioPhaseIn = (audio: Audio, phaseInOffsetMs: number, phaseInVolume: number) => {
+  audio.play();
+  const ticks = Math.floor(phaseInOffsetMs / 10);
+  const phaseInFunc = () => {
+    const volume = audio.getVolume();
+    if (volume < phaseInVolume) {
+      const newVolume = Math.min(volume + phaseInVolume / ticks, phaseInVolume);
+      audio.setVolume(newVolume);
+      setTimeout(phaseInFunc, 10);
+    }
+  };
+  setTimeout(phaseInFunc, 10);
+};
+
+const audioPhaseOut = (audio: Audio, phaseOutOffsetMs: number, phaseOutVolume: number) => {
+  const ticks = Math.floor(phaseOutOffsetMs / 10);
+  const phaseOutFunc = () => {
+    const volume = audio.getVolume();
+    if (volume > 0) {
+      const newVolume = Math.max(volume - phaseOutVolume / ticks, 0);
+      audio.setVolume(newVolume);
+      setTimeout(phaseOutFunc, 10);
+    } else {
+      audio.stop();
+      audio.setVolume(0);
+    }
+  };
+  setTimeout(phaseOutFunc, 10);
+};
+
 export const TaoAudioContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const tempChannelRef = useRef<Audio>(null);
   const lastAudioBufferRef = useRef<AudioBuffer | null>(null);
   const hasConsentedRef = useRef(false);
   const scheduledAudioRef = useRef<Record<TaoChannel, string | null>>({
@@ -41,6 +80,8 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'spawn-3': null,
     'blind-1': null,
     'pass-1': null,
+    'slash-3': null,
+    'slash-4': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -51,16 +92,15 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
   useEffect(() => {
     const listener = new AudioListener();
 
+    tempChannelRef.current = createAudio(listener, TAO_DEFAULT_VOLUME.music, false, false);
+
     TAO_CHANNELS.forEach(channel => {
-      const audio = new Audio(listener);
-      const defaultVolume = TAO_DEFAULT_VOLUME[channel];
-      audio.setVolume(defaultVolume);
-      if (TAO_DEFAULT_LOOPING[channel]) {
-        audio.setLoop(true);
-      }
-      if (TAO_DEFAULT_AUTO_PLAY[channel]) {
-        audio.autoplay = true;
-      }
+      const audio = createAudio(
+        listener,
+        TAO_DEFAULT_VOLUME[channel],
+        TAO_DEFAULT_LOOPING[channel],
+        TAO_DEFAULT_AUTO_PLAY[channel]
+      );
       channelsRef.current[channel] = audio;
     });
 
@@ -101,7 +141,7 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
   const API: TaoAudioContextType = useMemo(
     () => ({
       getChannels: () => [...TAO_CHANNELS],
-      play: (channel, sound, options) => {
+      play: (channel, sound, options, phaseInOffsetMs) => {
         if (!hasConsentedRef.current) {
           scheduledAudioRef.current[channel] = sound ?? null;
           return;
@@ -110,8 +150,21 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
         if (audio) {
           if (sound && allAudioData.current[sound]) {
             const sameSound = lastAudioBufferRef.current === allAudioData.current[sound];
+            if (phaseInOffsetMs && audio.buffer && tempChannelRef.current) {
+              const volume = audio.getVolume();
+              tempChannelRef.current.setBuffer(audio.buffer);
+              tempChannelRef.current.offset = audio.offset;
+              tempChannelRef.current.setVolume(volume);
+              tempChannelRef.current.play();
+              audioPhaseOut(tempChannelRef.current, phaseInOffsetMs, volume);
+            }
             if (!sameSound) {
               audio.setBuffer(allAudioData.current[sound]);
+            }
+            if (phaseInOffsetMs && !sameSound) {
+              const phaseInVolume = TAO_DEFAULT_VOLUME[channel];
+              audio.setVolume(0);
+              audioPhaseIn(audio, phaseInOffsetMs, phaseInVolume);
             }
             lastAudioBufferRef.current = allAudioData.current[sound];
             audio.stop();
@@ -119,6 +172,7 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
               audio.detune = options.detune;
             }
             audio.offset = 0;
+
             audio.play();
           }
         } else {

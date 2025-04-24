@@ -36,13 +36,13 @@ export const Header = ({ balance }: { balance: number }) => {
     if (balance == 0) {
       setAnimationYin(showAnimtion);
       setAnimationYang(showAnimtion);
-      play('music', 'balance-loop');
+      play('music', 'balance-loop', undefined, 1000);
     } else if (balance < 0 && balanceHandledRef.current >= 0) {
       setAnimationYang(shiftRightAnimation);
-      play('music', 'darkness-loop');
+      play('music', 'darkness-loop', undefined, 1000);
     } else if (balance > 0 && balanceHandledRef.current <= 0) {
       setAnimationYin(shiftLeftAnimation);
-      play('music', 'light-loop');
+      play('music', 'light-loop', undefined, 1000);
     }
     balanceHandledRef.current = balance;
   }, [balance, play]);

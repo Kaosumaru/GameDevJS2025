@@ -13,7 +13,7 @@ const getWinConditionText = (info: GameInfo | undefined): string[] => {
   }
 };
 
-export const Goal = ({ info }: { info: GameInfo }) => {
+export const Goal = ({ info }: { info: GameInfo | undefined }) => {
   return (
     <div
       style={{
