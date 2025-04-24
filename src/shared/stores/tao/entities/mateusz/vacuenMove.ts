@@ -4,7 +4,7 @@ import { empty, inMoveDistance, targets, self } from '../../skills/targetReducer
 
 export const vacuenMove: Skill = {
   id: 'vacuenMove',
-  name: 'Move',
+  name: 'Advance',
   description: 'Move to a target position, gain 4 shield if moved 3 or more tiles',
   type: 'movement',
   actionCost: 0,

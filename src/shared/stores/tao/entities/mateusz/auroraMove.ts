@@ -4,8 +4,8 @@ import { empty, inMoveDistance, targets } from '../../skills/targetReducers';
 
 export const auroraMove: Skill = {
   id: 'auroraMove',
-  name: 'Move',
-  description: 'Move to a target position',
+  name: 'Step aside',
+  description: 'Move to a target position - if not moved, can use skill twice',
   type: 'movement',
   actionCost: 1,
   moveCost: 1,

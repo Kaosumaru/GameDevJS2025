@@ -135,6 +135,10 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
     return false;
   }
 
+  if (skillInstance.id == 'pass') {
+    return user.actionPoints.current > 0 || user.movePoints.current > 0;
+  }
+
   // cooldown
   if ((user.cooldowns[skillInstance.id] ?? 0) > 0) {
     return false;
