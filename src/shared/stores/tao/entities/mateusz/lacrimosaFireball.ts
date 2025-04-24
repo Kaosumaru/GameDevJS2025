@@ -10,7 +10,7 @@ export const lacrimosaFireball: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([branch([withEnemy, damage(3)]), neighbors9Excluding, withEnemy, damage(2)]),
-  getPossibleTargets: targets([area(3)]),
+  getPossibleTargets: targets([area(4)]),
   getAffectedFields: affected([neighbors9]),
   getRange: targets([]),
 };

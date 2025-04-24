@@ -360,14 +360,17 @@ export function spawn(spawnInfo: SpawnInfo[]) {
   };
 }
 
-export function spawnFrom(entities: SpawnInfo[][]) {
+export function spawnFrom(entities: SpawnInfo[][], amount: number = 1) {
   return (ctx: ActionTargetContext) => {
     if (!ctx.random) {
       return;
     }
-    const index = ctx.random.int(entities.length);
-    const randomEntry = entities[index];
-    return spawn(randomEntry)(ctx);
+
+    for (let i = 0; i < amount; i++) {
+      const index = ctx.random.int(entities.length);
+      const randomEntry = entities[index];
+      spawn(randomEntry)(ctx);
+    }
   };
 }
 

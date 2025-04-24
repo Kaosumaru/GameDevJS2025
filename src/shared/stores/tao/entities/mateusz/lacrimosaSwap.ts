@@ -1,16 +1,16 @@
 import { Skill } from '../../skills';
 import { actions, swap, status } from '../../skills/actions';
-import { allEntities, targets } from '../../skills/targetReducers';
+import { allEntities, targets, withoutEntityType } from '../../skills/targetReducers';
 
 export const lacrimosaSwap: Skill = {
   id: 'lacrimosaSwap',
   name: 'Swap',
-  description: '<p>Swap with any character and become invisible for a turn</p>',
+  description: '<p>Free action: Swap with any character and become invisible for a turn, cooldown 2</p>',
   type: 'attack',
-  actionCost: 1,
+  actionCost: 0,
   moveCost: 0,
   cooldown: 2,
-  reducer: actions([swap, status('invisible', 1)]),
+  reducer: actions([swap, withoutEntityType('playerCrystal'), status('invisible', 1)]),
   getPossibleTargets: targets([allEntities]),
   getRange: targets([]),
 };

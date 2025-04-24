@@ -136,6 +136,12 @@ export function withEntityType(type: EntityTypeId) {
   };
 }
 
+export function withoutEntityType(type: EntityTypeId) {
+  return (ctx: TargetContext) => {
+    ctx.fields = fieldsWithEntity(ctx, entity => entity.kind !== type);
+  };
+}
+
 function isTargetableEnemy(entity: Entity): boolean {
   return entity && entity.hp.current > 0 && !hasStatus(entity, 'invisible');
 }

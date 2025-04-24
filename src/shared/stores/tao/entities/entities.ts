@@ -173,7 +173,7 @@ export const entities: EntitiesType = {
 
     type: 'player',
     skills: [],
-    hp: stat(4),
+    hp: stat(8),
     actionPoints: stat(0),
     movePoints: stat(0),
   }),
