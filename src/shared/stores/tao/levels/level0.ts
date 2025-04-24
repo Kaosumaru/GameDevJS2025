@@ -40,7 +40,7 @@ export function createLevel0(): LevelDescription {
       8: 'goth-gf',
       9: 'voidling',
     },
-    winCondition: { type: 'none' },
+    winCondition: { type: 'survive', turns: 3 },
     loseCondition: { type: 'none' },
   };
 }
