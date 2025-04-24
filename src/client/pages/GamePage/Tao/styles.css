@@ -10,3 +10,16 @@
 .switch-exit-done {
   opacity: 0;
 }
+
+body {
+  overflow: hidden;
+}
+
+@keyframes credits {
+  0% {
+    top: 100%;
+  }
+  100% {
+    top: -500%;
+  }
+}

@@ -82,6 +82,8 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'pass-1': null,
     'slash-3': null,
     'slash-4': null,
+    victory: null,
+    defeat: null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
