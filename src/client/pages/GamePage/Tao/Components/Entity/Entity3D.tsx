@@ -141,7 +141,7 @@ const Entity3DComponent = ({
       >
         <Avatar entity={entity} />
         {entity.traits.canBeDamaged && (
-          <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
+          <mesh position={[0.25, 1.3, 0.2]} renderOrder={2}>
             <planeGeometry args={[0.6, 0.08]} />
             <healthBar
               ref={(r: object) => {
@@ -159,13 +159,13 @@ const Entity3DComponent = ({
           float={'right'}
           color="red"
           selectedStatuses={getActiveDebuffStatuses(entity)}
-          position={[0.7, 1.2, 0]}
+          position={[0.7, 1.3, 0]}
         />
         <Statuses
           float={'left'}
           color={'green'}
           selectedStatuses={getActiveBuffStatuseses(entity)}
-          position={[-0.2, 1.2, 0]}
+          position={[-0.2, 1.3, 0]}
         />
       </group>
 
