@@ -16,6 +16,10 @@ import { Avatar } from './Avatar';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
+const getRandomInteger = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 const Entity3DComponent = ({
   entity,
   isSelected,
@@ -77,7 +81,9 @@ const Entity3DComponent = ({
     const obj = refs.current['container']!;
     if (!obj) return;
     playNext('attack', async () => {
-      play('sfx', getRandomSoundForSkill(entity.lastSkillUsed!.id));
+      play('sfx', getRandomSoundForSkill(entity.lastSkillUsed!.id), {
+        detune: getRandomInteger(-3, 3) * 100,
+      });
       await animate([
         [obj.position, { x: x + 0.2 }, { duration: 0.1 }],
         [obj.position, { x: x - 0.2 }, { duration: 0.1 }],

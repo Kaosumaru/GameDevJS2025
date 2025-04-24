@@ -39,6 +39,8 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'spawn-1': null,
     'spawn-2': null,
     'spawn-3': null,
+    'blind-1': null,
+    'pass-1': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -99,7 +101,7 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
   const API: TaoAudioContextType = useMemo(
     () => ({
       getChannels: () => [...TAO_CHANNELS],
-      play: (channel, sound) => {
+      play: (channel, sound, options) => {
         if (!hasConsentedRef.current) {
           scheduledAudioRef.current[channel] = sound ?? null;
           return;
@@ -113,6 +115,9 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
             }
             lastAudioBufferRef.current = allAudioData.current[sound];
             audio.stop();
+            if (options?.detune) {
+              audio.detune = options.detune;
+            }
             audio.offset = 0;
             audio.play();
           }
