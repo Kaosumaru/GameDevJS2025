@@ -1,7 +1,7 @@
 import { entityBeforeDeath } from './entityInfo';
 import { addEvent } from './events/events';
 import { Entity, StatusEffect } from './interface';
-import { Skill, SkillInstance } from './skills';
+import { haveResourcesForSkill, Skill, skillFromInstance, SkillInstance } from './skills';
 import { StoreData } from './taoStore';
 
 export function getEntity(state: StoreData, id: string): Entity {
@@ -125,7 +125,13 @@ export function filterDeadEntities(state: StoreData): StoreData {
 }
 
 export function entityHasActions(entity: Entity): boolean {
-  return entity.actionPoints.current > 0 || entity.movePoints.current > 0;
+  return entity.skills.some(skillInstance => {
+    const skill = skillFromInstance(skillInstance);
+    if (skill.actionCost == 0 && skill.moveCost == 0) {
+      return false;
+    }
+    return haveResourcesForSkill(entity, skillInstance);
+  });
 }
 
 export function anyPlayerHasActions(state: StoreData): boolean {
