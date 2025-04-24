@@ -44,7 +44,7 @@ export function createLevel2(): LevelDescription {
       8: 'lacrimosaMateusz',
       9: 'playerCrystal',
     },
-    winCondition: { type: 'none' },
-    loseCondition: { type: 'none' },
+    winCondition: { type: 'survive', turns: 12 },
+    loseCondition: { type: 'killAll', entityType: 'playerCrystal' },
   };
 }

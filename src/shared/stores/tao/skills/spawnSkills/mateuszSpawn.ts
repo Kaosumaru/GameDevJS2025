@@ -4,6 +4,8 @@ import { area, targets, self, fieldsInRange } from '../targetReducers';
 
 const spawnAction = spawnRandomFrom(
   [
+    [['mobMateusz', 3]],
+    [['mobMateusz', 3]],
     [
       ['mobMateusz', 2],
       ['bombMateusz', 1],
@@ -14,7 +16,7 @@ const spawnAction = spawnRandomFrom(
     [['swarmMateusz', 4]],
     //[['shooterMateusz', 2]],
   ],
-  1
+  3
 );
 
 export const mateuszSpawn: Skill = {
@@ -24,7 +26,7 @@ export const mateuszSpawn: Skill = {
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  cooldown: 0,
+  cooldown: 2,
   reducer: actions([fieldsInRange, spawnAction]),
   getPossibleTargets: targets([self]),
   getRange: targets([area(3)]),

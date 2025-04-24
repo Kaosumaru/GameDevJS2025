@@ -5,7 +5,7 @@ const getWinConditionText = (info: GameInfo | undefined): string[] => {
 
   switch (info.winCondition.type) {
     case 'survive':
-      return [`You must survive for ${info.winCondition.turns} turns`, `current turn: ${info.round}`];
+      return [`Survive ${info.winCondition.turns - info.round} turns`];
     case 'killAll':
       return [`You must kill all ${info.winCondition.entityType}`];
     default:

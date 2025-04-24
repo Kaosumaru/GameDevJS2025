@@ -72,6 +72,7 @@ export const entities: EntitiesType = {
       isTank: true,
       canBeKilled: true,
       canBeDamaged: true,
+      canBeMoved: true,
     },
     ownerId: 2, // Assuming ownerId is 0 for player entities
   }),
@@ -156,6 +157,7 @@ export const entities: EntitiesType = {
       isTank: false,
       canBeKilled: true,
       canBeDamaged: false,
+      canBeMoved: false,
     },
 
     cooldowns: {

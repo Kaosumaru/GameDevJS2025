@@ -66,6 +66,7 @@ export const mobsMateusz = {
 
     speed: 3,
     hp: stat(standardHp),
+    skills: [{ id: 'move' }, { id: 'suicide' }],
 
     kind: 'bombMateusz',
     avatar: 'mushroom-bomb',
@@ -74,7 +75,7 @@ export const mobsMateusz = {
     ...defaultEnemy,
     position,
 
-    name: 'spawnerMateusz',
+    name: 'Spawner',
     avatar: 'testSpawner',
     kind: 'spawnerMateusz',
 
@@ -85,6 +86,7 @@ export const mobsMateusz = {
       isTank: false,
       canBeKilled: true,
       canBeDamaged: false,
+      canBeMoved: false,
     },
 
     cooldowns: {

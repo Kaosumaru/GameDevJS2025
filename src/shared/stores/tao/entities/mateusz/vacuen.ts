@@ -16,6 +16,7 @@ export const vacuenMateusz: EntityConstructor = position => ({
     isTank: true,
     canBeKilled: true,
     canBeDamaged: true,
+    canBeMoved: true,
   },
   ownerId: 2, // Assuming ownerId is 0 for player entities
 });

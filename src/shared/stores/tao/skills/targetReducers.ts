@@ -160,6 +160,10 @@ export function withDeadEntity(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? isDead(entity) : false));
 }
 
+export function withMoveableEntity(ctx: TargetContext) {
+  ctx.fields = fieldsWithEntity(ctx, entity => entity.traits.canBeMoved);
+}
+
 export function withAlly(ctx: TargetContext) {
   ctx.fields = fieldsWithEntity(ctx, entity => (ctx.entity ? !isEnemy(ctx.entity, entity) : false));
 }
