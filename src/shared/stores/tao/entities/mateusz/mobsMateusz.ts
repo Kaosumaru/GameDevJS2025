@@ -74,7 +74,7 @@ export const mobsMateusz = {
     ...defaultEnemy,
     position,
 
-    name: 'spawnerMateusz',
+    name: 'Spawner',
     avatar: 'testSpawner',
     kind: 'spawnerMateusz',
 
@@ -85,6 +85,7 @@ export const mobsMateusz = {
       isTank: false,
       canBeKilled: true,
       canBeDamaged: false,
+      canBeMoved: false,
     },
 
     cooldowns: {

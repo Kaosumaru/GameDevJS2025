@@ -32,6 +32,7 @@ export interface EntityTraits {
   isTank: boolean;
   canBeKilled: boolean;
   canBeDamaged: boolean;
+  canBeMoved: boolean;
 }
 
 export interface Entity {

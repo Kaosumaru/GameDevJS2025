@@ -23,6 +23,7 @@ export const defaultPlayer: Entity = {
     isTank: false,
     canBeKilled: true,
     canBeDamaged: true,
+    canBeMoved: true,
   },
 };
 
@@ -49,5 +50,6 @@ export const defaultEnemy: Entity = {
     isTank: false,
     canBeKilled: true,
     canBeDamaged: true,
+    canBeMoved: true,
   },
 };

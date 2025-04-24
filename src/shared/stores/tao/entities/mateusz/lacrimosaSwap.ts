@@ -1,6 +1,6 @@
 import { Skill } from '../../skills';
 import { actions, swap, status } from '../../skills/actions';
-import { allEntities, targets, withoutEntityType } from '../../skills/targetReducers';
+import { allEntities, targets, withMoveableEntity, withoutEntityType } from '../../skills/targetReducers';
 
 export const lacrimosaSwap: Skill = {
   id: 'lacrimosaSwap',
@@ -11,6 +11,6 @@ export const lacrimosaSwap: Skill = {
   moveCost: 0,
   cooldown: 2,
   reducer: actions([swap, withoutEntityType('playerCrystal'), status('invisible', 1)]),
-  getPossibleTargets: targets([allEntities]),
+  getPossibleTargets: targets([allEntities, withMoveableEntity]),
   getRange: targets([]),
 };
