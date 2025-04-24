@@ -3,16 +3,16 @@ import { StatusesType } from './StatusesData';
 
 export const getActiveDebuffStatuses = (entity: Entity): StatusesType[] => {
   const statuses: StatusesType[] = [];
-  if (entity.statusesCooldowns.disarmed) {
+  if (entity.statuses.disarmed) {
     statuses.push('disarmed');
   }
-  if (entity.statusesCooldowns.poisoned) {
+  if (entity.statuses.poisoned) {
     statuses.push('poisoned');
   }
-  if (entity.statusesCooldowns.stunned) {
+  if (entity.statuses.stunned) {
     statuses.push('stunned');
   }
-  if (entity.statusesCooldowns.taunted) {
+  if (entity.statuses.taunted) {
     statuses.push('taunted');
   }
   return statuses;
@@ -26,13 +26,13 @@ export const getActiveBuffStatuseses = (entity: Entity): StatusesType[] => {
     return [
       ...actions,
       ...movements,
-      ...(entity.statusesCooldowns.critical ? ['critical' as const] : []),
-      ...(entity.statusesCooldowns['speed+3'] ? ['speed+3' as const] : []),
+      ...(entity.statuses.critical ? ['critical' as const] : []),
+      ...(entity.statuses['speed+3'] ? ['speed+3' as const] : []),
     ];
   }
 
   return [
-    ...(entity.statusesCooldowns.critical ? ['critical' as const] : []),
-    ...(entity.statusesCooldowns['speed+3'] ? ['speed+3' as const] : []),
+    ...(entity.statuses.critical ? ['critical' as const] : []),
+    ...(entity.statuses['speed+3'] ? ['speed+3' as const] : []),
   ];
 };

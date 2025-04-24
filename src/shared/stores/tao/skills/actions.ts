@@ -13,9 +13,9 @@ import {
 import { EntityTypeId } from '../entities/entities';
 import { getEntity, hasStatus } from '../entity';
 import { entitiesAfterBalanceChange, entityAfterKill as entityAfterKill } from '../entityInfo';
-import { addEvent, DamageData, DamageType, MoveData } from '../events/events';
+import { addEvent, ApplyCooldownData, ApplyStatusData, DamageData, DamageType, MoveData } from '../events/events';
 import { Entity, Field, Position, StatusEffect } from '../interface';
-import { SkillActionContext, SkillInstance } from '../skills';
+import { SkillActionContext, SkillID, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { empty, isBlocking, reduceTargets, TargetContext, TargetReducer } from './targetReducers';
 import { MovingParticleEffect, ParticleInPlaceEffect } from '../effects';
@@ -253,6 +253,50 @@ export function status(status: StatusEffect, amount: number, balanceBonus: Bonus
       })),
     });
   };
+}
+
+export function decrementAllStatuses(ctx: TargetContext) {
+  const entities = ctx.fields.map(field => getEntityInField(ctx.state, field));
+  const entries: ApplyStatusData[] = [];
+  for (const entity of entities) {
+    for (const status in entity.statuses) {
+      const amount = entity.statuses[status as StatusEffect] ?? 0;
+      if (amount > 0) {
+        entries.push({
+          entityId: entity.id,
+          status: status as StatusEffect,
+          amount: -1,
+        });
+      }
+    }
+  }
+
+  ctx.state = addEvent(ctx.state, {
+    type: 'applyStatus',
+    statuses: entries,
+  });
+}
+
+export function decrementAllCooldowns(ctx: TargetContext) {
+  const entities = ctx.fields.map(field => getEntityInField(ctx.state, field));
+  const entries: ApplyCooldownData[] = [];
+  for (const entity of entities) {
+    for (const skillId in entity.cooldowns) {
+      const amount = entity.cooldowns[skillId as SkillID] ?? 0;
+      if (amount > 0) {
+        entries.push({
+          entityId: entity.id,
+          skillId: skillId as SkillID,
+          amount: -1,
+        });
+      }
+    }
+  }
+
+  ctx.state = addEvent(ctx.state, {
+    type: 'applyCooldown',
+    cooldowns: entries,
+  });
 }
 
 export function move(ctx: TargetContext) {

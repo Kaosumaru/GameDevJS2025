@@ -1,6 +1,6 @@
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { Entity } from '@shared/stores/tao/interface';
-import { haveResourcesAndTargetsForSkill, skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
+import { haveResourcesForSkill, skillFromInstance, SkillInstance } from '@shared/stores/tao/skills';
 import { StoreData } from '@shared/stores/tao/taoStore';
 import { JSX, memo, useRef } from 'react';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
@@ -81,7 +81,8 @@ const DockComponent = ({
               )}
               <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
                 {entity?.skills.map(skill => {
-                  const hasResources = state && haveResourcesAndTargetsForSkill(state, entity, skill);
+                  const hasResources = state && haveResourcesForSkill(entity, skill);
+                  const cooldown = entity?.cooldowns[skill.id] ?? 0;
                   return (
                     <Button
                       key={skill.id}
@@ -101,7 +102,7 @@ const DockComponent = ({
                       }}
                       onClick={() => onSkill(skill)}
                     >
-                      {skillNameFromInstance(skill, isDesktopView)}
+                      {skillNameFromInstance(skill, isDesktopView) + (cooldown > 0 ? ` (${cooldown})` : '')}
                     </Button>
                   );
                 })}

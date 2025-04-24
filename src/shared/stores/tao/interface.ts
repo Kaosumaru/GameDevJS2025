@@ -23,10 +23,10 @@ export type StatusEffect =
   | 'critical'
   | 'speed+3'
   | 'immobilized'
-  | 'invisible'
-  | SkillID;
+  | 'invisible';
 
 export type Statuses = { [key in StatusEffect]?: number };
+export type Cooldowns = { [key in SkillID]?: number };
 
 export interface EntityTraits {
   isTank: boolean;
@@ -50,7 +50,8 @@ export interface Entity {
   actionPoints: Stat;
   position: Position;
   originalPosition?: Position;
-  statusesCooldowns: Statuses;
+  statuses: Statuses;
+  cooldowns: Cooldowns;
   traits: EntityTraits;
   totalAttacksCount: number;
   lastSkillUsed?: SkillInstance;

@@ -1,6 +1,6 @@
 import { Effect } from '../effects';
 import { Entity, Position, StatusEffect } from '../interface';
-import { SkillInstance } from '../skills';
+import { SkillID, SkillInstance } from '../skills';
 import { StoreData } from '../taoStore';
 import { reduceEvent } from './reducers';
 
@@ -55,6 +55,17 @@ export interface ApplyStatusEvent {
   statuses: ApplyStatusData[];
 }
 
+export interface ApplyCooldownData {
+  entityId: string;
+  skillId: SkillID;
+  amount: number;
+}
+
+export interface ApplyCooldown {
+  type: 'applyCooldown';
+  cooldowns: ApplyCooldownData[];
+}
+
 export interface ChangeBalanceEvent {
   type: 'balance';
   from: number;
@@ -100,7 +111,8 @@ export type EventType =
   | ChangeBalanceEvent
   | UseSkillEvent
   | SwapEffectsEvent
-  | ChangeSkillsEvent;
+  | ChangeSkillsEvent
+  | ApplyCooldown;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {
   store.events.push(event);

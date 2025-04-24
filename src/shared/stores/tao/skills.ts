@@ -136,7 +136,7 @@ export function haveResourcesForSkill(user: Entity, skillInstance: SkillInstance
   }
 
   // cooldown
-  if (hasStatus(user, skillInstance.id)) {
+  if ((user.cooldowns[skillInstance.id] ?? 0) > 0) {
     return false;
   }
   return (

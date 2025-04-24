@@ -5,6 +5,7 @@ import { Entity } from '../interface';
 import { moveEntityTo } from '../movement';
 import { StoreData } from '../taoStore';
 import {
+  ApplyCooldown,
   ApplyStatusEvent,
   ChangeBalanceEvent,
   ChangeResourcesEvent,
@@ -28,6 +29,8 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return reduceMove(state, event);
     case 'applyStatus':
       return reduceApplyStatus(state, event);
+    case 'applyCooldown':
+      return reduceApplyCooldown(state, event);
     case 'death':
       return reduceDeath(state, event);
     case 'balance':
@@ -82,9 +85,27 @@ function reduceApplyStatus(state: StoreData, event: ApplyStatusEvent): StoreData
     if (status) {
       return {
         ...entity,
-        statusesCooldowns: {
-          ...entity.statusesCooldowns,
-          [status.status]: status.amount + (entity.statusesCooldowns[status.status] ?? 0),
+        statuses: {
+          ...entity.statuses,
+          [status.status]: status.amount + (entity.statuses[status.status] ?? 0),
+        },
+      };
+    }
+    return entity;
+  });
+  return newState;
+}
+
+function reduceApplyCooldown(state: StoreData, event: ApplyCooldown): StoreData {
+  const newState = { ...state };
+  newState.entities = newState.entities.map(entity => {
+    const status = event.cooldowns.find(s => s.entityId === entity.id);
+    if (status) {
+      return {
+        ...entity,
+        cooldowns: {
+          ...entity.cooldowns,
+          [status.skillId]: status.amount + (entity.cooldowns[status.skillId] ?? 0),
         },
       };
     }

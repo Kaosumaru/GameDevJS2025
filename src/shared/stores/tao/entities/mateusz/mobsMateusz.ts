@@ -87,7 +87,7 @@ export const mobsMateusz = {
       canBeDamaged: false,
     },
 
-    statusesCooldowns: {
+    cooldowns: {
       mateuszSpawn: 1,
     },
   }),
