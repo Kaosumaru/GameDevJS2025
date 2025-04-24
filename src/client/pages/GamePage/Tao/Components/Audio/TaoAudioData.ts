@@ -27,6 +27,7 @@ export const TAO_AUDIO_DATA = {
   'pass-1': '/audio/pass-1.mp3',
   victory: '/music/victory.mp3',
   defeat: '/music/defeat.mp3',
+  select: '/audio/select.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
