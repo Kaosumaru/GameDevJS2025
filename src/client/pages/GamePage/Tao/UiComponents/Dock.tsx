@@ -110,13 +110,16 @@ const DockComponent = ({
             </Box>
           </CSSTransition>
         </SwitchTransition>
-        {isActionable && (
-          <Box component="div" sx={{ p: 0.5 }}>
-            <Button variant="contained" color="success" onClick={onEndTurn}>
-              End&nbsp;Turn
-            </Button>
-          </Box>
-        )}
+        {
+          // eslint-disable-next-line no-constant-binary-expression
+          /*isActionable*/ false && (
+            <Box component="div" sx={{ p: 0.5 }}>
+              <Button variant="contained" color="success" onClick={onEndTurn}>
+                End&nbsp;Turn
+              </Button>
+            </Box>
+          )
+        }
       </Box>
     </Box>
   );
