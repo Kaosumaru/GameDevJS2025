@@ -66,6 +66,7 @@ export const mobsMateusz = {
 
     speed: 3,
     hp: stat(standardHp),
+    skills: [{ id: 'move' }, { id: 'suicide' }],
 
     kind: 'bombMateusz',
     avatar: 'mushroom-bomb',

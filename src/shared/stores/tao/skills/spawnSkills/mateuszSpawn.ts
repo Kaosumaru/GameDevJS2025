@@ -26,7 +26,7 @@ export const mateuszSpawn: Skill = {
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  cooldown: 1,
+  cooldown: 2,
   reducer: actions([fieldsInRange, spawnAction]),
   getPossibleTargets: targets([self]),
   getRange: targets([area(3)]),
