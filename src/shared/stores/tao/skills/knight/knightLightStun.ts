@@ -18,7 +18,7 @@ export const knightLightStun: Skill = {
   actionCost: 1,
   moveCost: 0,
   reducer: actions([damage(3), affectedFields, withEnemy, status('disarmed', 2)]),
-  getAffectedFields: affected([fieldsInFront(1, 1, -1)]),
+  getAffectedFields: affected([fieldsInFront(1, 2, -2)]),
   getPossibleTargets: targets([fieldsInRange]),
   getRange: targets([neighborsExcluding]),
 };
