@@ -1,5 +1,5 @@
 import { Entity3D } from './Components/Entity/Entity3D';
-import { JSX, useCallback, useEffect, useRef, useState } from 'react';
+import { JSX, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Tile } from './Components/Tile';
 import {
   getAffectedTargets,
@@ -28,6 +28,7 @@ import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
 import { Goal } from './UiComponents/Goal';
 import { EndScreen } from './UiComponents/EndScreen';
+import { EffectManager } from './Components/Effect/EffectManager';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -120,10 +121,13 @@ export const TaoScene = ({
     }
   }, [state?.entities, cameraTargetState, focusOnEntity]);
 
-  const entities = [
-    ...(state?.entities.map(entity => ({ entity, isDead: false })) ?? []),
-    ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
-  ];
+  const entities = useMemo(
+    () => [
+      ...(state?.entities.map(entity => ({ entity, isDead: false })) ?? []),
+      ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
+    ],
+    [state?.entities, state?.info.perRound.diedInRound]
+  );
 
   return (
     <group>
@@ -131,7 +135,6 @@ export const TaoScene = ({
       <SkyBox />
       <Environment />
       <OrbitControls makeDefault target={cameraTargetState} />
-      <Nebula ref={fireballRef} scale={[0.05, 0.05, 0.05]} position={[5, 0.5, 15]} />
       <group>
         {(state?.board ?? []).map((row, rowIdx) =>
           row.map((field, colIdx) => {
@@ -213,6 +216,7 @@ export const TaoScene = ({
             <Entity3D key={entity.id} isDead={isDead} isSelected={entity.id === selectedEntityId} entity={entity} />
           );
         })}
+        <EffectManager effects={state?.effects ?? []} fields={state?.board ?? []} />
       </group>
       <ui.In>
         <Header balance={state?.info.balance ?? 0} />

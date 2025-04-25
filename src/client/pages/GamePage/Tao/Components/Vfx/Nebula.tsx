@@ -1,8 +1,14 @@
 import System, { SpriteRenderer } from 'three-nebula';
 
 import * as THREE from 'three';
-import { JSX, memo, useEffect, useRef } from 'react';
+import { JSX, memo, useEffect, useImperativeHandle, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+
+export type NebulaAPI = {
+  system: System | null;
+  group: THREE.Group | null;
+  container: THREE.Group | null;
+};
 
 const json = {
   preParticles: 500,
@@ -143,12 +149,36 @@ const json = {
   ],
 };
 
-const NebulaComponent = (groupProps: JSX.IntrinsicElements['group']) => {
+const NebulaComponent = ({
+  ref,
+  ...rest
+}: JSX.IntrinsicElements['group'] & {
+  ref: React.Ref<{
+    system: System | null;
+    group: THREE.Group | null;
+    container: THREE.Group | null;
+  }>;
+}) => {
   const systemRef = useRef<System | null>(null);
   const groupRef = useRef<THREE.Group>(null);
+  const containerRef = useRef<THREE.Group>(null);
+
+  useImperativeHandle(ref, () => {
+    return {
+      get system() {
+        return systemRef.current;
+      },
+      get group() {
+        return groupRef.current;
+      },
+      get container() {
+        return containerRef.current;
+      },
+    };
+  }, []);
 
   useFrame(() => {
-    if (systemRef.current) {
+    if (systemRef.current && containerRef.current && containerRef.current.visible) {
       systemRef.current.update();
     }
   });
@@ -167,10 +197,17 @@ const NebulaComponent = (groupProps: JSX.IntrinsicElements['group']) => {
       });
     };
     void asyncFunc();
+    return () => {
+      console.log('nebula destroy');
+      if (systemRef.current) {
+        systemRef.current.destroy();
+        systemRef.current = null;
+      }
+    };
   }, []);
 
   return (
-    <group {...groupProps}>
+    <group ref={containerRef} {...rest}>
       <group ref={groupRef} />
     </group>
   );
