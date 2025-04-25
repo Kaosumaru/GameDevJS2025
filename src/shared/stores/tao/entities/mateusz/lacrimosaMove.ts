@@ -5,7 +5,7 @@ import { addDeadEntitiesFields, empty, inMoveDistance, targets } from '../../ski
 export const lacrimosaMove: Skill = {
   id: 'lacrimosaMove',
   name: 'Shadow Step',
-  description: 'Move to a target position or teleport to killed enemy',
+  description: 'Move or teleport to a tile where enemy died.',
   type: 'movement',
   actionCost: 0,
   moveCost: 1,

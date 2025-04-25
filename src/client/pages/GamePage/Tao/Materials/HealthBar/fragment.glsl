@@ -15,11 +15,11 @@ void main()
     vec2 uv = vUv/iResolution.xy;
 
     vec3 red = vec3(1,0,0);
-    vec3 black = vec3(0,0,0);
+    vec3 black = vec3(0.1,0.1,0.1);
     vec3 green = vec3(0,1,0);
-    vec3 blue = vec3(0,0,1);
+    vec3 blue = vec3(0.5,0.5,1);
     
-    float x = uv.x * (maxHp + shield - 0.1);
+    float x = uv.x * (maxHp + shield - 0.2);
     float index = floor(x);
     x = fract(x);
     
@@ -27,7 +27,7 @@ void main()
     
     if (index < hp)
     {
-        if (x < 0.9)
+        if (x < 0.8)
         {
             col = green;
         }
@@ -36,7 +36,7 @@ void main()
             col = black;
         }
     } else if (index >= maxHp) {
-        if (x < 0.9)
+        if (x < 0.8)
         {
             col = blue;
         }

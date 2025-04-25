@@ -5,7 +5,7 @@ import { affected, area, neighbors9, neighbors9Excluding, targets, withEnemy } f
 export const lacrimosaFireball: Skill = {
   id: 'lacrimosaFireball',
   name: 'Moon Terror',
-  description: '<p>Area Attack</p> <br> <p><b>3</b> dmg to a target and 2 dmg to everyone around it</p>',
+  description: '<p>Area Attack</p> <br> <p><b>3💥</b> to a target and 2💥 to enemies around it</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,

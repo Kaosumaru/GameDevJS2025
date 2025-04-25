@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withEntity } from '../../skills/targetRed
 export const auroraMateuszImmobilize: Skill = {
   id: 'auroraMateuszImmobilize',
   name: 'Searing Light',
-  description: '<p>Immobilize for one turn, 1 dmg, poison 2</p>',
+  description: '<p>Immobilize for one turn, 1💥 2🧪</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,

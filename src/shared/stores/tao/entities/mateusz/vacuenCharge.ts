@@ -14,7 +14,7 @@ import {
 export const vacuenCharge: Skill = {
   id: 'vacuenCharge',
   name: 'Charge',
-  description: 'Charge forward and deal 4 damage to the first enemy hit. If it kills an enemy, regain action',
+  description: 'Charge forward and deal 4💥 to the first enemy hit. If it kills an enemy, gain 🟢',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,

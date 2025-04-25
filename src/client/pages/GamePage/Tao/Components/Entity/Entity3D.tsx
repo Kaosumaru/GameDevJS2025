@@ -125,6 +125,16 @@ const Entity3DComponent = ({
     }
   });
 
+  const boxWidth = 0.1;
+  const healtWidth = entity.hp.max * boxWidth + entity.shield * boxWidth;
+  const healthX = entity.type === 'enemy' ? 0 : 0.25;
+
+  let healthY = 1.3;
+
+  if (entity.avatar === 'voidling' || entity.avatar === 'mushroom-bomb') {
+    healthY = 0.7;
+  }
+
   return (
     <group
       ref={r => {
@@ -141,8 +151,8 @@ const Entity3DComponent = ({
       >
         <Avatar entity={entity} />
         {entity.traits.canBeDamaged && (
-          <mesh position={[0.25, 1.3, 0.2]} renderOrder={2}>
-            <planeGeometry args={[0.6, 0.08]} />
+          <mesh position={[healthX, healthY, 0.2]} renderOrder={2}>
+            <planeGeometry args={[healtWidth, 0.08]} />
             <healthBar
               ref={(r: object) => {
                 refs.current['healthbar'] = {
