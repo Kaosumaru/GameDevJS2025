@@ -225,7 +225,7 @@ export const TaoScene = ({
         <EndScreen
           result={state?.info.gameState ?? 'inProgress'}
           onPlayAgain={() => {
-            console.log('Play again');
+            void client.newGame();
           }}
         />
         <Seat
