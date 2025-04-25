@@ -119,7 +119,7 @@ export const TAO_CHANNELS = ['music', 'sfx'] as const;
 export type TaoChannel = (typeof TAO_CHANNELS)[number];
 
 export const TAO_DEFAULT_VOLUME: Record<TaoChannel, number> = {
-  music: 0,
+  music: 0.3,
   sfx: 0.5,
 };
 
