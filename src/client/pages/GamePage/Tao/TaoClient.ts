@@ -19,4 +19,8 @@ export class TaoClient extends BaseGameClient<StoreData, Action> {
   public async newGame() {
     await this.restartGame({ players: 3 });
   }
+
+  public rewindRound() {
+    this.sendAction({ type: 'rewindRound' });
+  }
 }

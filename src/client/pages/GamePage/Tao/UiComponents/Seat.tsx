@@ -3,13 +3,16 @@ import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Entity } from '@shared/stores/tao/interface';
 import { apath } from '@client/utils/relative';
 import { InviteButton } from './InviteButton';
+import { TaoClient } from '../TaoClient';
 
 export const Seat = ({
   gameRoomClient,
+  gameClient,
   entities,
   onAvatarSelected,
 }: {
   gameRoomClient: GameRoomClient;
+  gameClient: TaoClient;
   entities: Entity[];
   onAvatarSelected: (entityId: string) => void;
 }) => {
@@ -34,7 +37,13 @@ export const Seat = ({
         }}
       >
         <InviteButton />
-        <Button>Rewind</Button>
+        <Button
+          onClick={() => {
+            void gameClient.rewindRound();
+          }}
+        >
+          Rewind
+        </Button>
       </Box>
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);

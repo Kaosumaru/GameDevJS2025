@@ -14,6 +14,7 @@ import {
 import { allEntities, withShield, withEntityWithStatus as withStatus } from './skills/targetReducers';
 import { StoreData } from './taoStore';
 import { reduceGoal } from './goal';
+import { copyState } from './utils';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poison')]);
@@ -49,6 +50,8 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = entitiesAfterRoundStart(state);
 
   state = reduceGoal(state);
+  state.startOfRoundState = copyState(state);
+
   return state;
 }
 
