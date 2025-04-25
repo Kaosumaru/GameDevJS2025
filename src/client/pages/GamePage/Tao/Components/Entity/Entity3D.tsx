@@ -13,12 +13,9 @@ import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE, TAO_SPAWN_SE
 import { Statuses } from '../Statuses/Statuses';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
 import { Avatar } from './Avatar';
+import { getRandomInteger } from '../../Utils/utils';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
-
-const getRandomInteger = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 const Entity3DComponent = ({
   entity,

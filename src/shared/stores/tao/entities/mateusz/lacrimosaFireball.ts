@@ -1,5 +1,5 @@
 import { Skill } from '../../skills';
-import { actions, branch, damage } from '../../skills/actions';
+import { actions, branch, damage, effectsInFields, effectsToFields } from '../../skills/actions';
 import { affected, area, neighbors9, neighbors9Excluding, targets, withEnemy } from '../../skills/targetReducers';
 
 export const lacrimosaFireball: Skill = {
@@ -9,7 +9,14 @@ export const lacrimosaFireball: Skill = {
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
-  reducer: actions([branch([withEnemy, damage(3)]), neighbors9Excluding, withEnemy, damage(2)]),
+  reducer: actions([
+    effectsToFields(['fireball']),
+    branch([withEnemy, damage(3)]),
+    effectsInFields(['fire']),
+    neighbors9Excluding,
+    withEnemy,
+    damage(2),
+  ]),
   getPossibleTargets: targets([area(4)]),
   getAffectedFields: affected([neighbors9]),
   getRange: targets([]),

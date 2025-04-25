@@ -5,6 +5,8 @@ import { animate } from 'motion';
 import { Field } from '@shared/stores/tao/interface';
 import { boardPositionToUiPosition } from '../../Utils/boardPositionToUiPositon';
 import { NebulaAPI } from '../Vfx/Nebula';
+import { useTaoAudio } from '../Audio/useTaoAudio';
+import { getRandomInteger } from '../../Utils/utils';
 
 const findFieldCoordinatesFromId = (fields: Field[][], id: string): { col: number; row: number } | null => {
   for (let i = 0; i < fields.length; i++) {
@@ -29,6 +31,7 @@ export const Effect3D = ({
   nebulaIndex: number;
 }) => {
   const playNext = useAnimationMotion();
+  const { play } = useTaoAudio();
 
   useEffect(() => {
     if (effect.type === 'movingParticleEffect') {
@@ -64,6 +67,10 @@ export const Effect3D = ({
       if (!position) return;
 
       const boardPosition = boardPositionToUiPosition(position.col, position.row);
+
+      play('sfx', 'fire-blast-1', {
+        detune: getRandomInteger(-3, 3) * 100,
+      });
 
       playNext('particleInFieldEffect', async () => {
         const obj = nebulaRef.current[nebulaIndex]!.container;
