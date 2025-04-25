@@ -78,7 +78,7 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   mageDarkFireball: () => getRandomSound(TAO_DARK_BLAST_SEQUENCE),
   mageLightFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
   mageBlind: () => getRandomSound(TAO_BLIND_SEQUENCE),
-  mageSickle: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
+  mageSickle: () => getRandomSound(TAO_PUSH_SEQUENCE),
 
   knightDarkWide: () => getRandomSound(TAO_SLASH_SEQUENCE),
 
