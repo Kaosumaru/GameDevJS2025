@@ -46,5 +46,5 @@ jobs:
           CHANNEL: ${{ env.ITCH_CHANNEL }}
           ITCH_GAME: ${{ env.ITCH_GAME }}
           ITCH_USER: ${{ env.ITCH_USER }}
-          PACKAGE: dist/
+          PACKAGE: test/
           VERSION: 1.0.0
