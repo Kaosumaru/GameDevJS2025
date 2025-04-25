@@ -229,6 +229,7 @@ export const TaoScene = ({
           }}
         />
         <Seat
+          gameClient={client}
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
           onAvatarSelected={entityId => {

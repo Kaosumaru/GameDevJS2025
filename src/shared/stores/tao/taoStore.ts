@@ -12,6 +12,7 @@ import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
 import { Dialogue } from './dialogue';
+import { copyState } from './utils';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -24,6 +25,10 @@ export interface EndRoundAction {
   type: 'endRound';
 }
 
+export interface RewindRoundAction {
+  type: 'rewindRound';
+}
+
 export interface TaoOptions extends GameOptions {
   level?: number;
 }
@@ -33,7 +38,7 @@ export interface TaoNewGameAction extends NewGameAction {
   options: TaoOptions;
 }
 
-export type Action = UseSkillAction | EndRoundAction | TaoNewGameAction;
+export type Action = UseSkillAction | EndRoundAction | TaoNewGameAction | RewindRoundAction;
 export type GameState = 'inProgress' | 'defeated' | 'victory';
 
 export interface GameInfo {
@@ -53,6 +58,7 @@ export interface GameInfo {
 
 export interface StoreData {
   oldState?: StoreData;
+  startOfRoundState?: StoreData;
   board: Field[][];
   entities: Entity[];
   events: EventType[];
@@ -106,6 +112,12 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 
 function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
+    case 'rewindRound': {
+      if (store.startOfRoundState) {
+        return copyState(store.startOfRoundState);
+      }
+      return store;
+    }
     case 'endRound': {
       if (store.info.gameState !== 'inProgress') {
         throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
@@ -166,6 +178,8 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         to: 0,
       });
 
+      state.startOfRoundState = copyState(state);
+
       return state;
     }
   }
@@ -175,11 +189,7 @@ function cacheOldState(state: StoreData): StoreData {
   return {
     ...state,
     events: [],
-    oldState: {
-      ...state,
-      board: state.board.map(row => row.map(field => ({ ...field }))),
-      oldState: undefined,
-    },
+    oldState: copyState(state),
     info: {
       ...state.info,
       perRound: {
