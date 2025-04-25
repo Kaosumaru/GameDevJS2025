@@ -22,29 +22,12 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_PRODUCTION }}
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-      - run: npm ci
-      - run: npm run build
-        env:
-          NODE_ENV: production
-          VITE_SERVER_URL: https://umbra-et-lux.fly.dev/
-
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: dist/
-
-      - name: Upload to Itch
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: ${{ env.ITCH_CHANNEL }}
-          ITCH_GAME: ${{ env.ITCH_GAME }}
-          ITCH_USER: ${{ env.ITCH_USER }}
-          PACKAGE: test/
-          VERSION: 1.0.0
+#      - name: Upload to Itch
+#        uses: josephbmanley/butler-publish-itchio-action@master
+#        env:
+#          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+#          CHANNEL: ${{ env.ITCH_CHANNEL }}
+#          ITCH_GAME: ${{ env.ITCH_GAME }}
+#          ITCH_USER: ${{ env.ITCH_USER }}
+#          PACKAGE: test/
+#          VERSION: 1.0.0
