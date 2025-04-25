@@ -223,7 +223,7 @@ export const TaoScene = ({
         <Dialogue dialogue={dialogue} />
         <Goal info={state?.info} />
         <EndScreen
-          result={'defeated'}
+          result={state?.info.gameState ?? 'inProgress'}
           onPlayAgain={() => {
             console.log('Play again');
           }}
