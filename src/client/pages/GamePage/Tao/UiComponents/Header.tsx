@@ -36,13 +36,13 @@ export const Header = ({ balance }: { balance: number }) => {
     if (balance == 0) {
       setAnimationYin(showAnimtion);
       setAnimationYang(showAnimtion);
-      play('music', 'balance-loop', undefined, 1000);
+      play('music', 'balance-loop', undefined, 5000);
     } else if (balance < 0 && balanceHandledRef.current >= 0) {
       setAnimationYang(shiftRightAnimation);
-      play('music', 'darkness-loop', undefined, 1000);
+      play('music', 'darkness-loop', undefined, 5000);
     } else if (balance > 0 && balanceHandledRef.current <= 0) {
       setAnimationYin(shiftLeftAnimation);
-      play('music', 'light-loop', undefined, 1000);
+      play('music', 'light-loop', undefined, 5000);
     }
     balanceHandledRef.current = balance;
   }, [balance, play]);
@@ -65,7 +65,7 @@ export const Header = ({ balance }: { balance: number }) => {
         style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yin.png'}
       />
-      {balance <= -1 && (
+      {balance < -1 && (
         <motion.img
           initial={{ scale: 0 }}
           animate={animationYin}
@@ -73,15 +73,7 @@ export const Header = ({ balance }: { balance: number }) => {
           src={'/yin.png'}
         />
       )}
-      {balance <= -2 && (
-        <motion.img
-          initial={{ scale: 0 }}
-          animate={animationYin}
-          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '-12rem' }}
-          src={'/yin.png'}
-        />
-      )}
-      {balance <= -3 && (
+      {balance < -2 && (
         <motion.img
           initial={{ scale: 0 }}
           animate={animationYin}
@@ -95,7 +87,7 @@ export const Header = ({ balance }: { balance: number }) => {
         style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: 0 }}
         src={'/yang.png'}
       />
-      {balance >= 1 && (
+      {balance > 1 && (
         <motion.img
           initial={{ scale: 0 }}
           animate={animationYang}
@@ -103,15 +95,7 @@ export const Header = ({ balance }: { balance: number }) => {
           src={'/yang.png'}
         />
       )}
-      {balance >= 2 && (
-        <motion.img
-          initial={{ scale: 0 }}
-          animate={animationYang}
-          style={{ width: '6rem', height: '6rem', position: 'absolute', top: 0, left: '12rem' }}
-          src={'/yang.png'}
-        />
-      )}
-      {balance >= 3 && (
+      {balance > 2 && (
         <motion.img
           initial={{ scale: 0 }}
           animate={animationYang}

@@ -8,6 +8,7 @@ import { TaoScene } from './TaoScene';
 import { TaoAudioContextProvider } from './Components/Audio/TaoAudioContextProvider';
 import { useState } from 'react';
 import { IntroScreen } from './UiComponents/IntroScreen';
+import './styles.css';
 
 const ui = tunnel();
 
