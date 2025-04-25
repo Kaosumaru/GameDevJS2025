@@ -1,15 +1,16 @@
+import { apath } from '@client/utils/relative';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
 
 export const STATUS_DATA = {
-  disarmed: '/status/disarm-status.png',
-  poisoned: '/status/poison-status.png',
-  stunned: '/status/stun-status.png',
-  action: '/status/action-status.png',
-  move: '/status/move-status.png',
-  critical: '/status/critical-status.png',
-  'speed+3': '/status/speed-status.png',
-  taunted: '/status/taunted-status.png',
+  disarmed: apath('status/disarm-status.png'),
+  poisoned: apath('status/poison-status.png'),
+  stunned: apath('status/stun-status.png'),
+  action: apath('status/action-status.png'),
+  move: apath('status/move-status.png'),
+  critical: apath('status/critical-status.png'),
+  'speed+3': apath('status/speed-status.png'),
+  taunted: apath('status/taunted-status.png'),
 };
 
 export type StatusesType = keyof typeof STATUS_DATA;

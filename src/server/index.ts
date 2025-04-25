@@ -15,6 +15,13 @@ try {
   app.use(express.json());
   app.use(cors());
 
+  ViteExpress.config({
+    inlineViteConfig: {
+      base: '/',
+      build: { outDir: 'out' },
+    },
+  });
+
   // use ViteExpress to server static files and handle API requests
   const server = ViteExpress.listen(app, +PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

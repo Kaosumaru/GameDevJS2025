@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, useMediaQuery } from '@mui/material';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Entity } from '@shared/stores/tao/interface';
+import { apath } from '@client/utils/relative';
 
 export const Seat = ({
   gameRoomClient,
@@ -24,13 +25,13 @@ export const Seat = ({
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);
 
-        const avatarSrc = entity ? `/avatars/${entity.avatar}-circle.png` : '/avatars/unknown.png';
+        const avatarSrc = entity ? `avatars/${entity.avatar}-circle.png` : 'avatars/unknown.png';
 
         return (
           <Box key={'seat-' + index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Avatar
               alt={seat === null ? 'Unknown' : seat.name + ' (' + index + ')'}
-              src={avatarSrc}
+              src={apath(avatarSrc)}
               sx={{
                 width: matches ? '3rem' : '1.5rem',
                 height: matches ? '3rem' : '1.5rem',
