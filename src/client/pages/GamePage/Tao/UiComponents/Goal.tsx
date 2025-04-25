@@ -1,4 +1,5 @@
 import { GameInfo } from '@shared/stores/tao/taoStore';
+import { InviteButton } from './InviteButton';
 
 const getWinConditionText = (info: GameInfo | undefined): string[] => {
   if (!info) return ['No win condition'];
@@ -37,6 +38,7 @@ export const Goal = ({ info }: { info: GameInfo | undefined }) => {
           }}
         >
           {text}
+          <InviteButton />
         </div>
       ))}
     </div>

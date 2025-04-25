@@ -24,7 +24,6 @@ import { useAnimationState } from './Components/Animation/useAnimationState';
 import { Jukebox } from './UiComponents/Jukebox';
 import { Header } from './UiComponents/Header';
 import { SkyBox } from './Components/SkyBox';
-import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
 import { Goal } from './UiComponents/Goal';
 import { EndScreen } from './UiComponents/EndScreen';

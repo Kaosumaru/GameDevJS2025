@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withAlly, withEnemy, withEntity } from '.
 export const auroraMateuszHeal: Skill = {
   id: 'auroraMateuszHeal',
   name: 'Goddess` Touch',
-  description: '<p>Heal <b>2</b> or Damage <b>2</b></p>',
+  description: '<p>Heal ally for <b>2</b> or <b>2💥</b> to enemy</p>',
   type: 'attack',
   actionCost: 1,
   moveCost: 0,
