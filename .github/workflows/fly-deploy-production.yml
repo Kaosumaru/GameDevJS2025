@@ -33,6 +33,12 @@ jobs:
           NODE_ENV: production
           VITE_SERVER_URL: https://umbra-et-lux.fly.dev/
 
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist/
+
       - name: Upload to Itch
         uses: josephbmanley/butler-publish-itchio-action@master
         env:
