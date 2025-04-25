@@ -40,6 +40,7 @@ export interface GameInfo {
   balance: number;
   entities: number;
   round: number;
+  level: number;
   winCondition: GoalType;
   loseCondition: GoalType;
   gameState: GameState;
@@ -68,6 +69,7 @@ function createStartingInfo(): GameInfo {
     balance: 0,
     entities: 0,
     round: 0,
+    level: 0,
     gameState: 'inProgress',
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
@@ -152,7 +154,9 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         info: createStartingInfo(),
       };
 
-      const level = createLevel(action.options.level ?? 0);
+      state.info.level = action.options.level ?? 0;
+
+      const level = createLevel(state.info.level);
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       state = entitiesAfterRoundStart(state);
