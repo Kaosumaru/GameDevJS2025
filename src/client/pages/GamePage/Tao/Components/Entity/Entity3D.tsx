@@ -13,12 +13,9 @@ import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE, TAO_SPAWN_SE
 import { Statuses } from '../Statuses/Statuses';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
 import { Avatar } from './Avatar';
+import { getRandomInteger } from '../../Utils/utils';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
-
-const getRandomInteger = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 const Entity3DComponent = ({
   entity,
@@ -125,6 +122,16 @@ const Entity3DComponent = ({
     }
   });
 
+  const boxWidth = 0.1;
+  const healtWidth = entity.hp.max * boxWidth + entity.shield * boxWidth;
+  const healthX = entity.type === 'enemy' ? 0 : 0.25;
+
+  let healthY = 1.3;
+
+  if (entity.avatar === 'voidling' || entity.avatar === 'mushroom-bomb') {
+    healthY = 0.7;
+  }
+
   return (
     <group
       ref={r => {
@@ -141,8 +148,8 @@ const Entity3DComponent = ({
       >
         <Avatar entity={entity} />
         {entity.traits.canBeDamaged && (
-          <mesh position={[0.25, 1.3, 0.2]} renderOrder={2}>
-            <planeGeometry args={[0.6, 0.08]} />
+          <mesh position={[healthX, healthY, 0.2]} renderOrder={2}>
+            <planeGeometry args={[healtWidth, 0.08]} />
             <healthBar
               ref={(r: object) => {
                 refs.current['healthbar'] = {

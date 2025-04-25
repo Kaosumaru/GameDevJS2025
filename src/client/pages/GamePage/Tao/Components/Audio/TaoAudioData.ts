@@ -28,6 +28,11 @@ export const TAO_AUDIO_DATA = {
   victory: '/music/victory.mp3',
   defeat: '/music/defeat.mp3',
   select: '/audio/select.mp3',
+  'dark-blast-1': '/audio/dark-blast-1.mp3',
+  'push-1': '/audio/push-1.mp3',
+  'push-2': '/audio/push-2.mp3',
+  'push-3': '/audio/push-3.mp3',
+  'speed-1': '/audio/speed-1.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
@@ -42,6 +47,9 @@ export const TAO_SPAWN_SEQUENCE = ['spawn-1', 'spawn-2', 'spawn-3'] as TaoAudioT
 export const TAO_BLIND_SEQUENCE = ['blind-1'] as TaoAudioTrack[];
 export const TAO_SLASH_SEQUENCE = ['slash-3', 'slash-4'] as TaoAudioTrack[];
 export const TAO_PASS_SEQUENCE = ['pass-1'] as TaoAudioTrack[];
+export const TAO_PUSH_SEQUENCE = ['push-1', 'push-2', 'push-3'] as TaoAudioTrack[];
+export const TAO_SPEED_SEQUENCE = ['speed-1'] as TaoAudioTrack[];
+export const TAO_DARK_BLAST_SEQUENCE = ['dark-blast-1'] as TaoAudioTrack[];
 
 export const getRandomSound = (sequence: TaoAudioTrack[]): TaoAudioTrack => {
   const randomIndex = Math.floor(Math.random() * sequence.length);
@@ -63,14 +71,14 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   knightTaunt: () => getRandomSound(TAO_BUFF_SEQUENCE),
   knightAttack: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
   knightLightStun: () => getRandomSound(TAO_BUFF_SEQUENCE),
-  knightSpeedLight: () => getRandomSound(TAO_BUFF_SEQUENCE),
-  knightSpeedDark: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  knightSpeedLight: () => getRandomSound(TAO_SPEED_SEQUENCE),
+  knightSpeedDark: () => getRandomSound(TAO_SPEED_SEQUENCE),
 
-  mageFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
-  mageDarkFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
-  mageLightFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
+  mageFireball: () => getRandomSound(TAO_FIRE_FLYING_SEQUENCE),
+  mageDarkFireball: () => getRandomSound(TAO_FIRE_FLYING_SEQUENCE),
+  mageLightFireball: () => getRandomSound(TAO_FIRE_FLYING_SEQUENCE),
   mageBlind: () => getRandomSound(TAO_BLIND_SEQUENCE),
-  mageSickle: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
+  mageSickle: () => getRandomSound(TAO_PUSH_SEQUENCE),
 
   knightDarkWide: () => getRandomSound(TAO_SLASH_SEQUENCE),
 
@@ -86,7 +94,7 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
 
   lacrimosaMove: () => getRandomSound(TAO_MOVE_SEQUENCE),
   lacrimosaDagger: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
-  lacrimosaFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
+  lacrimosaFireball: () => getRandomSound(TAO_FIRE_FLYING_SEQUENCE),
   lacrimosaSwap: () => getRandomSound(TAO_BUFF_SEQUENCE),
 
   clericAoeDark: () => getRandomSound(TAO_BUFF_SEQUENCE),

@@ -85,6 +85,11 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     victory: null,
     defeat: null,
     select: null,
+    'dark-blast-1': null,
+    'push-1': null,
+    'push-2': null,
+    'push-3': null,
+    'speed-1': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -110,9 +115,16 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     const audioLoader = new AudioLoader();
 
     Object.entries(TAO_AUDIO_DATA).forEach(([key, path]) => {
-      audioLoader.load(path, buffer => {
-        allAudioData.current[key as keyof typeof TAO_AUDIO_DATA] = buffer;
-      });
+      audioLoader.load(
+        path,
+        buffer => {
+          allAudioData.current[key as keyof typeof TAO_AUDIO_DATA] = buffer;
+        },
+        undefined,
+        error => {
+          console.error(`Error loading audio file ${path}:`, error);
+        }
+      );
     });
 
     const musicActivate = () => {

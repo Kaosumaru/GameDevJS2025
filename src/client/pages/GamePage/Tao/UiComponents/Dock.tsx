@@ -6,17 +6,27 @@ import { JSX, memo, useRef } from 'react';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 
-const skillNameFromInstance = (skillInstance: SkillInstance, isDesktopView: boolean): string => {
-  const name = skillFromInstance(skillInstance).name;
+const skillNameFromInstance = (skillInstance: SkillInstance, entity: Entity, isDesktopView: boolean): string => {
+  const skill = skillFromInstance(skillInstance);
+  const name = skill.name;
+  const cooldown = entity.cooldowns[skill.id] ?? 0;
+  const cooldownText = cooldown > 0 ? ` (${cooldown})` : '';
+
+  if (typeof name === 'function') {
+    const text = name({ entity });
+    return text + cooldownText;
+  }
+
   if (!isDesktopView && name.length > 10) {
-    return name.substring(0, 6) + '...';
+    return name.substring(0, 6) + '...' + cooldownText;
   }
   return name;
 };
 
-const skillDescriptionFromInstance = (skillInstance: SkillInstance): string => {
+const skillDescriptionFromInstance = (skillInstance: SkillInstance, entity: Entity): string => {
   const skill = skillFromInstance(skillInstance);
-  const description = skill.description
+  const descriptionText = typeof skill.description === 'function' ? skill.description({ entity }) : skill.description;
+  const description = descriptionText
     .replaceAll('{actionCost}', `${skill.actionCost}`)
     .replaceAll('{moveCost}', `${skill.moveCost}`);
   return description;
@@ -77,14 +87,14 @@ const DockComponent = ({
                     p: isDesktopView ? 0.5 : 0.1,
                   }}
                   dangerouslySetInnerHTML={{
-                    __html: skillDescriptionFromInstance(selectedSkill),
+                    __html: entity ? skillDescriptionFromInstance(selectedSkill, entity) : '',
                   }}
                 />
               )}
               <Box ref={uiRef} className="ui-container" sx={{ display: 'flex', gap: 0.2 }}>
                 {entity?.skills.map(skill => {
                   const hasResources = state && haveResourcesForSkill(entity, skill);
-                  const cooldown = entity?.cooldowns[skill.id] ?? 0;
+
                   return (
                     <Button
                       key={skill.id}
@@ -107,7 +117,7 @@ const DockComponent = ({
                         onSkill(skill);
                       }}
                     >
-                      {skillNameFromInstance(skill, isDesktopView) + (cooldown > 0 ? ` (${cooldown})` : '')}
+                      {skillNameFromInstance(skill, entity, isDesktopView)}
                     </Button>
                   );
                 })}

@@ -5,7 +5,7 @@ import { area, fieldsInRange, targets, withEnemy } from '../../skills/targetRedu
 export const auroraExplosion: Skill = {
   id: 'auroraExplosion',
   name: 'Explosion',
-  description: '<p>Piercing dmg 5 to all enemies in range 4, requires 2 actions</p>',
+  description: "<p>5💥 <b>piercing</b> to all enemies in range 4 - can't be used if moved</p>",
   type: 'attack',
   actionCost: 2,
   moveCost: 0,

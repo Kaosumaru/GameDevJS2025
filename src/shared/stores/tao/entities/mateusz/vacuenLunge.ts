@@ -13,7 +13,7 @@ import {
 export const vacuenLunge: Skill = {
   id: 'vacuenLunge',
   name: 'Lunge',
-  description: '<b>4</b> piercing dmg</p>',
+  description: 'Attack <b>4💥</b> piercing dmg</p>',
   type: 'attack',
   actionCost: 1,
   cooldown: 3,

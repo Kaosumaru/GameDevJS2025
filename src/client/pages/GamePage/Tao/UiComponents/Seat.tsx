@@ -2,6 +2,7 @@ import { Avatar, Box, Button, useMediaQuery } from '@mui/material';
 import { GameRoomClient } from 'pureboard/client/gameRoomClient';
 import { Entity } from '@shared/stores/tao/interface';
 import { apath } from '@client/utils/relative';
+import { InviteButton } from './InviteButton';
 
 export const Seat = ({
   gameRoomClient,
@@ -16,12 +17,25 @@ export const Seat = ({
   const seats = gameRoomClient.store(state => state.seats);
   return (
     <Box
-      sx={{ display: 'flex', flexDirection: 'column', p: 2, gap: 2 }}
+      sx={{ display: 'flex', flexDirection: 'column', p: 2, gap: 2, justifyContent: 'center', alignItems: 'center' }}
       position={'absolute'}
       top={0}
       left={0}
       zIndex={1000}
     >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 2,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <InviteButton />
+        <Button>Rewind</Button>
+      </Box>
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);
 
@@ -43,7 +57,7 @@ export const Seat = ({
               <Button
                 key={'seat-' + index}
                 variant="contained"
-                sx={{ minWidth: matches ? 200 : 100 }}
+                sx={{ minWidth: matches ? 230 : 100 }}
                 size={matches ? 'large' : 'small'}
                 onClick={() => {
                   void gameRoomClient.takeSeat(index);
@@ -57,7 +71,7 @@ export const Seat = ({
                 variant="contained"
                 size={matches ? 'large' : 'small'}
                 color={'success'}
-                sx={{ minWidth: matches ? 200 : 100 }}
+                sx={{ minWidth: matches ? 230 : 100 }}
                 onClick={() => {
                   void gameRoomClient.leaveSeat(index);
                 }}

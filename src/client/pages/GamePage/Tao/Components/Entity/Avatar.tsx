@@ -82,6 +82,6 @@ Object.values(entities)
   .forEach(entity => {
     useLoader.preload(TextureLoader, [
       apath(`avatars/${entity.avatar}.png`),
-      apath(`/avatars/${entity.avatar}-damage.png`),
+      apath(`audioLoader.load(path, bufferavatars/${entity.avatar}-damage.png`),
     ]);
   });

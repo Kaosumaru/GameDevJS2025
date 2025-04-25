@@ -12,11 +12,15 @@ export type SkillType = 'movement' | 'attack' | 'defense' | 'support';
 export type SkillReducer = (state: StoreData, ctx: SkillActionContext) => StoreData;
 export type SkillTargetsReducer = (state: StoreData, ctx: SkillContext) => Field[];
 
+export interface SkillInfoContext {
+  entity: Entity;
+}
+
 export interface Skill {
   id: SkillID;
   type: SkillType;
-  name: string;
-  description: string;
+  name: string | ((ctx: SkillInfoContext) => string);
+  description: string | ((ctx: SkillInfoContext) => string);
   actionCost: number;
   moveCost: number;
   cooldown?: number;
