@@ -6,6 +6,7 @@ import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../../Hooks/usePrevious';
 import { entities } from '@shared/stores/tao/entities/entities';
 import { animate } from 'motion';
+import { apath } from '@client/utils/relative';
 
 const damageColor = new Color(0xff0000);
 const healColor = new Color(0x00ff00);
@@ -14,8 +15,8 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const avatarRef = useRef<any>(null);
   const [colorMap, colorMapDamage] = useLoader(TextureLoader, [
-    `/avatars/${entity.avatar}.png`,
-    `/avatars/${entity.avatar}-damage.png`,
+    apath(`avatars/${entity.avatar}.png`),
+    apath(`avatars/${entity.avatar}-damage.png`),
   ]);
 
   const base = 800;
@@ -79,5 +80,8 @@ export const Avatar = ({ entity }: { entity: Entity }) => {
 Object.values(entities)
   .map(entity => entity({ x: 0, y: 0 }))
   .forEach(entity => {
-    useLoader.preload(TextureLoader, [`/avatars/${entity.avatar}.png`, `/avatars/${entity.avatar}-damage.png`]);
+    useLoader.preload(TextureLoader, [
+      apath(`avatars/${entity.avatar}.png`),
+      apath(`/avatars/${entity.avatar}-damage.png`),
+    ]);
   });
