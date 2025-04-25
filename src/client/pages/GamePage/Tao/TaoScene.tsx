@@ -28,6 +28,7 @@ import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
 import { Goal } from './UiComponents/Goal';
 import { EndScreen } from './UiComponents/EndScreen';
+import { InviteButton } from './UiComponents/InviteButton';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
