@@ -1,3 +1,4 @@
+import { EntityTypeId } from '@shared/stores/tao/entities/entities';
 import { GameInfo } from '@shared/stores/tao/taoStore';
 
 const getWinConditionText = (info: GameInfo | undefined): string[] => {
@@ -7,9 +8,27 @@ const getWinConditionText = (info: GameInfo | undefined): string[] => {
     case 'survive':
       return [`Survive ${info.winCondition.turns - info.round} turns`];
     case 'killAll':
-      return [`You must kill all ${info.winCondition.entityType}`];
+      return [`You must kill all ${nameForEntityType(info.winCondition.entityType)}`];
     default:
       return ['No win condition'];
+  }
+};
+
+const nameForEntityType = (type: EntityTypeId): string => {
+  if (type === 'playerCrystal') return 'Blue Crystal';
+  return type;
+};
+
+const getLoseConditionText = (info: GameInfo | undefined): string[] => {
+  if (!info) return ['No win condition'];
+
+  switch (info.loseCondition.type) {
+    case 'survive':
+      return [`Defeat after ${info.loseCondition.turns - info.round} turns`];
+    case 'killAll':
+      return [`You must protect ${nameForEntityType(info.loseCondition.entityType)}`];
+    default:
+      return [''];
   }
 };
 
@@ -29,6 +48,19 @@ export const Goal = ({ info }: { info: GameInfo | undefined }) => {
       {getWinConditionText(info).map((text, index) => (
         <div
           key={index}
+          style={{
+            fontSize: '1rem',
+            color: 'white',
+            marginBottom: '0.5rem',
+            textAlign: 'right',
+          }}
+        >
+          {text}
+        </div>
+      ))}
+      {getLoseConditionText(info).map((text, index) => (
+        <div
+          key={'lose-' + index}
           style={{
             fontSize: '1rem',
             color: 'white',
