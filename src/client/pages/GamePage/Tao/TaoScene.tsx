@@ -27,6 +27,7 @@ import { SkyBox } from './Components/SkyBox';
 import { Nebula } from './Components/Vfx/Nebula';
 import { Dialogue } from './UiComponents/Dialogue';
 import { Goal } from './UiComponents/Goal';
+import { EndScreen } from './UiComponents/EndScreen';
 
 type UiAction = { action: 'select-target'; targets: string[]; range: string[]; skill: SkillInstance };
 
@@ -124,8 +125,6 @@ export const TaoScene = ({
     ...(state?.info.perRound.diedInRound.map(entity => ({ entity, isDead: true })) ?? []),
   ];
 
-  console.log('state', state);
-
   return (
     <group>
       <color attach="background" args={['black']} />
@@ -219,7 +218,13 @@ export const TaoScene = ({
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
         <Dialogue dialogue={dialogue} />
-        <Goal info={state?.info}/>
+        <Goal info={state?.info} />
+        <EndScreen
+          result={state?.info.gameState ?? 'inProgress'}
+          onPlayAgain={() => {
+            console.log('Play again');
+          }}
+        />
         <Seat
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
@@ -242,6 +247,11 @@ export const TaoScene = ({
           onSkill={skill => {
             if (selectedEntity == undefined) {
               console.warn('No entity selected');
+              return;
+            }
+            if (skill.id === 'pass') {
+              const field = state?.board[selectedEntity.position.y][selectedEntity.position.x];
+              void client.useSkill(selectedEntity.id, skill.id, field?.id);
               return;
             }
             if (uiAction && uiAction.skill.id === skill.id) {

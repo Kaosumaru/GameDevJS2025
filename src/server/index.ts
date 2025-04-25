@@ -6,12 +6,14 @@ import { createGameStateStore as createGameStateStoreC4 } from '@shared/stores/c
 import { createGameStateStore as createGameStateStoreTao } from '@shared/stores/tao/taoStore';
 import { createChat } from 'pureboard/server/components/chat';
 import { registerGame } from 'pureboard/server/componentContainer';
+import cors from 'cors';
 
 try {
   // create express server
   const PORT = process.env.PORT || 3000;
   const app = express();
   app.use(express.json());
+  app.use(cors());
 
   // use ViteExpress to server static files and handle API requests
   const server = ViteExpress.listen(app, +PORT, () => {

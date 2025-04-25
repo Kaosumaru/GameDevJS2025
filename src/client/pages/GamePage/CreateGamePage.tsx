@@ -15,7 +15,9 @@ function CreateGamePage(): JSX.Element {
 
   useEffect(() => {
     let cancelled = false;
-    const client = new GameRoomClient();
+    const url = import.meta.env.VITE_SERVER_URL;
+    console.log('Connecting to server at', url ?? '/');
+    const client = new GameRoomClient(url);
 
     client
       .start(context.userId)

@@ -16,6 +16,10 @@ import { Avatar } from './Avatar';
 
 const INITIAL_SCALE = [0, 0, 0] as const;
 
+const getRandomInteger = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 const Entity3DComponent = ({
   entity,
   isSelected,
@@ -77,7 +81,9 @@ const Entity3DComponent = ({
     const obj = refs.current['container']!;
     if (!obj) return;
     playNext('attack', async () => {
-      play('sfx', getRandomSoundForSkill(entity.lastSkillUsed!.id));
+      play('sfx', getRandomSoundForSkill(entity.lastSkillUsed!.id), {
+        detune: getRandomInteger(-3, 3) * 100,
+      });
       await animate([
         [obj.position, { x: x + 0.2 }, { duration: 0.1 }],
         [obj.position, { x: x - 0.2 }, { duration: 0.1 }],
@@ -135,7 +141,7 @@ const Entity3DComponent = ({
       >
         <Avatar entity={entity} />
         {entity.traits.canBeDamaged && (
-          <mesh position={[0.25, 1.2, 0.2]} renderOrder={2}>
+          <mesh position={[0.25, 1.3, 0.2]} renderOrder={2}>
             <planeGeometry args={[0.6, 0.08]} />
             <healthBar
               ref={(r: object) => {
@@ -153,13 +159,13 @@ const Entity3DComponent = ({
           float={'right'}
           color="red"
           selectedStatuses={getActiveDebuffStatuses(entity)}
-          position={[0.7, 1.2, 0]}
+          position={[0.7, 1.3, 0]}
         />
         <Statuses
           float={'left'}
           color={'green'}
           selectedStatuses={getActiveBuffStatuseses(entity)}
-          position={[-0.2, 1.2, 0]}
+          position={[-0.2, 1.3, 0]}
         />
       </group>
 

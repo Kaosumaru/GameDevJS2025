@@ -21,6 +21,13 @@ export const TAO_AUDIO_DATA = {
   'spawn-1': '/audio/spawn-1.mp3',
   'spawn-2': '/audio/spawn-2.mp3',
   'spawn-3': '/audio/spawn-3.mp3',
+  'blind-1': '/audio/blind-1.mp3',
+  'slash-3': '/audio/slash-3.mp3',
+  'slash-4': '/audio/slash-4.mp3',
+  'pass-1': '/audio/pass-1.mp3',
+  victory: '/music/victory.mp3',
+  defeat: '/music/defeat.mp3',
+  select: '/audio/select.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
@@ -32,6 +39,9 @@ export const TAO_AXE_HIT_SEQUENCE = ['axe-hit-1'] as TaoAudioTrack[];
 export const TAO_FIRE_BLAST_SEQUENCE = ['fire-blast-1', 'fire-blast-2'] as TaoAudioTrack[];
 export const TAO_FIRE_FLYING_SEQUENCE = ['fire-flying-1'] as TaoAudioTrack[];
 export const TAO_SPAWN_SEQUENCE = ['spawn-1', 'spawn-2', 'spawn-3'] as TaoAudioTrack[];
+export const TAO_BLIND_SEQUENCE = ['blind-1'] as TaoAudioTrack[];
+export const TAO_SLASH_SEQUENCE = ['slash-3', 'slash-4'] as TaoAudioTrack[];
+export const TAO_PASS_SEQUENCE = ['pass-1'] as TaoAudioTrack[];
 
 export const getRandomSound = (sequence: TaoAudioTrack[]): TaoAudioTrack => {
   const randomIndex = Math.floor(Math.random() * sequence.length);
@@ -43,7 +53,7 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   move: () => getRandomSound(TAO_MOVE_SEQUENCE),
   stun: () => getRandomSound(TAO_AXE_HIT_SEQUENCE),
   shield: () => getRandomSound(TAO_BUFF_SEQUENCE),
-  pass: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  pass: () => getRandomSound(TAO_PASS_SEQUENCE),
   testSpawner: () => getRandomSound(TAO_BUFF_SEQUENCE),
   clericHeal: () => getRandomSound(TAO_HEAL_SEQUENCE),
   clericLightAllHeal: () => getRandomSound(TAO_HEAL_SEQUENCE),
@@ -59,10 +69,10 @@ export const TAO_SKILL_ID_TO_SOUND: Record<SkillID, () => TaoAudioTrack> = {
   mageFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
   mageDarkFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
   mageLightFireball: () => getRandomSound(TAO_FIRE_BLAST_SEQUENCE),
-  mageBlind: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  mageBlind: () => getRandomSound(TAO_BLIND_SEQUENCE),
   mageSickle: () => getRandomSound(TAO_SWORD_HIT_SEQUENCE),
 
-  knightDarkWide: () => getRandomSound(TAO_BUFF_SEQUENCE),
+  knightDarkWide: () => getRandomSound(TAO_SLASH_SEQUENCE),
 
   auroraMove: () => getRandomSound(TAO_MOVE_SEQUENCE),
   auroraMateuszHeal: () => getRandomSound(TAO_HEAL_SEQUENCE),

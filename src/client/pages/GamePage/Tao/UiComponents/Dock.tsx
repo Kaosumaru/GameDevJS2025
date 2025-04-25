@@ -4,6 +4,7 @@ import { haveResourcesForSkill, skillFromInstance, SkillInstance } from '@shared
 import { StoreData } from '@shared/stores/tao/taoStore';
 import { JSX, memo, useRef } from 'react';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
+import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 
 const skillNameFromInstance = (skillInstance: SkillInstance, isDesktopView: boolean): string => {
   const name = skillFromInstance(skillInstance).name;
@@ -39,6 +40,7 @@ const DockComponent = ({
   const isDesktopView = useMediaQuery(theme => theme.breakpoints.up('sm'));
   const uiRef = useRef<HTMLDivElement>(null);
   const selectedSkill = entity?.skills.find(skill => skill.id === selectedSkillId);
+  const { play } = useTaoAudio();
   return (
     <Box
       style={{
@@ -100,7 +102,10 @@ const DockComponent = ({
                         px: isDesktopView ? 2 : 0.1,
                         py: isDesktopView ? 1 : 0.1,
                       }}
-                      onClick={() => onSkill(skill)}
+                      onClick={() => {
+                        play('sfx', 'select');
+                        onSkill(skill);
+                      }}
                     >
                       {skillNameFromInstance(skill, isDesktopView) + (cooldown > 0 ? ` (${cooldown})` : '')}
                     </Button>
