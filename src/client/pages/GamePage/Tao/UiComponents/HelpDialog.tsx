@@ -3,6 +3,7 @@ import React from 'react';
 
 interface Props {
   open: boolean;
+  balanceInfo: boolean;
   onClose: () => void;
 }
 
@@ -34,6 +35,18 @@ export default function HelpDialog(props: Props) {
             character, you need to click "Take Seat" button first - or you can invite a friend to play with you.
             <br />
             <br />
+            {props.balanceInfo && (
+              <p>
+                Ying Yang symbol shows the balance of the world. Some skills can move it towards light or darkness,
+                which affects character skills.
+                <br />
+                Additionally:
+                <br /> - killing an enemy will move the balance towards darkness
+                <br /> - not killing ant enemy in players turn will move the balance towards light
+                <br />
+                <br />
+              </p>
+            )}
             Status effects:
             <br /> - <b>Stunned</b> - enemy can't move or attack <br />- <b>Immobilized</b> - enemy can't move <br />-{' '}
             <b>Disarmed/Blinded</b> - enemy can't attack <br />- <b>Poisoned/Burning</b> - enemy will take damage at the

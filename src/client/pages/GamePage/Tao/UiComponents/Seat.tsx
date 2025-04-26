@@ -11,10 +11,12 @@ export const Seat = ({
   gameRoomClient,
   gameClient,
   entities,
+  level,
   onAvatarSelected,
 }: {
   gameRoomClient: GameRoomClient;
   gameClient: TaoClient;
+  level: number;
   entities: Entity[];
   onAvatarSelected: (entityId: string) => void;
 }) => {
@@ -48,7 +50,7 @@ export const Seat = ({
         >
           Help
         </Button>
-        <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+        <HelpDialog open={helpOpen} balanceInfo={level == 0} onClose={() => setHelpOpen(false)} />
         {/*<Button
           onClick={() => {
             void gameClient.rewindRound();

@@ -79,6 +79,8 @@ export const TaoScene = ({
   const range = uiAction !== null ? uiAction.range : [];
   const dialogue = state?.info.currentDialogue;
 
+  const level = client.store(state => state.info.level);
+
   useEffect(() => {
     if (fireballRef.current) {
       fireballRef.current.visible = false;
@@ -230,6 +232,7 @@ export const TaoScene = ({
         />
         <Seat
           gameClient={client}
+          level={level}
           gameRoomClient={gameRoomClient}
           entities={state?.entities ?? []}
           onAvatarSelected={entityId => {
