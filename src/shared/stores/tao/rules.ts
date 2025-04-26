@@ -15,6 +15,7 @@ import { allEntities, withShield, withEntityWithStatus as withStatus } from './s
 import { StoreData } from './taoStore';
 import { reduceGoal } from './goal';
 import { copyState } from './utils';
+import { changeDialogue } from './dialogue';
 
 const applyPoison = rule([allEntities, withStatus('poisoned'), damage(1, 'poison')]);
 const applyPoison2 = rule([allEntities, withStatus('poisoned+2'), damage(2, 'poison')]);
@@ -50,7 +51,11 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = entitiesAfterRoundStart(state);
 
   state = reduceGoal(state);
-  state.startOfRoundState = copyState(state, true);
+
+  if (state.info.gameState === 'inProgress') {
+    state = changeDialogue(state, state.info.turnStartDialogue[state.info.round]);
+    state.startOfRoundState = copyState(state, true);
+  }
 
   return state;
 }
