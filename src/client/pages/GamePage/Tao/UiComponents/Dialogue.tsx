@@ -69,7 +69,7 @@ const DialogueComponent = ({
       const currentSequence = sequenceRef.current;
       for (let i = 0; i < text.length; i++) {
         if (textRef.current === null) return;
-        textRef.current.innerText = [...text].slice(0, i).join('');
+        textRef.current.innerText = [...text].slice(0, i + 1).join('');
         if (!(textRef.current.innerText[textRef.current.innerText.length - 1] === ' ')) {
           play('sfx', kindToVoice[dialogueEntry.entity], {
             playbackRate: 2,
