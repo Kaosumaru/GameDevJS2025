@@ -3,8 +3,8 @@ import { LevelDescription } from '../level';
 export function createLevel1(): LevelDescription {
   return {
     tiles: [
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 3, 5, 0],
+      [0, 0, 0, 0, 5, 0, 0],
+      [0, 0, 0, 5, 3, 5, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 1, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
@@ -39,6 +39,22 @@ export function createLevel1(): LevelDescription {
         {
           entity: 'sun-princess',
           text: 'Hi!',
+        },
+      ],
+    },
+    loseDialogue: {
+      entries: [
+        {
+          entity: 'goth-gf',
+          text: 'bye!',
+        },
+        {
+          entity: 'knight',
+          text: '𓀃𓀄𓀅𓀆!',
+        },
+        {
+          entity: 'sun-princess',
+          text: 'bye!',
         },
       ],
     },

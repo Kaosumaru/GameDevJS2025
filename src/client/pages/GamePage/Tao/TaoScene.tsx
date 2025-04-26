@@ -77,7 +77,6 @@ export const TaoScene = ({
   const skill = uiAction !== null ? skillFromID(uiAction.skill.id) : undefined;
   const targets = uiAction !== null ? uiAction.targets : [];
   const range = uiAction !== null ? uiAction.range : [];
-  const dialogue = state?.info.currentDialogue;
 
   const level = client.store(state => state.info.level);
 
@@ -222,7 +221,7 @@ export const TaoScene = ({
       <ui.In>
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
-        <Dialogue dialogue={dialogue} />
+        <Dialogue info={state?.info} />
         <Goal info={state?.info} />
         <EndScreen
           result={state?.info.gameState ?? 'inProgress'}

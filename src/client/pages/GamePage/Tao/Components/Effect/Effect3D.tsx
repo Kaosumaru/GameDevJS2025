@@ -61,20 +61,19 @@ export const Effect3D = ({
         obj.visible = false;
       });
     }
-    if (effect.type === 'particleInFieldEffect') {
+    if (effect.type === 'particleInFieldEffect' && effect.effectType === 'fire') {
       const fieldId = effect.inField;
       const position = findFieldCoordinatesFromId(fields, fieldId);
       if (!position) return;
 
       const boardPosition = boardPositionToUiPosition(position.col, position.row);
 
-      play('sfx', 'fire-blast-1', {
-        detune: getRandomInteger(-3, 3) * 100,
-      });
-
       playNext('particleInFieldEffect', async () => {
         const obj = nebulaRef.current[nebulaIndex]!.container;
         if (!obj) return;
+        play('sfx', 'fire-blast-1', {
+          detune: getRandomInteger(-3, 3) * 100,
+        });
         obj.visible = true;
         await animate([
           'start',
@@ -85,7 +84,7 @@ export const Effect3D = ({
         obj.visible = false;
       });
     }
-  }, [playNext, effect, fields, nebulaRef, nebulaIndex]);
+  }, [play, playNext, effect, fields, nebulaRef, nebulaIndex]);
 
   return null;
 };

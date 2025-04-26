@@ -90,6 +90,14 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
     'push-2': null,
     'push-3': null,
     'speed-1': null,
+    'shield-1': null,
+    'dark-blind-1': null,
+    'die-1': null,
+    'die-2': null,
+    'heal-2': null,
+    'big-die-1': null,
+    'big-die-2': null,
+    'big-die-3': null,
   });
 
   const channelsRef = useRef<Record<TaoChannel, Audio<GainNode> | null>>({
@@ -185,6 +193,11 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
             audio.stop();
             if (options?.detune) {
               audio.detune = options.detune;
+            }
+            if (options?.playbackRate) {
+              audio.setPlaybackRate(options.playbackRate);
+            } else {
+              audio.setPlaybackRate(1);
             }
             audio.offset = 0;
 

@@ -79,10 +79,12 @@ export function useSkill(
   state = skill.reducer(state, { user, skillInstance, targetId, random });
   state = filterDeadEntities(state);
 
-  state = addEvent(state, {
-    type: 'swapEffects',
-    effects: [],
-  });
+  if (state.effects.length > 0) {
+    state = addEvent(state, {
+      type: 'swapEffects',
+      effects: [],
+    });
+  }
 
   return state;
 }

@@ -4,7 +4,12 @@ import { Audio } from 'three';
 
 export type TaoAudioContextType = {
   getChannels: () => TaoChannel[];
-  play: (channel: TaoChannel, sound?: TaoAudioTrack, options?: Partial<Audio>, phaseInOffsetMs?: number) => void;
+  play: (
+    channel: TaoChannel,
+    sound?: TaoAudioTrack,
+    options?: Partial<Audio & { volume: number }>,
+    phaseInOffsetMs?: number
+  ) => void;
   stop: (channel: TaoChannel) => void;
   getVolume: (channel: TaoChannel) => number;
   setVolume: (channel: TaoChannel, volume: number) => void;

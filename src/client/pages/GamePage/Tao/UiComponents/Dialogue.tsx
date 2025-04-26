@@ -1,10 +1,13 @@
-import { JSX, memo, useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef, useState } from 'react';
 import { Backdrop, Box, Theme } from '@mui/material';
-import { Dialogue as DialogueType } from '@shared/stores/tao/dialogue';
-import { usePrevious } from '../Hooks/usePrevious';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 import { EntityTypeId } from '@shared/stores/tao/entities/entities';
 import { TaoAudioTrack } from '../Components/Audio/TaoAudioData';
+import { useAnimationMotion } from '../Components/Animation/useAnimationMotion';
+import { DialogueEntry } from '@shared/stores/tao/dialogue';
+import { usePrevious } from '../Hooks/usePrevious';
+import { getRandomInteger } from '../Utils/utils';
+import { GameInfo } from '@shared/stores/tao/taoStore';
 
 const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
   'goth-gf': 'goth-gf-voice',
@@ -12,44 +15,73 @@ const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
   'sun-princess': 'sun-princess-voice',
 };
 
-const DialogueComponent = ({
-  dialogue,
+export const Dialogue = ({
+  info,
   ...rest
 }: JSX.IntrinsicElements['div'] & {
-  dialogue: DialogueType | undefined;
+  info: GameInfo | undefined;
 }) => {
   const { play } = useTaoAudio();
   const [side, setSide] = useState<'left' | 'right'>('right');
-  const [currentDialogueEntryIndex, setCurrentDialogueEntryIndex] = useState<number>(0);
-  const previousDialogue = usePrevious(dialogue);
+  const [dialogueEntry, setDialogueEntry] = useState<DialogueEntry | null>(null);
+  const previousDialogEntry = usePrevious(dialogueEntry);
   const textRef = useRef<HTMLDivElement | null>(null);
+  const playNext = useAnimationMotion();
+  const sequenceRef = useRef(0);
+  const notifyRef = useRef<(value: unknown) => void>(() => {});
 
   useEffect(() => {
-    if (dialogue !== previousDialogue) {
-      setCurrentDialogueEntryIndex(0);
+    if (!info?.currentDialogue) {
+      return;
     }
-  }, [dialogue, previousDialogue]);
+
+    playNext('dialogue', async () => {
+      if (!info?.currentDialogue) return;
+      const entries = [...(info?.currentDialogue.entries ?? [])];
+      while (entries.length > 0) {
+        const entry = entries.shift();
+        if (!entry) break;
+        sequenceRef.current++;
+        setDialogueEntry(entry);
+        await new Promise(resolve => (notifyRef.current = resolve));
+      }
+      setDialogueEntry(null);
+    });
+  }, [playNext, info]);
 
   useEffect(() => {
-    if (textRef.current === null || dialogue === undefined) {
+    if (!dialogueEntry) return;
+    if (dialogueEntry.entity !== previousDialogEntry?.entity) {
+      setSide(prev => (prev === 'left' ? 'right' : 'left'));
+    }
+  }, [dialogueEntry, previousDialogEntry]);
+
+  useEffect(() => {
+    if (textRef.current === null || dialogueEntry === null) {
       return;
     }
     const asyncFunc = async () => {
-      const entry = dialogue.entries[currentDialogueEntryIndex];
-      const text = entry.text;
+      const text = dialogueEntry.text;
+      const currentSequence = sequenceRef.current;
       for (let i = 0; i < text.length; i++) {
         if (textRef.current === null) return;
-        textRef.current.innerText = [...text].slice(0, i).join('');
-        play('sfx', kindToVoice[entry.entity]);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        textRef.current.innerText = [...text].slice(0, i + 1).join('');
+        if (!(textRef.current.innerText[textRef.current.innerText.length - 1] === ' ')) {
+          play('sfx', kindToVoice[dialogueEntry.entity], {
+            playbackRate: 3,
+            detune: getRandomInteger(-3, 3) * 100,
+          });
+        }
+        await new Promise(resolve => setTimeout(resolve, 30));
+        if (currentSequence !== sequenceRef.current) {
+          return;
+        }
       }
     };
     void asyncFunc();
-  }, [play, currentDialogueEntryIndex, dialogue]);
+  }, [play, dialogueEntry]);
 
-  if (!dialogue) return null;
-  if (currentDialogueEntryIndex >= dialogue.entries.length) return null;
-  const currentDialogueEntry = dialogue.entries[currentDialogueEntryIndex];
+  if (!dialogueEntry) return null;
 
   return (
     <Backdrop
@@ -57,12 +89,7 @@ const DialogueComponent = ({
       sx={(theme: Theme) => ({ color: '#ffffff', zIndex: theme.zIndex.drawer + 1 })}
       open={true}
       onClick={() => {
-        if (
-          dialogue.entries[currentDialogueEntryIndex].entity !== dialogue.entries[currentDialogueEntryIndex + 1]?.entity
-        ) {
-          setSide(side === 'left' ? 'right' : 'left');
-        }
-        setCurrentDialogueEntryIndex(currentDialogueEntryIndex + 1);
+        notifyRef.current(null);
       }}
     >
       <Box
@@ -88,7 +115,7 @@ const DialogueComponent = ({
           }}
         ></img>
         <img
-          src={`/avatars/${currentDialogueEntry.entity}.png`}
+          src={`/avatars/${dialogueEntry.entity}.png`}
           style={{
             position: 'absolute',
             maxHeight: '40rem',
@@ -101,21 +128,21 @@ const DialogueComponent = ({
           style={{
             position: 'absolute',
             maxHeight: '50vw',
-            bottom: '37rem',
-            ...(side === 'left' ? { left: '38rem' } : { right: '38rem' }),
+            bottom: '36rem',
+            ...(side === 'left' ? { left: '37rem' } : { right: '37rem' }),
             color: 'black',
-            width: '25rem',
-            height: '10rem',
+            width: '28rem',
+            height: '12rem',
             backgroundColor: 'white',
-            fontSize: '4rem',
+            fontSize: '1.5rem',
             zIndex: 100,
           }}
         >
-          {currentDialogueEntry.text}
+          {dialogueEntry.text}
         </div>
       </Box>
     </Backdrop>
   );
 };
 
-export const Dialogue = memo(DialogueComponent);
+// export const Dialogue = memo(DialogueComponent);

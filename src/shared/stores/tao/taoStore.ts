@@ -11,7 +11,7 @@ import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
-import { Dialogue } from './dialogue';
+import { changeDialogue, Dialogue, TurnStartDialogue } from './dialogue';
 import { copyState } from './utils';
 
 export interface UseSkillAction {
@@ -53,6 +53,7 @@ export interface GameInfo {
 
   winDialogue?: Dialogue;
   loseDialogue?: Dialogue;
+  turnStartDialogue: TurnStartDialogue;
   perRound: {
     roundEnded: boolean;
     diedInRound: Entity[];
@@ -82,6 +83,7 @@ function createStartingInfo(): GameInfo {
     gameState: 'inProgress',
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
+    turnStartDialogue: {},
     perRound: {
       roundEnded: false,
       diedInRound: [],
@@ -121,6 +123,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
       });
     }
     case 'endRound': {
+      store = changeDialogue(store, undefined);
       if (store.info.gameState !== 'inProgress') {
         throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
       }
@@ -133,6 +136,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
       }
       // caching old state for client animations
+      store = changeDialogue(store, undefined);
       store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);

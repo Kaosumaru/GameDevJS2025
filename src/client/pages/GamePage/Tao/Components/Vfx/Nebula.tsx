@@ -198,7 +198,6 @@ const NebulaComponent = ({
     };
     void asyncFunc();
     return () => {
-      console.log('nebula destroy');
       if (systemRef.current) {
         systemRef.current.destroy();
         systemRef.current = null;
