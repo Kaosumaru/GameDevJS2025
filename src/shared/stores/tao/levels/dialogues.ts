@@ -5,11 +5,11 @@ export const levelStart: Dialogue = {
 };
 
 export const levelVictory: Dialogue = {
-  entries: [e('goth-gf', 'Bye!'), e('knight', '𓀃𓀄𓀅𓀆!'), e('sun-princess', 'Bye!')],
+  entries: [e('sun-princess', 'Get ready. Portal crystal is about to take us out of here!'), e('goth-gf', 'Well... it was refreshing!'),  e('sun-princess', 'Of all the words I would use to describe the hordes of Void creatures trying to kill us this would be...'), e('goth-gf', 'Yes I know, the most fitting. Something you are suspiciously nice to me today, sister.'), e('sun-princess', '...'), e('knight', '...'), e('knight', '𓀃𓀄𓀅𓀆?')],
 };
 
 export const levelDefeat: Dialogue = {
-  entries: [e('goth-gf', 'Bye!'), e('knight', '𓀃𓀄𓀅𓀆!'), e('sun-princess', 'Bye!')],
+  entries: [e('goth-gf', 'It must be the Glitch of reality, there is no way I would end up like this...'), e('sun-princess', 'You`re right, it`s just my horrible vision about losing'), e('knight', '....')],
 };
 
 function e(entity: person, text: string): DialogueEntry {
