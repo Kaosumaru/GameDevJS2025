@@ -24,16 +24,16 @@ export const Tao = (props: SpecificGameProps) => {
     />
   ) : (
     <TaoAudioContextProvider>
-      <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
-        <AnimationContextProvider>
+      <AnimationContextProvider>
+        <Canvas shadows camera={{ position: [-15, 10, 15], fov: 25 }} style={{ height: '100vh', width: '100vw' }}>
           <TaoScene gameRoomClient={props.gameRoomClient} ui={ui} />
-        </AnimationContextProvider>
-      </Canvas>
+        </Canvas>
 
-      <div id="ui">
-        {/* Anything that goes into the tunnel, we want to render here. */}
-        <ui.Out />
-      </div>
+        <div id="ui">
+          {/* Anything that goes into the tunnel, we want to render here. */}
+          <ui.Out />
+        </div>
+      </AnimationContextProvider>
     </TaoAudioContextProvider>
   );
 };

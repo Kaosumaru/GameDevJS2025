@@ -9,7 +9,14 @@ import { Entity } from '@shared/stores/tao/interface';
 import { useAnimationMotion } from '../Animation/useAnimationMotion';
 import { usePrevious } from '../../Hooks/usePrevious';
 import { useTaoAudio } from '../Audio/useTaoAudio';
-import { getRandomSound, getRandomSoundForSkill, TAO_MOVE_SEQUENCE, TAO_SPAWN_SEQUENCE } from '../Audio/TaoAudioData';
+import {
+  getRandomSound,
+  getRandomSoundForSkill,
+  TAO_BIG_DIE_SEQUENCE,
+  TAO_DIE_SEQUENCE,
+  TAO_MOVE_SEQUENCE,
+  TAO_SPAWN_SEQUENCE,
+} from '../Audio/TaoAudioData';
 import { Statuses } from '../Statuses/Statuses';
 import { getActiveBuffStatuseses, getActiveDebuffStatuses } from '../Statuses/getActive';
 import { Avatar } from './Avatar';
@@ -34,6 +41,7 @@ const Entity3DComponent = ({
   //const previusAttackCount = usePrevious(entity.totalAttacksCount);
   const previousLastSkillUsed = usePrevious(entity.lastSkillUsed);
   const playNext = useAnimationMotion();
+  const isPlaySoundPlayedRef = useRef(false);
 
   useEffect(() => {
     const { x, y } = boardPositionToUiPosition(entity.position.x, entity.position.y);
@@ -95,6 +103,13 @@ const Entity3DComponent = ({
     if (isDead) {
       const obj = refs.current['container']!;
       if (!obj) return;
+      if (isPlaySoundPlayedRef.current === false) {
+        play(
+          'sfx',
+          entity.kind === 'skullwyrm' ? getRandomSound(TAO_BIG_DIE_SEQUENCE) : getRandomSound(TAO_DIE_SEQUENCE)
+        );
+        isPlaySoundPlayedRef.current = true;
+      }
       playNext('die', async () => {
         await animate([
           'start',
@@ -104,13 +119,7 @@ const Entity3DComponent = ({
         ]);
       });
     }
-  }, [playNext, play, isDead]);
-
-  useEffect(() => {
-    if (isDead === true) {
-      play('sfx', 'die-1');
-    }
-  }, [isDead, play]);
+  }, [playNext, play, isDead, entity]);
 
   const refs = useRef<{
     container: Group | null;

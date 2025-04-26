@@ -68,13 +68,12 @@ export const Effect3D = ({
 
       const boardPosition = boardPositionToUiPosition(position.col, position.row);
 
-      play('sfx', 'fire-blast-1', {
-        detune: getRandomInteger(-3, 3) * 100,
-      });
-
       playNext('particleInFieldEffect', async () => {
         const obj = nebulaRef.current[nebulaIndex]!.container;
         if (!obj) return;
+        play('sfx', 'fire-blast-1', {
+          detune: getRandomInteger(-3, 3) * 100,
+        });
         obj.visible = true;
         await animate([
           'start',
