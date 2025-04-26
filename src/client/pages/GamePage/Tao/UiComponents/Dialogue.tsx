@@ -7,6 +7,7 @@ import { TaoAudioTrack } from '../Components/Audio/TaoAudioData';
 import { useAnimationMotion } from '../Components/Animation/useAnimationMotion';
 import { DialogueEntry } from '@shared/stores/tao/dialogue';
 import { usePrevious } from '../Hooks/usePrevious';
+import { getRandomInteger } from '../Utils/utils';
 
 const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
   'goth-gf': 'goth-gf-voice',
@@ -72,10 +73,11 @@ const DialogueComponent = ({
         textRef.current.innerText = [...text].slice(0, i + 1).join('');
         if (!(textRef.current.innerText[textRef.current.innerText.length - 1] === ' ')) {
           play('sfx', kindToVoice[dialogueEntry.entity], {
-            playbackRate: 2,
+            playbackRate: 3,
+            detune: getRandomInteger(-3, 3) * 100,
           });
         }
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 30));
         if (currentSequence !== sequenceRef.current) {
           return;
         }
