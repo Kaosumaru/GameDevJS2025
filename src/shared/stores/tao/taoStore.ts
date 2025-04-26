@@ -136,8 +136,8 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
       }
       // caching old state for client animations
-      store = cacheOldState(store);
       store = changeDialogue(store, undefined);
+      store = cacheOldState(store);
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
       if (!entity) {

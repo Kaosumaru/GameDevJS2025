@@ -66,8 +66,8 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     });
   });
 
-  state = addEntities(state, infos);
   state = changeDialogue(state, level.startingDialogue);
+  state = addEntities(state, infos);
 
   return state;
 }
