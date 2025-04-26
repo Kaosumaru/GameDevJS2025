@@ -37,13 +37,13 @@ export const Seat = ({
         }}
       >
         <InviteButton />
-        <Button
+        {/*<Button
           onClick={() => {
             void gameClient.rewindRound();
           }}
         >
           Rewind
-        </Button>
+        </Button>*/}
       </Box>
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);

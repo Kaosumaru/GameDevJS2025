@@ -113,10 +113,9 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'rewindRound': {
-      if (store.startOfRoundState) {
-        return restoreState(store.startOfRoundState);
-      }
-      return store;
+      return addEvent(store, {
+        type: 'rewindRound',
+      });
     }
     case 'endRound': {
       if (store.info.gameState !== 'inProgress') {

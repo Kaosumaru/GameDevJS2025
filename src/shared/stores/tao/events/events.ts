@@ -101,6 +101,10 @@ export interface SwapEffectsEvent {
   effects: Effect[];
 }
 
+export interface RewindRoundEvent {
+  type: 'rewindRound';
+}
+
 export type EventType =
   | ChangeResourcesEvent
   | MoveEvent
@@ -112,6 +116,7 @@ export type EventType =
   | UseSkillEvent
   | SwapEffectsEvent
   | ChangeSkillsEvent
+  | RewindRoundEvent
   | ApplyCooldown;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {
