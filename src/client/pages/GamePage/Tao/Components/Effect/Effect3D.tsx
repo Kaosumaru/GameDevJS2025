@@ -61,7 +61,7 @@ export const Effect3D = ({
         obj.visible = false;
       });
     }
-    if (effect.type === 'particleInFieldEffect') {
+    if (effect.type === 'particleInFieldEffect' && effect.effectType === 'fire') {
       const fieldId = effect.inField;
       const position = findFieldCoordinatesFromId(fields, fieldId);
       if (!position) return;
@@ -84,7 +84,7 @@ export const Effect3D = ({
         obj.visible = false;
       });
     }
-  }, [playNext, effect, fields, nebulaRef, nebulaIndex]);
+  }, [play, playNext, effect, fields, nebulaRef, nebulaIndex]);
 
   return null;
 };
