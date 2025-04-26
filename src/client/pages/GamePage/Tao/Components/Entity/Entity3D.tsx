@@ -106,6 +106,12 @@ const Entity3DComponent = ({
     }
   }, [playNext, play, isDead]);
 
+  useEffect(() => {
+    if (isDead === true) {
+      play('sfx', 'die-1');
+    }
+  }, [isDead, play]);
+
   const refs = useRef<{
     container: Group | null;
     character: Group<Object3DEventMap> | null;
