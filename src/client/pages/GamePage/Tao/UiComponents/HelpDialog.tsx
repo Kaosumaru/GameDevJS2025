@@ -23,36 +23,37 @@ export default function HelpDialog(props: Props) {
         <DialogTitle id="alert-dialog-title">{'Game Help'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You are playing a turn-based game where you can move and use skills. After each turn, the enemy will move
-            and attack you.
+            It's a turn-based tactical game. Within its turn, each character can move and use skills in any order.
+            At the end of the player's turn, enemies move and attack. After the enemies' turn, status effects are considered.
             <br />
             <br />
-            To win, you need to survive for 12 turns and defend your blue crystal from the enemy attacks. Red crystals
-            will periodically spawn new enemies.
+            To win you must survive <b>9</b> turns and defend the <b>blue</b> teleportation crystal from enemy attacks.
+            Red crystals will periodically spawn new enemies.
             <br />
             <br />
-            Players turn will pass when all 3 characters have moved and used a skill or passed. In order to control a
-            character, you need to click "Take Seat" button first - or you can invite a friend to play with you.
+            To take control of a character you must click the <i>Take Seat</i> button.
+            You can also <b>invite</b> your friends to play with you.
             <br />
             <br />
             {props.balanceInfo && (
               <p>
-                Ying Yang symbol shows the balance of the world. Some skills can move it towards light or darkness,
-                which affects character skills.
+                Ying Yang symbols show whether the world is in Balance, Darkness or Light.
+                This changes the effects of 1 <b>main</b> skill in each character.
+                Some of the other skills can affect the balance level.
+                <br />
                 <br />
                 Additionally:
-                <br /> - killing an enemy will move the balance towards darkness
-                <br /> - not killing ant enemy in players turn will move the balance towards light
+                <br /> - Killing 1 enemy with 2 HP or more adds <b>1</b> to Darkness
+                <br /> - Not killing any enemy in a turn ads <b>1</b> to Light.
                 <br />
                 <br />
               </p>
             )}
             Status effects:
-            <br /> - <b>Stunned</b> - enemy can't move or attack <br />- <b>Immobilized</b> - enemy can't move <br />-{' '}
-            <b>Disarmed/Blinded</b> - enemy can't attack <br />- <b>Poisoned/Burning</b> - enemy will take damage at the
-            end
+            <br /> - <b>Stunned</b> - enemy can't move or attack <br />- <b>Disarmed/Blinded</b> - enemy can't attack <br />-{' '}
+            <b>Immobilized</b> - enemy can't move <br />- <b>Poisoned/Burning</b> - enemy will take damage at the
+            end of turn
             <br />
-            of round
           </DialogContentText>
         </DialogContent>
         <DialogActions>
