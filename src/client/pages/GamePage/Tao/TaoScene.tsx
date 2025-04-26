@@ -222,7 +222,7 @@ export const TaoScene = ({
       <ui.In>
         <Header balance={state?.info.balance ?? 0} />
         <Jukebox />
-        <Dialogue dialogue={dialogue} />
+        <Dialogue events={state?.events} />
         <Goal info={state?.info} />
         <EndScreen
           result={state?.info.gameState ?? 'inProgress'}

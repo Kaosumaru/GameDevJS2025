@@ -186,6 +186,11 @@ export const TaoAudioContextProvider = ({ children }: { children: React.ReactNod
             if (options?.detune) {
               audio.detune = options.detune;
             }
+            if (options?.playbackRate) {
+              audio.setPlaybackRate(options.playbackRate);
+            } else {
+              audio.setPlaybackRate(1);
+            }
             audio.offset = 0;
 
             audio.play();
