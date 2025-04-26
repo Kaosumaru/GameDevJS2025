@@ -17,6 +17,8 @@ export interface LevelDescription {
   winCondition: GoalType;
   loseCondition: GoalType;
   startingDialogue?: Dialogue;
+  winDialogue?: Dialogue;
+  loseDialogue?: Dialogue;
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
@@ -41,6 +43,8 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
       currentDialogue: undefined,
       winCondition: level.winCondition,
       loseCondition: level.loseCondition,
+      winDialogue: level.winDialogue,
+      loseDialogue: level.loseDialogue,
     },
   };
 

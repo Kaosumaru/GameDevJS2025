@@ -11,7 +11,10 @@ export interface Dialogue {
   entries: DialogueEntry[];
 }
 
-export function changeDialogue(state: StoreData, dialogue: Dialogue): StoreData {
+export function changeDialogue(state: StoreData, dialogue: Dialogue | undefined): StoreData {
+  if (dialogue === undefined) {
+    return state;
+  }
   state = addEvent(state, {
     type: 'changeDialogue',
     dialogue,

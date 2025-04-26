@@ -50,6 +50,9 @@ export interface GameInfo {
   loseCondition: GoalType;
   gameState: GameState;
   currentDialogue?: Dialogue;
+
+  winDialogue?: Dialogue;
+  loseDialogue?: Dialogue;
   perRound: {
     roundEnded: boolean;
     diedInRound: Entity[];
