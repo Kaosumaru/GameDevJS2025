@@ -1,6 +1,5 @@
-import { JSX, memo, useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef, useState } from 'react';
 import { Backdrop, Box, Theme } from '@mui/material';
-import { ChangeCurrentDialogueEvent, EventType } from '@shared/stores/tao/events/events';
 import { useTaoAudio } from '../Components/Audio/useTaoAudio';
 import { EntityTypeId } from '@shared/stores/tao/entities/entities';
 import { TaoAudioTrack } from '../Components/Audio/TaoAudioData';
@@ -8,6 +7,7 @@ import { useAnimationMotion } from '../Components/Animation/useAnimationMotion';
 import { DialogueEntry } from '@shared/stores/tao/dialogue';
 import { usePrevious } from '../Hooks/usePrevious';
 import { getRandomInteger } from '../Utils/utils';
+import { GameInfo } from '@shared/stores/tao/taoStore';
 
 const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
   'goth-gf': 'goth-gf-voice',
@@ -15,11 +15,11 @@ const kindToVoice: Partial<Record<EntityTypeId, TaoAudioTrack>> = {
   'sun-princess': 'sun-princess-voice',
 };
 
-const DialogueComponent = ({
-  events,
+export const Dialogue = ({
+  info,
   ...rest
 }: JSX.IntrinsicElements['div'] & {
-  events: EventType[] | undefined;
+  info: GameInfo | undefined;
 }) => {
   const { play } = useTaoAudio();
   const [side, setSide] = useState<'left' | 'right'>('right');
@@ -31,18 +31,13 @@ const DialogueComponent = ({
   const notifyRef = useRef<(value: unknown) => void>(() => {});
 
   useEffect(() => {
-    const dialogEvents = (events ?? []).filter(
-      event => event.type === 'changeDialogue' && event.dialogue !== undefined
-    ) as ChangeCurrentDialogueEvent[];
-
-    if (dialogEvents.length === 0) {
+    if (!info?.currentDialogue) {
       return;
     }
 
     playNext('dialogue', async () => {
-      const event = dialogEvents[0];
-
-      const entries = [...(event?.dialogue?.entries ?? [])];
+      if (!info?.currentDialogue) return;
+      const entries = [...(info?.currentDialogue.entries ?? [])];
       while (entries.length > 0) {
         const entry = entries.shift();
         if (!entry) break;
@@ -52,7 +47,7 @@ const DialogueComponent = ({
       }
       setDialogueEntry(null);
     });
-  }, [playNext, events]);
+  }, [playNext, info]);
 
   useEffect(() => {
     if (!dialogueEntry) return;
@@ -150,4 +145,4 @@ const DialogueComponent = ({
   );
 };
 
-export const Dialogue = memo(DialogueComponent);
+// export const Dialogue = memo(DialogueComponent);
