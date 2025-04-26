@@ -114,7 +114,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'rewindRound': {
       if (store.startOfRoundState) {
-        return copyState(store.startOfRoundState);
+        return copyState(store.startOfRoundState, true, true);
       }
       return store;
     }
@@ -178,7 +178,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         to: 0,
       });
 
-      state.startOfRoundState = copyState(state);
+      state.startOfRoundState = copyState(state, true);
 
       return state;
     }

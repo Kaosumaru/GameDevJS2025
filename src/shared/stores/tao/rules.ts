@@ -50,7 +50,7 @@ export function endOfRound(state: StoreData, random: RandomGenerator): StoreData
   state = entitiesAfterRoundStart(state);
 
   state = reduceGoal(state);
-  state.startOfRoundState = copyState(state);
+  state.startOfRoundState = copyState(state, true);
 
   return state;
 }
