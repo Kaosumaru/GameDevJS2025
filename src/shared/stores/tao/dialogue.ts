@@ -14,17 +14,9 @@ export interface Dialogue {
 export type TurnStartDialogue = { [turn: number]: Dialogue };
 
 export function changeDialogue(state: StoreData, dialogue: Dialogue | undefined): StoreData {
-  if (dialogue === undefined) {
-    return state;
-  }
   state = addEvent(state, {
     type: 'changeDialogue',
     dialogue,
-  });
-
-  state = addEvent(state, {
-    type: 'changeDialogue',
-    dialogue: undefined,
   });
 
   return state;

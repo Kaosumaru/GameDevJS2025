@@ -68,7 +68,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
 
   state = changeDialogue(state, level.startingDialogue);
   state = addEntities(state, infos);
-  state = changeDialogue(state, undefined);
+
   return state;
 }
 
