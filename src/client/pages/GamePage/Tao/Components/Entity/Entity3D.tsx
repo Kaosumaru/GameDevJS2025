@@ -124,12 +124,17 @@ const Entity3DComponent = ({
 
   const boxWidth = 0.1;
   const healtWidth = entity.hp.max * boxWidth + entity.shield * boxWidth;
-  const healthX = entity.type === 'enemy' ? 0 : 0.25;
+  let healthX = entity.type === 'enemy' ? 0 : 0.25;
 
   let healthY = 1.3;
 
   if (entity.avatar === 'voidling' || entity.avatar === 'mushroom-bomb') {
     healthY = 0.7;
+  }
+
+  if (entity.kind === 'playerCrystal') {
+    healthX = 0;
+    healthY = 1.6;
   }
 
   return (
