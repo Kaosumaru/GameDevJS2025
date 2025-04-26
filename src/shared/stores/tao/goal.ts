@@ -57,5 +57,7 @@ function changeState(state: StoreData, stateState: GameState): StoreData {
 }
 
 function areOwnedPlayersDead(state: StoreData): boolean {
-  return state.entities.every(entity => entity.type === 'player' && isDead(entity) && entity.ownerId !== undefined);
+  return state.entities.every(entity =>
+    entity.type === 'player' && entity.ownerId !== undefined ? isDead(entity) : true
+  );
 }
