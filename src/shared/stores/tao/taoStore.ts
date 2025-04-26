@@ -11,7 +11,7 @@ import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
-import { Dialogue } from './dialogue';
+import { Dialogue, TurnStartDialogue } from './dialogue';
 import { copyState } from './utils';
 
 export interface UseSkillAction {
@@ -53,6 +53,7 @@ export interface GameInfo {
 
   winDialogue?: Dialogue;
   loseDialogue?: Dialogue;
+  turnStartDialogue: TurnStartDialogue;
   perRound: {
     roundEnded: boolean;
     diedInRound: Entity[];
@@ -82,6 +83,7 @@ function createStartingInfo(): GameInfo {
     gameState: 'inProgress',
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
+    turnStartDialogue: {},
     perRound: {
       roundEnded: false,
       diedInRound: [],
