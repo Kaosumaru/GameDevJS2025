@@ -60,8 +60,11 @@ const levelStart: Dialogue = {
     e('knight', '𓀃𓀄𓀅𓀆!'),
     e('knight', '...'),
     e('goth-gf', 'Flattery won’t get you anywhere, stop your useless chatter and start fighting monsters.'),
-    e('sun-princess', 'Tutorial_Basic'),
-    e('sun-princess', 'Tutorial_Light_and_Dark'),
+    e('sun-princess', 'Oh, it`s my angel, Tutoraziel, sending me visions!'),
+    e('sun-princess', 'Control the characters with mouse. Click on a character to select it. Click on a skill to see its description.'),
+    e('sun-princess', 'Each turn a character can make one move and use one skill. The exception is Aurora, Sorceress of the Sun, who if she doesn`t move can use the skill twice.'),
+    e('sun-princess', 'Ying Yang symbols show whether the world is in Balance, Darkness or Light. This changes the actions of the main skill in each character. Killing enemies with 2 HP or more charges Darkness, not killing anyone in a round adds +1 Light. This is also affected by skills.'),
+    e('sun-princess', 'In Help (upper left screen corner) you have more information on this and other topics. Good luck Daughter of Light!'),
   ],
 };
 
