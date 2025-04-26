@@ -22,7 +22,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
   knight: {
     afterBalance: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'vacuenMove' },
         { id: 'knightAttack' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },
@@ -31,7 +31,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
     ]),
     afterDarkness: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'vacuenMove' },
         { id: 'knightDarkWide' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },
@@ -40,7 +40,7 @@ const entityInfos: { [K in EntityTypeId]?: EntityInfo } = {
     ]),
     afterLight: passive([
       changeSkills([
-        { id: 'move' },
+        { id: 'vacuenMove' },
         { id: 'knightLightStun' },
         { id: 'knightSpeedLight' },
         { id: 'knightSpeedDark' },

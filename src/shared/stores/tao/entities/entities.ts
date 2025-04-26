@@ -60,7 +60,7 @@ export const entities: EntitiesType = {
     kind: 'knight',
 
     skills: [
-      { id: 'move' },
+      { id: 'vacuenMove' },
       { id: 'knightAttack' },
       { id: 'knightSpeedLight' },
       { id: 'knightSpeedDark' },
