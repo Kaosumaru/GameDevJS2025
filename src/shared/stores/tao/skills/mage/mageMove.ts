@@ -5,7 +5,7 @@ import { addAroundCrystal, addDeadEntitiesFields, empty, inMoveDistance, targets
 export const mageMove: Skill = {
   id: 'mageMove',
   name: 'Move',
-  description: 'Move to a target position or dead enemy or around crystal',
+  description: '<p>Move</p> <br> <p>Character can, regardless of the movement range, teleport to blue crystal or dead enemy.</p>',
   type: 'movement',
   actionCost: 0,
   moveCost: 1,
