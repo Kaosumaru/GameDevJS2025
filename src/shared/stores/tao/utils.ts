@@ -26,3 +26,21 @@ export function copyState(state: StoreData, preserveOld = false, setAsStartOfRou
     },
   };
 }
+
+export function restoreState(state: StoreData): StoreData {
+  return {
+    ...state,
+    board: state.board.map(row => row.map(field => ({ ...field }))),
+    entities: state.entities.map(entity => ({ ...entity })),
+    events: state.events.map(event => ({ ...event })),
+    effects: state.effects.map(effect => ({ ...effect })),
+    oldState: state.oldState ? copyState(state.oldState) : undefined,
+    startOfRoundState: state,
+    info: {
+      ...state.info,
+      perRound: {
+        ...state.info.perRound,
+      },
+    },
+  };
+}

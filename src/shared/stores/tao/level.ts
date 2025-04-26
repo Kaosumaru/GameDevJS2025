@@ -46,6 +46,7 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
 
   state.oldState = {
     ...state,
+    events: [],
     board: state.board.map(row => row.map(field => ({ ...field }))),
   };
 

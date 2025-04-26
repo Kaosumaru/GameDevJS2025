@@ -12,7 +12,7 @@ import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
 import { Dialogue } from './dialogue';
-import { copyState } from './utils';
+import { copyState, restoreState } from './utils';
 
 export interface UseSkillAction {
   type: 'useSkill';
@@ -114,7 +114,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'rewindRound': {
       if (store.startOfRoundState) {
-        return copyState(store.startOfRoundState, true, true);
+        return restoreState(store.startOfRoundState);
       }
       return store;
     }
