@@ -41,6 +41,10 @@ export const TAO_AUDIO_DATA = {
   'shield-1': '/audio/shield-1.mp3',
   'dark-blind-1': '/audio/dark-blind-1.mp3',
   'die-1': '/audio/die-1.mp3',
+  'die-2': '/audio/die-2.mp3',
+  'big-die-1': '/audio/big-die-1.mp3',
+  'big-die-2': '/audio/big-die-2.mp3',
+  'big-die-3': '/audio/big-die-3.mp3',
 };
 export type TaoAudioTrack = keyof typeof TAO_AUDIO_DATA;
 
@@ -60,6 +64,8 @@ export const TAO_PUSH_SEQUENCE = ['push-1', 'push-2', 'push-3'] as TaoAudioTrack
 export const TAO_SPEED_SEQUENCE = ['speed-1'] as TaoAudioTrack[];
 export const TAO_DARK_BLAST_SEQUENCE = ['dark-blast-1'] as TaoAudioTrack[];
 export const TAO_SHIELD_SEQUENCE = ['shield-1'] as TaoAudioTrack[];
+export const TAO_DIE_SEQUENCE = ['die-1', 'die-2'] as TaoAudioTrack[];
+export const TAO_BIG_DIE_SEQUENCE = ['big-die-1', 'big-die-2', 'big-die-3'] as TaoAudioTrack[];
 
 export const getRandomSound = (sequence: TaoAudioTrack[]): TaoAudioTrack => {
   const randomIndex = Math.floor(Math.random() * sequence.length);
