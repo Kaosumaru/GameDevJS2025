@@ -50,6 +50,22 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       } else {
         return state;
       }
+    case 'changeDialogue':
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          currentDialogue: event.dialogue,
+        },
+      };
+    case 'changeGameState':
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          gameState: event.gameState,
+        },
+      };
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {

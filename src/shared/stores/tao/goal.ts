@@ -1,5 +1,6 @@
 import { EntityTypeId } from './entities/entities';
 import { isDead } from './entity';
+import { addEvent } from './events/events';
 import { GameState, StoreData } from './taoStore';
 
 export interface SurviveGoal {
@@ -46,13 +47,10 @@ function isGoalFulfilled(state: StoreData, goal: GoalType): boolean {
 }
 
 function changeState(state: StoreData, stateState: GameState): StoreData {
-  return {
-    ...state,
-    info: {
-      ...state.info,
-      gameState: stateState,
-    },
-  };
+  return addEvent(state, {
+    type: 'changeGameState',
+    gameState: stateState,
+  });
 }
 
 function areOwnedPlayersDead(state: StoreData): boolean {

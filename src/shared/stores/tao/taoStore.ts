@@ -12,7 +12,7 @@ import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
 import { Dialogue } from './dialogue';
-import { copyState, restoreState } from './utils';
+import { copyState } from './utils';
 
 export interface UseSkillAction {
   type: 'useSkill';
