@@ -42,5 +42,21 @@ export function createLevel1(): LevelDescription {
         },
       ],
     },
+    loseDialogue: {
+      entries: [
+        {
+          entity: 'goth-gf',
+          text: 'bye!',
+        },
+        {
+          entity: 'knight',
+          text: '𓀃𓀄𓀅𓀆!',
+        },
+        {
+          entity: 'sun-princess',
+          text: 'bye!',
+        },
+      ],
+    },
   };
 }

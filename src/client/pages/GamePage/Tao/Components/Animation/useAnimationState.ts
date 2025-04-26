@@ -31,9 +31,7 @@ export const useAnimationState = (client: TaoClient) => {
   }, [ctx, client, baseState]);
 
   useEffect(() => {
-    setTimeout(() => {
-      ctx.notify();
-    }, 0);
+    ctx.notify();
   }, [ctx, state]);
 
   return state;
