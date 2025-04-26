@@ -11,7 +11,7 @@ import { entitiesAfterRoundStart } from './entityInfo';
 import { createLevel } from './levels/lvl';
 import { GoalType } from './goal';
 import { Effect } from './effects';
-import { Dialogue, TurnStartDialogue } from './dialogue';
+import { changeDialogue, Dialogue, TurnStartDialogue } from './dialogue';
 import { copyState } from './utils';
 
 export interface UseSkillAction {
@@ -123,6 +123,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
       });
     }
     case 'endRound': {
+      store = changeDialogue(store, undefined);
       if (store.info.gameState !== 'inProgress') {
         throw new Error(`Game is not in progress, current state: ${store.info.gameState}`);
       }
@@ -136,6 +137,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
       }
       // caching old state for client animations
       store = cacheOldState(store);
+      store = changeDialogue(store, undefined);
       const { entityId, skillName, targetId } = action;
       const entity = getEntity(store, entityId);
       if (!entity) {
