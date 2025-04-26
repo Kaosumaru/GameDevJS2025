@@ -4,6 +4,7 @@ import { entitiesAfterBalanceChange } from '../entityInfo';
 import { Entity } from '../interface';
 import { moveEntityTo } from '../movement';
 import { StoreData } from '../taoStore';
+import { restoreState } from '../utils';
 import {
   ApplyCooldown,
   ApplyStatusEvent,
@@ -43,6 +44,28 @@ export function reduceEvent(state: StoreData, event: EventType): StoreData {
       return changeSkillEvent(state, event);
     case 'swapEffects':
       return swapEffects(state, event);
+    case 'rewindRound':
+      if (state.startOfRoundState) {
+        return restoreState(state.startOfRoundState);
+      } else {
+        return state;
+      }
+    case 'changeDialogue':
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          currentDialogue: event.dialogue,
+        },
+      };
+    case 'changeGameState':
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          gameState: event.gameState,
+        },
+      };
   }
 }
 function reduceDamage(state: StoreData, event: DamageEvent): StoreData {

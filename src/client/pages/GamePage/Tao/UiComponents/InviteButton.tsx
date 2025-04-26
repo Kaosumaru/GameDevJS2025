@@ -21,7 +21,7 @@ export const InviteButton = () => {
   return (
     <>
       <Button variant="contained" onClick={handleCopy}>
-        Invite
+        Invite Friend
       </Button>
       <Snackbar
         open={open}

@@ -1,5 +1,5 @@
 import { addEntities } from './board';
-import { Dialogue } from './dialogue';
+import { changeDialogue, Dialogue } from './dialogue';
 import { EntityTypeId } from './entities/entities';
 import { GoalType } from './goal';
 import { Position } from './interface';
@@ -17,6 +17,8 @@ export interface LevelDescription {
   winCondition: GoalType;
   loseCondition: GoalType;
   startingDialogue?: Dialogue;
+  winDialogue?: Dialogue;
+  loseDialogue?: Dialogue;
 }
 
 export function fillState(state: StoreData, level: LevelDescription): StoreData {
@@ -38,14 +40,17 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
     board,
     info: {
       ...state.info,
-      currentDialogue: level.startingDialogue,
+      currentDialogue: undefined,
       winCondition: level.winCondition,
       loseCondition: level.loseCondition,
+      winDialogue: level.winDialogue,
+      loseDialogue: level.loseDialogue,
     },
   };
 
   state.oldState = {
     ...state,
+    events: [],
     board: state.board.map(row => row.map(field => ({ ...field }))),
   };
 
@@ -60,6 +65,10 @@ export function fillState(state: StoreData, level: LevelDescription): StoreData 
   });
 
   state = addEntities(state, infos);
+
+  if (level.startingDialogue) {
+    state = changeDialogue(state, level.startingDialogue);
+  }
 
   return state;
 }

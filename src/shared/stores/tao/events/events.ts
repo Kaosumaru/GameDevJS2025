@@ -1,7 +1,8 @@
+import { Dialogue } from '../dialogue';
 import { Effect } from '../effects';
 import { Entity, Position, StatusEffect } from '../interface';
 import { SkillID, SkillInstance } from '../skills';
-import { StoreData } from '../taoStore';
+import { GameState, StoreData } from '../taoStore';
 import { reduceEvent } from './reducers';
 
 export interface MoveData {
@@ -101,6 +102,20 @@ export interface SwapEffectsEvent {
   effects: Effect[];
 }
 
+export interface RewindRoundEvent {
+  type: 'rewindRound';
+}
+
+export interface ChangeCurrentDialogueEvent {
+  type: 'changeDialogue';
+  dialogue: Dialogue | undefined;
+}
+
+export interface ChangeGameStateEvent {
+  type: 'changeGameState';
+  gameState: GameState;
+}
+
 export type EventType =
   | ChangeResourcesEvent
   | MoveEvent
@@ -112,6 +127,9 @@ export type EventType =
   | UseSkillEvent
   | SwapEffectsEvent
   | ChangeSkillsEvent
+  | RewindRoundEvent
+  | ChangeCurrentDialogueEvent
+  | ChangeGameStateEvent
   | ApplyCooldown;
 
 export function addEvent(store: StoreData, event: EventType): StoreData {

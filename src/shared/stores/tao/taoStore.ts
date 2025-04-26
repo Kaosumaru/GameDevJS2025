@@ -45,10 +45,14 @@ export interface GameInfo {
   balance: number;
   entities: number;
   round: number;
+  level: number;
   winCondition: GoalType;
   loseCondition: GoalType;
   gameState: GameState;
   currentDialogue?: Dialogue;
+
+  winDialogue?: Dialogue;
+  loseDialogue?: Dialogue;
   perRound: {
     roundEnded: boolean;
     diedInRound: Entity[];
@@ -74,6 +78,7 @@ function createStartingInfo(): GameInfo {
     balance: 0,
     entities: 0,
     round: 0,
+    level: 0,
     gameState: 'inProgress',
     winCondition: { type: 'none' },
     loseCondition: { type: 'none' },
@@ -111,10 +116,9 @@ export function createGameStateStore(): StoreContainer<StoreData, Action> {
 function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
   switch (action.type) {
     case 'rewindRound': {
-      if (store.startOfRoundState) {
-        return copyState(store.startOfRoundState);
-      }
-      return store;
+      return addEvent(store, {
+        type: 'rewindRound',
+      });
     }
     case 'endRound': {
       if (store.info.gameState !== 'inProgress') {
@@ -164,7 +168,9 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         info: createStartingInfo(),
       };
 
-      const level = createLevel(action.options.level ?? 0);
+      state.info.level = action.options.level ?? 0;
+
+      const level = createLevel(state.info.level);
       state = fillState(state, level);
       state = clearOriginalPositions(state);
       state = entitiesAfterRoundStart(state);
@@ -174,7 +180,7 @@ function makeAction(ctx: Context, store: StoreData, action: Action): StoreData {
         to: 0,
       });
 
-      state.startOfRoundState = copyState(state);
+      state.startOfRoundState = copyState(state, true);
 
       return state;
     }

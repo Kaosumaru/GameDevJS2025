@@ -4,18 +4,23 @@ import { Entity } from '@shared/stores/tao/interface';
 import { apath } from '@client/utils/relative';
 import { InviteButton } from './InviteButton';
 import { TaoClient } from '../TaoClient';
+import { useState } from 'react';
+import HelpDialog from './HelpDialog';
 
 export const Seat = ({
   gameRoomClient,
   gameClient,
   entities,
+  level,
   onAvatarSelected,
 }: {
   gameRoomClient: GameRoomClient;
   gameClient: TaoClient;
+  level: number;
   entities: Entity[];
   onAvatarSelected: (entityId: string) => void;
 }) => {
+  const [helpOpen, setHelpOpen] = useState(false);
   const matches = useMediaQuery(theme => theme.breakpoints.up('sm'));
   const seats = gameRoomClient.store(state => state.seats);
   return (
@@ -38,12 +43,21 @@ export const Seat = ({
       >
         <InviteButton />
         <Button
+          variant="contained"
+          onClick={() => {
+            setHelpOpen(true);
+          }}
+        >
+          Help
+        </Button>
+        <HelpDialog open={helpOpen} balanceInfo={level == 0} onClose={() => setHelpOpen(false)} />
+        {/*<Button
           onClick={() => {
             void gameClient.rewindRound();
           }}
         >
           Rewind
-        </Button>
+        </Button>*/}
       </Box>
       {seats.map((seat, index) => {
         const entity = entities.find(entity => entity.ownerId === index);
@@ -72,7 +86,7 @@ export const Seat = ({
                   void gameRoomClient.takeSeat(index);
                 }}
               >
-                {matches ? '<Nobody>(Take a Seat)' : '<Nobody>'}
+                {matches ? '<Nobody>(Take Seat)' : '<Nobody>'}
               </Button>
             ) : (
               <Button
